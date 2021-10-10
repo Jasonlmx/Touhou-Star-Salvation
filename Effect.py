@@ -1,0 +1,354 @@
+import pygame,sys
+import random
+import math
+import gF
+from pygame.sprite import Sprite
+import global_var
+
+class fire_effect_player(pygame.sprite.Sprite):
+    def __init__(self):
+        super(fire_effect_player,self).__init__()
+        self.surf = pygame.Surface((5,5))
+        self.surf.fill((255,255,255))
+        self.rect = self.surf.get_rect()
+        self.part=0
+        self.interval=3
+        self.frame=0
+        self.color='green'
+        self.tx=0
+        self.ty=0
+        self.x=0
+        self.y=0
+        self.upper=False
+    def initial(self,tx,ty,color):
+        self.tx=tx
+        self.ty=ty
+        self.loadColor(color)
+
+    def loadColor(self,color):
+        self.image=[]
+        for i in range(1,4):
+            effect=pygame.image.load('resource/playerFire/'+color+'_effect'+str(i)+'.png')
+            effect=pygame.transform.scale(effect,(24,48))
+            self.image.append(effect)
+    
+    def update(self,screen):
+        self.frame+=1
+        if self.frame==self.interval:
+            self.part+=1
+            self.frame=0
+        if self.part==3:
+            self.kill()
+        if self.part<=2:
+            screen.blit(self.image[self.part],(self.tx-12,self.ty-24))
+
+
+class bulletVanish(pygame.sprite.Sprite):
+    def __init__(self):
+        super(bulletVanish,self).__init__()
+        self.frame=0
+        self.image=pygame.image.load('resource/bullet/small_bullet_grey.png')
+        self.dx=0
+        self.dy=0
+        self.cx=0
+        self.cy=0
+        self.interval=5
+        self.part=0
+        self.upper=False
+    def initial(self,image,cx,cy,dx,dy):
+        self.image=image
+        self.cx=cx
+        self.cy=cy
+        self.dx=dx
+        self.dy=dy
+
+    def update(self,screen):
+        self.frame+=1
+        self.part=math.floor(self.frame/self.interval)
+        w,h=self.image.get_size()
+        w_now=round(w*(1-0.25*self.part))
+        h_now=round(h*(1-0.25*self.part))
+        cR=1-0.25*self.part
+        tempImage=pygame.transform.scale(self.image,(w_now,h_now))
+        tempImage.set_alpha(256-64*self.part)
+        screen.blit(tempImage,(self.cx-round(self.dx*cR),self.cy-round(self.dy*cR)))
+        if self.part>=3:
+            self.kill()
+
+class enemyDead(pygame.sprite.Sprite):
+    def __init__(self):
+        super(enemyDead,self).__init__()
+        self.frame=0
+        self.image=pygame.image.load('resource/sprite/sprite_dead.png')
+        self.decorate=pygame.transform.scale(self.image,(84,12))
+        self.deco_rotation=random.random()*180-90
+        self.cx=0
+        self.cy=0
+        self.interval=2
+        self.part=0
+        self.coef=0.15
+        self.upper=False
+    def initial(self,image,cx,cy):
+        self.image=image
+        self.cx=cx
+        self.cy=cy
+
+    def update(self,screen):
+        self.frame+=1
+        self.part=math.floor(self.frame/self.interval)
+        w,h=self.image.get_size()
+        w_now=round(w*(1+self.coef*self.part))
+        h_now=round(h*(1+self.coef*self.part))
+        cR=1+self.coef*self.part
+        tempImage=pygame.transform.scale(self.image,(w_now,h_now))
+        tempImage.set_alpha(220-20*self.part)
+        screen.blit(tempImage,(self.cx-round(w_now/2),self.cy-round(h_now/2)))
+        w_d,h_d=self.decorate.get_size()
+        w_d_now=round(w_d*(1+self.coef*self.part))
+        h_d_now=round(h_d*(1+self.coef*self.part))
+        tempDec=pygame.transform.scale(self.decorate,(w_d_now,h_d_now))
+        tempDec.set_alpha(220-20*self.part)
+        gF.drawRotation(tempDec,(self.cx-round(w_d_now/2),self.cy-round(h_d_now/2)),self.deco_rotation,screen)
+
+        if self.part>=12:
+            self.kill()
+
+class itemFade(pygame.sprite.Sprite):
+    def __init__(self):
+        super(itemFade,self).__init__()
+        self.frame=0
+        self.image=pygame.image.load('resource/sprite/sprite_dead.png')
+        self.cx=0
+        self.cy=0
+        self.interval=4
+        self.part=0
+        self.upper=False
+    def initial(self,image,cx,cy):
+        self.image=image
+        self.cx=cx
+        self.cy=cy
+
+    def update(self,screen):
+        self.frame+=1
+        self.part=math.floor(self.frame/self.interval)
+        self.image.set_alpha(256-48*self.part)
+        screen.blit(self.image,(self.cx-12,self.cy-12-self.frame*3))
+        if self.part>=4:
+            self.kill()
+
+class screenText(pygame.sprite.Sprite):
+    def __init__(self):
+        super(screenText,self).__init__()
+        self.lastFrame=0
+        self.maxLastFrame=180
+        self.image=pygame.Surface((384,48))
+        self.upper=True
+    def update(self,screen):
+        self.lastFrame+=1
+        self.draw(screen)
+        if self.lastFrame>=self.maxLastFrame:
+            self.kill()
+    def draw(self,screen):
+        pass
+
+class bonusText(screenText):
+    def __init__(self):
+        super(bonusText,self).__init__()
+        self.image=pygame.Surface((384,48))
+        self.image.set_alpha(256)
+        self.image.blit(global_var.get_value('front00'), (0, 0), (384,144,384,48))
+        self.bonus=100000
+        self.font=pygame.font.SysFont('arial', 28)
+        self.transFrame=30
+    def getBonus(self,bonus):
+        self.bonus=bonus
+
+    def draw(self,screen):
+        if self.lastFrame<=self.transFrame:
+            height=round(48*self.lastFrame/self.transFrame)
+            #print(height)
+            #screen.blit(pygame.transform.scale(self.image,(384,height)),(168,100))
+            screen.blit(pygame.transform.scale(self.image,(384,height)),(168,100+(24-round(0.5*height))))
+        elif self.lastFrame>=self.maxLastFrame-self.transFrame:
+            height=round(48*(self.maxLastFrame-self.lastFrame)/self.transFrame)
+            #screen.blit(pygame.transform.scale(self.image,(384,height)),(168,100))
+            screen.blit(pygame.transform.scale(self.image,(384,height)),(168,100+(24-round(0.5*height))))
+        else:
+            #pass
+            screen.blit(self.image,(168,100))
+        bonus=self.font.render(str(self.bonus), True, (255, 255, 255))
+        bonus_shade=self.font.render(str(self.bonus), True, (30, 30, 30))
+        w=bonus.get_width()
+        h=bonus.get_height()
+        if self.lastFrame<=self.transFrame:
+            height=round(h*self.lastFrame/self.transFrame)
+            #print(height)
+            #screen.blit(pygame.transform.scale(self.image,(384,height)),(168,100))
+            screen.blit(pygame.transform.scale(bonus_shade,(w,height)),(360-round(w/2)+2,140+(round(h/2-0.5*height))+3))
+            screen.blit(pygame.transform.scale(bonus,(w,height)),(360-round(w/2),140+(round(h/2-0.5*height))))
+        elif self.lastFrame>=self.maxLastFrame-self.transFrame:
+            height=round(h*(self.maxLastFrame-self.lastFrame)/self.transFrame)
+            #screen.blit(pygame.transform.scale(self.image,(384,height)),(168,100))
+            screen.blit(pygame.transform.scale(bonus_shade,(w,height)),(360-round(w/2)+2,140+(round(h/2-0.5*height))+3))
+            screen.blit(pygame.transform.scale(bonus,(w,height)),(360-round(w/2),140+(round(h/2-0.5*height))))
+        else:
+            #pass
+            screen.blit(bonus_shade,((360-round(w/2)+2),140+3))
+            screen.blit(bonus,((360-round(w/2)),140))
+        #screen.blit(bonus,((360-round(w/2)),140))
+    
+class failText(screenText):
+    def __init__(self):
+        super(failText,self).__init__()
+        self.image=pygame.Surface((240,48))
+        self.image.set_alpha(256)
+        self.image.blit(global_var.get_value('front00'), (0, 0), (384,576,240,48))
+        self.transFrame=30
+    def draw(self,screen):
+        if self.lastFrame<=self.transFrame:
+            height=round(48*self.lastFrame/self.transFrame)
+            #print(height)
+            #screen.blit(pygame.transform.scale(self.image,(384,height)),(168,100))
+            screen.blit(pygame.transform.scale(self.image,(240,height)),(240,100+(24-round(0.5*height))))
+        elif self.lastFrame>=self.maxLastFrame-self.transFrame:
+            height=round(48*(self.maxLastFrame-self.lastFrame)/self.transFrame)
+            #screen.blit(pygame.transform.scale(self.image,(384,height)),(168,100))
+            screen.blit(pygame.transform.scale(self.image,(240,height)),(240,100+(24-round(0.5*height))))
+        else:
+            #pass
+            screen.blit(self.image,(240,100))
+        #screen.blit(self.image,(240,100))
+
+class powerMaxText(screenText):
+    def __init__(self):
+        super(powerMaxText,self).__init__()
+        self.image=pygame.Surface((234,48))
+        self.image.set_alpha(256)
+        self.image.blit(global_var.get_value('front00'), (0, 0), (384,240,234,48))
+    
+    def draw(self,screen):
+        screen.blit(self.image,(243,52))
+    
+class extendText(screenText):
+    def __init__(self):
+        super(extendText,self).__init__()
+        self.image=pygame.Surface((234,48))
+        self.image.set_alpha(256)
+        self.image.blit(global_var.get_value('front00'), (0, 0), (384,333,150,48))
+    
+    def draw(self,screen):
+        screen.blit(self.image,(285,160))
+
+class wave(pygame.sprite.Sprite):
+    def __init__(self):
+        super(wave,self).__init__()
+        self.pos=[0,0]
+        self.radius=0
+        self.lastFrame=0
+        self.maxFrame=30
+        self.maxRadius=100
+        self.color=(255,255,255)
+        self.width=6
+        self.upper=False
+    def initial(self,pos,maxRadius,maxFrame,color,width):
+        self.maxRadius=maxRadius
+        self.maxFrame=maxFrame
+        self.pos=pos
+        self.color=color
+        self.width=width
+    
+    def update(self,screen):
+        self.lastFrame+=1
+        self.radius=round(self.maxRadius*(self.lastFrame/self.maxFrame))
+        r,g,b=self.color
+        color_now=(round(r*(1-self.lastFrame/self.maxFrame)),round(g*(1-self.lastFrame/self.maxFrame)),round(b*(1-self.lastFrame/self.maxFrame)))
+        pygame.draw.circle(screen,color_now,self.pos,self.radius,self.width)
+        if self.maxFrame<=self.lastFrame:
+            self.kill()
+
+class powerUp(pygame.sprite.Sprite):
+    def __init__(self):
+        super(powerUp,self).__init__()
+        self.pos=[0,0]
+        self.radius=0
+        self.lastFrame=0
+        self.maxFrame=30
+        self.maxRadius=900
+        self.color=(255,255,255)
+        self.width=6
+        self.num=5
+        self.interval=20
+        self.upper=False
+    def initial(self,pos,maxRadius,maxFrame,color,width,num,interval):
+        self.maxRadius=maxRadius
+        self.maxFrame=maxFrame
+        self.pos=pos
+        self.color=color
+        self.width=width
+        self.num=num
+        self.interval=interval
+    def update(self,screen):
+        self.lastFrame+=1
+        self.radius=round(self.maxRadius*(1-self.lastFrame/self.maxFrame))
+        for i in range(0,self.num):
+            r,g,b=self.color
+            color_now=(round(r*self.lastFrame/self.maxFrame),round(g*self.lastFrame/self.maxFrame),round(b*self.lastFrame/self.maxFrame))
+            pygame.draw.circle(screen,color_now,self.pos,self.radius+self.interval*i,self.width)
+        if self.maxFrame<=self.lastFrame:
+            self.kill()
+
+class grazeEffect(pygame.sprite.Sprite):
+    def __init__(self):
+        super(grazeEffect,self).__init__()
+        self.pos=[0,0]
+        self.radius=0
+        self.lastFrame=0
+        self.maxFrame=30
+        self.maxRadius=8
+        self.color=(255,255,255)
+        self.width=6
+        self.num=5
+        self.interval=20
+        self.upper=True
+        self.tx=0.0
+        self.ty=0.0
+        self.type=0
+        self.speedx=0
+        self.speedy=0
+        self.direction=random.random()*360
+    def movement(self):
+        self.tx+=self.speedx
+        self.ty+=self.speedy
+    
+    
+    def setSpeed(self,angle,speed):
+        s=math.sin(math.radians(angle))
+        c=math.cos(math.radians(angle))
+        self.speedy=s*speed
+        self.speedx=c*speed
+    
+    def update(self,screen):
+        self.lastFrame+=1
+        self.movement()
+        self.draw(screen)
+        self.checkValid()
+
+
+    def initial(self,pos,maxRadius,maxFrame,color,width,num,interval):
+        self.maxRadius=maxRadius
+        self.maxFrame=maxFrame
+        self.pos=pos
+        self.tx=pos[0]
+        self.ty=pos[1]
+        self.color=color
+        self.width=width
+        self.num=num
+        self.interval=interval
+        self.setSpeed(self.direction,random.random()*2+3)
+    
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
+
+    def draw(self,screen):
+        pygame.draw.circle(screen,self.color,(round(self.tx),round(self.ty)),self.maxRadius,self.width)
