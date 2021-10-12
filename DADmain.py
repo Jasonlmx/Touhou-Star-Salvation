@@ -36,8 +36,8 @@ screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE)
 global_var._init()
 
 #test functions 
-global_var.set_value('ifTest',False)
-global_var.set_value('spellNum',1)
+global_var.set_value('ifTest',True)
+global_var.set_value('spellNum',10)
 global_var.set_value('ifSpellTest',True)
 testFire=400
  
@@ -192,15 +192,12 @@ pygame.mouse.set_visible(False)
 
 while running:
     global_var.set_value('grazing',False)
-    if frame%2==0:
-        global_var.set_value('item_getting',False) 
-        global_var.set_value('enemyFiring1',False)
-        global_var.set_value('enemyFiring2',False)
-        global_var.set_value('enemyFiring3',False)
-    if frame%20==0:
-        global_var.set_value('kiraing',False)
-    if frame%7==0:
-        global_var.set_value('hitting',False)
+    global_var.set_value('item_getting',False) 
+    global_var.set_value('enemyFiring1',False)
+    global_var.set_value('enemyFiring2',False)
+    global_var.set_value('enemyFiring3',False)
+    global_var.set_value('kiraing',False)
+    global_var.set_value('hitting',False)
         
 
     bulletSum=0
@@ -268,6 +265,7 @@ while running:
     if pressed_keys[K_z]:
         player.fire(frame,screen,playerGuns)
         if frame%5==0:
+            shoot_sound.stop()
             shoot_sound.play()
     
     for background in backgrounds:

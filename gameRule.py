@@ -142,10 +142,12 @@ def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses):
             boss.health-=bullet.hit
         if round(boss.health/boss.maxHealth,2)<=0.25:
             if not global_var.get_value('hitting'):
+                global_var.get_value('hit_sound2').stop()
                 global_var.get_value('hit_sound2').play()
                 global_var.set_value('hitting',True)
         else:
             if not global_var.get_value('hitting'):
+                global_var.get_value('hit_sound1').stop()
                 global_var.get_value('hit_sound1').play()
                 global_var.set_value('hitting',True)
     

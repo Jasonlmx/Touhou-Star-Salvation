@@ -1457,6 +1457,7 @@ class orb_Bullet_bouncing_5(orb_Bullet):
                 self.bounceMax-=1
                 self.loadColor('blue')
                 if not global_var.get_value('kiraing'):
+                    global_var.get_value('kira_sound').stop()
                     global_var.get_value('kira_sound').play()
                     global_var.set_value('kiraing',True)
             elif self.ty<=30:
@@ -1464,6 +1465,7 @@ class orb_Bullet_bouncing_5(orb_Bullet):
                 self.bounceMax-=1
                 self.loadColor('blue')
                 if not global_var.get_value('kiraing'):
+                    global_var.get_value('kira_sound').stop()
                     global_var.get_value('kira_sound').play()
                     global_var.set_value('kiraing',True)
 
@@ -1513,6 +1515,7 @@ class big_Bullet_tracing_test(big_Bullet):
             speedAdjust=0
             if self.lastFrame%8==0:
                 if not global_var.get_value('enemyFiring1'):
+                    global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()
                     global_var.set_value('enemyFiring1',True)
                 if self.speedx<0:
@@ -1530,6 +1533,7 @@ class big_Bullet_tracing_test(big_Bullet):
         if self.lastFrame>=self.preFrame and self.lastFrame<self.preFrame+self.stayFrame:
             if (self.lastFrame-self.preFrame)%25==0:
                 if not global_var.get_value('enemyFiring2'):
+                    global_var.get_value('enemyGun_sound2').stop()
                     global_var.get_value('enemyGun_sound2').play()
                     global_var.set_value('enemyFiring2',True)
                 new_bullet=star_Bullet()
@@ -1551,6 +1555,7 @@ class big_Bullet_tracing_test(big_Bullet):
         if self.lastFrame>=self.preFrame+self.stayFrame-40:
             if (self.lastFrame-self.preFrame+self.stayFrame)%4==0:
                 if not global_var.get_value('enemyFiring3'):
+                    global_var.get_value('enemyGun_sound3').stop()
                     global_var.get_value('enemyGun_sound3').play()
                     global_var.set_value('enemyFiring3',True)
                 angle=random.random()*360
@@ -1584,6 +1589,7 @@ class orb_bullet_delay(orb_Bullet):
         if self.lastFrame<=self.retainFrame:
             if self.lastFrame==self.retainFrame:
                 if not global_var.get_value('kiraing'):
+                    global_var.get_value('kira_sound').stop()
                     global_var.get_value('kira_sound').play()
                     global_var.set_value('kiraing',True)
         elif self.lastFrame-self.retainFrame<=self.accFrame:

@@ -452,6 +452,7 @@ class ghost_part2_1(ghost):
     def fire(self,frame,bullets):
         if self.lastFrame%20==0:
             if not global_var.get_value('kiraing'):
+                global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
                 global_var.set_value('kiraing',True)
             new_bullet=Bullet.scale_Bullet()
@@ -516,6 +517,7 @@ class ghost_part3_1(ghost_part2_1):
     def fire(self,frame,bullets):
         if self.lastFrame%12==0:
             if not global_var.get_value('kiraing'):
+                global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
                 global_var.set_value('kiraing',True)
             new_bullet=Bullet.scale_Bullet()
@@ -543,6 +545,7 @@ class butterfly_part4_1(butterfly):
         if self.lastFrame>=80 and self.lastFrame%8==0:
             self.fireAngle-=6
             if not global_var.get_value('kiraing'):
+                global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
                 global_var.set_value('kiraing',True)
             for i in range(0,10):
@@ -605,6 +608,7 @@ class butterfly_part5_1(butterfly):
         if self.lastFrame>=80 and self.lastFrame%8==0:
             self.fireAngle+=6
             if not global_var.get_value('kiraing'):
+                global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
                 global_var.set_value('kiraing',True)
             for i in range(0,10):
@@ -801,6 +805,7 @@ class butterfly_part8_1(butterfly):
         if self.lastFrame>=80 and self.lastFrame%8==0:
             self.fireAngle+=10
             if not global_var.get_value('kiraing'):
+                global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
                 global_var.set_value('kiraing',True)
             for i in range(0,12):
@@ -833,6 +838,7 @@ class butterfly_part9_1(butterfly):
         if self.lastFrame>=80 and self.lastFrame%10==0:
             self.fireAngle+=6
             if not global_var.get_value('kiraing'):
+                global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
                 global_var.set_value('kiraing',True)
             for i in range(0,14):
@@ -855,6 +861,7 @@ class butterfly_part9_2(butterfly_part9_1):
         if self.lastFrame>=80 and self.lastFrame%10==0:
             self.fireAngle-=6
             if not global_var.get_value('kiraing'):
+                global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
                 global_var.set_value('kiraing',True)
             for i in range(0,14):
@@ -890,6 +897,10 @@ class ghost_slytherin_spirit(ghost):
     
     def fire(self,frame,bullets):
         if self.lastFrame%2==0:
+            if not global_var.get_value('enemyFiring2'):
+                global_var.get_value('enemyGun_sound2').stop()
+                global_var.get_value('enemyGun_sound2').play()
+                global_var.set_value('enemyFiring2',True)
             new_bullet=Bullet.laser_bullet_decline(300,7)
             new_bullet.doColorCode(2)
             new_bullet.initial(self.tx,self.ty,1)
@@ -1077,6 +1088,7 @@ class ghost_gryffindor_spirit(ghost):
             d_Frame=self.actionFrame-self.accFrame
             if d_Frame%15==0:
                 if not global_var.get_value('enemyFiring3'):
+                    global_var.get_value('enemyGun_sound3').stop()
                     global_var.get_value('enemyGun_sound3').play()
                     global_var.set_value('enemyFiring3',True)
                 for i in range(0,6):
@@ -1093,6 +1105,7 @@ class ghost_gryffindor_spirit(ghost):
                         bullets.add(new_bullet)
             if d_Frame%4==0:
                 if not global_var.get_value('enemyFiring1'):
+                    global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()
                     global_var.set_value('enemyFiring1',True)
                 for i in range(2):
@@ -1136,6 +1149,7 @@ class ghost_ravenclaw_spirit(ghost):
         if self.lastFrame%9==0:
             self.fireAngle+=8.3*self.direct
             if not global_var.get_value('enemyFiring2'):
+                global_var.get_value('enemyGun_sound2').stop()
                 global_var.get_value('enemyGun_sound2').play()
                 global_var.set_value('enemyFiring2',True)
             for i in range(0,4):
@@ -1958,6 +1972,7 @@ class satori(Boss):
             targetBulletISpeed=7
         if self.lastFrame>=80:
             if self.lastFrame%10==0:
+                global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
 
             if self.lastFrame%randomBulletInterval==0:
@@ -1977,6 +1992,7 @@ class satori(Boss):
             if self.lastFrame%180>=160:
                 if self.lastFrame%2==0:
                     if not global_var.get_value('enemyFiring2'):
+                        global_var.get_value('enemyGun_sound2').stop()
                         global_var.get_value('enemyGun_sound2').play()
                         global_var.set_value('enemyFiring2',True)
                     new_bullet=Bullet.star_Bullet()
@@ -2181,9 +2197,10 @@ class Dumbledore(Boss):
             self.frameLimit=1800
 
         if self.lastFrame>=40:
-            if (self.lastFrame-40)%7==0:
+            if (self.lastFrame-40)%6==0:
                 for i in range(0,5):
                     if not global_var.get_value('enemyFiring2'):
+                        global_var.get_value('enemyGun_sound2').stop()
                         global_var.get_value('enemyGun_sound2').play()
                         global_var.set_value('enemyFiring2',True)
                     new_bullet=Bullet.orb_Bullet()
@@ -2233,11 +2250,13 @@ class Dumbledore(Boss):
             new_bullet.doColorCode(2)
             bullets.add(new_bullet)
         if self.lastFrame%10==0:
+                global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
 
         if self.lastFrame>=300:
             if (self.lastFrame-300)%120==0:
                 if not global_var.get_value('enemyFiring2'):
+                    global_var.get_value('enemyGun_sound2').stop()
                     global_var.get_value('enemyGun_sound2').play()
                     global_var.set_value('enemyFiring2',True)
                 for i in range(-1,2):
@@ -2306,6 +2325,7 @@ class Dumbledore(Boss):
             if (self.lastFrame-40)%6==0:
                 for i in range(0,7):
                     if not global_var.get_value('enemyFiring2'):
+                        global_var.get_value('enemyGun_sound2').stop()
                         global_var.get_value('enemyGun_sound2').play()
                         global_var.set_value('enemyFiring2',True)
                     new_bullet=Bullet.orb_Bullet()
@@ -2350,7 +2370,8 @@ class Dumbledore(Boss):
 
         self.cardBonus-=self.framePunishment
         if self.lastFrame%10==0:
-                global_var.get_value('kira_sound').play()
+            global_var.get_value('kira_sound').stop()
+            global_var.get_value('kira_sound').play()
 
         if self.lastFrame%600<=360:
             if self.lastFrame%8==0:
@@ -2398,6 +2419,7 @@ class Dumbledore(Boss):
         if self.lastFrame%150==0:
             fireAngle=random.random()*360
             if not global_var.get_value('enemyFiring1'):
+                global_var.get_value('enemyGun_sound1').stop()
                 global_var.get_value('enemyGun_sound1').play()
                 global_var.set_value('enemyFiring1',True)
             for i in range(0,40):
@@ -2447,6 +2469,7 @@ class Dumbledore(Boss):
             if (self.lastFrame-100)%8==0:
                 for i in range(0,15):
                     if not global_var.get_value('enemyFiring2'):
+                        global_var.get_value('enemyGun_sound2').stop()
                         global_var.get_value('enemyGun_sound2').play()
                         global_var.set_value('enemyFiring2',True)
                     new_bullet=Bullet.mid_Bullet()
@@ -2460,6 +2483,7 @@ class Dumbledore(Boss):
                     self.randomAngle-=7
             if (self.lastFrame-100)%90==0:
                 if not global_var.get_value('enemyFiring1'):
+                    global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()
                     global_var.set_value('enemyFiring1',True)
                 for i in range(0,40):
@@ -2497,6 +2521,7 @@ class Dumbledore(Boss):
         
         self.cardBonus-=self.framePunishment
         if self.lastFrame%10==0:
+                global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
 
         if self.lastFrame>=80:
@@ -2516,6 +2541,7 @@ class Dumbledore(Boss):
 
         if (self.lastFrame-100)%60==0:
             if not global_var.get_value('enemyFiring1'):
+                global_var.get_value('enemyGun_sound1').stop()
                 global_var.get_value('enemyGun_sound1').play()
                 global_var.set_value('enemyFiring1',True)
             new_bullet=Bullet.big_star_Bullet()
@@ -2580,6 +2606,7 @@ class Dumbledore(Boss):
             if (self.lastFrame-100)%180<=90:
                 if self.lastFrame%12==0:
                     if not global_var.get_value('enemyFiring2'):
+                        global_var.get_value('enemyGun_sound2').stop()
                         global_var.get_value('enemyGun_sound2').play()
                         global_var.set_value('enemyFiring2',True)
                     for i in range(0,30):
@@ -2594,6 +2621,7 @@ class Dumbledore(Boss):
                 
                 if self.lastFrame%6==0:
                     if not global_var.get_value('enemyFiring1'):
+                        global_var.get_value('enemyGun_sound1').stop()
                         global_var.get_value('enemyGun_sound1').play()
                         global_var.set_value('enemyFiring1',True)
                     for i in range(0,9):
@@ -2640,6 +2668,7 @@ class Dumbledore(Boss):
             if (self.lastFrame-80)%200<=150:
                 if self.lastFrame%5==0:
                     if not global_var.get_value('enemyFiring2'):
+                            global_var.get_value('enemyGun_sound2').stop()
                             global_var.get_value('enemyGun_sound2').play()
                             global_var.set_value('enemyFiring2',True)
                     sx=self.tx-8+random.random()*16
@@ -2712,8 +2741,6 @@ class Dumbledore(Boss):
             self.randomAngle2=0
             self.frameLimit=1800
 
-        if self.lastFrame%10==0 and self.lastFrame>=50:
-            global_var.get_value('kira_sound').play()
 
         '''
         if self.lastFrame>=50:
@@ -2729,6 +2756,10 @@ class Dumbledore(Boss):
         '''
         if self.lastFrame>=50:
             if (self.lastFrame-50)%4==0:
+                if not global_var.get_value('kiraing'):
+                    global_var.get_value('kira_sound').stop()
+                    global_var.get_value('kira_sound').play()
+                    global_var.set_value('kiraing',True)
                 self.randomAngle2+=0.84
                 for i in range(0,8):
                     new_bullet=Bullet.mid_Bullet()
@@ -2890,6 +2921,7 @@ class Dumbledore(Boss):
         if self.lastFrame>=80:
             if (self.lastFrame-80)%10==0:
                 if not global_var.get_value('enemyFiring2'):
+                    global_var.get_value('enemyGun_sound2').stop()
                     global_var.get_value('enemyGun_sound2').play()
                     global_var.set_value('enemyFiring2',True)
                 for i in range(0,12):
@@ -2902,6 +2934,7 @@ class Dumbledore(Boss):
         
             if (self.lastFrame-80)%30==0:
                 if not global_var.get_value('enemyFiring1'):
+                            global_var.get_value('enemyGun_sound1').stop()
                             global_var.get_value('enemyGun_sound1').play()
                             global_var.set_value('enemyFiring1',True)
                 for i in range(0,7):
@@ -2955,6 +2988,7 @@ class Dumbledore(Boss):
         
         if self.lastFrame>=60 and (self.lastFrame-60)%7==0:
             if not global_var.get_value('enemyFiring2'):
+                global_var.get_value('enemyGun_sound2').stop()
                 global_var.get_value('enemyGun_sound2').play()
                 global_var.set_value('enemyFiring2',True)
             for i in range(0,5):
@@ -3017,9 +3051,11 @@ class Dumbledore(Boss):
         if (self.lastFrame-60)%300==250:
             self.callNum+=1
             global_var.set_value('bossEvent_'+str(self.eventNum),True)
+            global_var.get_value('kira_sound').stop()
             global_var.get_value('kira_sound').play()
         
         if self.lastFrame>250 and (self.lastFrame-60)%300==50:
+            global_var.get_value('kira_sound').stop()
             global_var.get_value('kira_sound').play()
 
         if self.health<=0:
@@ -3064,6 +3100,7 @@ class Dumbledore(Boss):
         if self.lastFrame>=80:
             if (self.lastFrame-80)%15==0:
                 if not global_var.get_value('enemyFiring3'):
+                    global_var.get_value('enemyGun_sound3').stop()
                     global_var.get_value('enemyGun_sound3').play()
                     global_var.set_value('enemyFiring3',True)
                 bulletNum=random.randint(17,28)
@@ -3131,6 +3168,7 @@ class Dumbledore(Boss):
                     bullets.add(new_bullet)
                 self.randomAngle=random.random()*360
                 if not global_var.get_value('enemyFiring1'):
+                    global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()
                     global_var.set_value('enemyFiring1',True)
         
@@ -3187,6 +3225,7 @@ class Dumbledore(Boss):
         if self.lastFrame>=150:
             if (self.lastFrame-150)%60==0:
                 if not global_var.get_value('enemyFiring3'):
+                    global_var.get_value('enemyGun_sound3').stop()
                     global_var.get_value('enemyGun_sound3').play()
                     global_var.set_value('enemyFiring3',True)
                 new_bullet=Bullet.orb_Bullet()
@@ -3217,6 +3256,7 @@ class Dumbledore(Boss):
         if self.lastFrame>=150:
             if (self.lastFrame-150)%interval==0.5*interval:
                     if not global_var.get_value('enemyFiring3'):
+                        global_var.get_value('enemyGun_sound3').stop()
                         global_var.get_value('enemyGun_sound3').play()
                         global_var.set_value('enemyFiring3',True)
                     new_bullet=Bullet.orb_Bullet()
@@ -3295,6 +3335,7 @@ class Dumbledore(Boss):
         if self.lastFrame>=160:
             if (self.lastFrame-160)%270==0:
                 if not global_var.get_value('enemyFiring3'):
+                    global_var.get_value('enemyGun_sound3').stop()
                     global_var.get_value('enemyGun_sound3').play()
                     global_var.set_value('enemyFiring3',True)
                 for i in range(0,4):
@@ -3409,6 +3450,7 @@ class Dumbledore(Boss):
                 angle=random.random()*360
                 self.spell10_time+=1
                 if not global_var.get_value('enemyFiring3'):
+                    global_var.get_value('enemyGun_sound3').stop()
                     global_var.get_value('enemyGun_sound3').play()
                     global_var.set_value('enemyFiring3',True)
                 for i in range(0,density):
@@ -3421,6 +3463,7 @@ class Dumbledore(Boss):
             if (self.lastFrame-120)%(interval*3)==0 and global_var.get_value('bulletSum')<=20:
                 direct=random.randint(0,1)
                 if not global_var.get_value('enemyFiring1'):
+                    global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()
                     global_var.set_value('enemyFiring1',True)
                 if direct==0:
