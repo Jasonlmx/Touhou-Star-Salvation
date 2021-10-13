@@ -32,7 +32,7 @@ size = width,height = 960,720
 fullscreen = True
 screen = pygame.display.set_mode(size,RESIZABLE)
 #size = width, height =  pygame.display.list_modes()[0]
-screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE)
+#screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE)
 global_var._init()
 
 #test functions 
@@ -186,11 +186,15 @@ pygame.mixer.music.set_volume(0.6)                  # 设定背景音乐音量
 pygame.mixer.music.play(loops=-1)
 global_var.set_value('ifBoss',False)
 global_var.set_value('pressingX',False)
+global_var.set_value('DELTA_T',17)
 if global_var.get_value('ifTest'):
     frame=10020#for test
 pygame.mouse.set_visible(False)
 
 while running:
+    DELTA_T=fpsClock.tick(FPS)
+    global_var.set_value('DELTA_T',DELTA_T)
+
     global_var.set_value('grazing',False)
     global_var.set_value('item_getting',False) 
     global_var.set_value('enemyFiring1',False)
@@ -445,6 +449,7 @@ while running:
     global_var.set_value('enemySum',enemySum)
     global_var.set_value('bulletSum',bulletSum)
     pygame.display.update()
-    fpsClock.tick(FPS)
+    
+    
     
 

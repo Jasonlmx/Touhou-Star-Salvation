@@ -104,8 +104,9 @@ class playerGun(pygame.sprite.Sprite):
         self.rect.centery=self.ty
 
     def movement(self):
-        self.tx+=self.speedx
-        self.ty+=self.speedy
+        tick=global_var.get_value('DELTA_T')
+        self.tx+=self.speedx*60/1000*tick
+        self.ty+=self.speedy*60/1000*tick
         self.truePos()
 
     def setSpeed(self,angle,speed):
@@ -255,8 +256,9 @@ class Bullet(pygame.sprite.Sprite):
             global_var.set_value('grazeNum',grazeNum)
 
     def movement(self):
-        self.tx+=self.speedx
-        self.ty+=self.speedy
+        tick=global_var.get_value('DELTA_T')
+        self.tx+=self.speedx*60/1000*tick
+        self.ty+=self.speedy*60/1000*tick
         self.truePos()
     
     def speedAlter(self,speedx,speedy):
