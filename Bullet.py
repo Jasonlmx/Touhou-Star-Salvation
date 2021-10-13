@@ -29,8 +29,8 @@ class bulletBarrier(pygame.sprite.Sprite):
         self.rect=self.surf.get_rect()
         self.inUse=0
         self.startFrame=-1
-        self.image=pygame.image.load('resource/playerMagic.png')
-        self.cvImage=pygame.image.load('resource/playerMagic.png')
+        self.image=pygame.image.load('resource/playerMagic.png').convert_alpha()
+        self.cvImage=pygame.image.load('resource/playerMagic.png').convert_alpha()
         self.range=200
         self.maxRange=200
         self.tx=0
@@ -343,7 +343,7 @@ class mid_Bullet(Bullet):
         #screen.blit(self.surf,self.rect)
         self.checkValid()
     def loadColor(self,color):
-        self.image=pygame.image.load('resource/bullet/mid_bullet_'+color+'.png')
+        self.image=pygame.image.load('resource/bullet/mid_bullet_'+color+'.png').convert_alpha()
     
     def drawBullet(self,screen):
         screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
@@ -365,7 +365,7 @@ class big_Bullet(Bullet):
         #screen.blit(self.surf,self.rect)
         self.checkValid()
     def loadColor(self,color):
-        self.image=pygame.image.load('resource/bullet/big_bullet_'+color+'.png')
+        self.image=pygame.image.load('resource/bullet/big_bullet_'+color+'.png').convert_alpha()
         self.image.set_alpha(210)
 class big_Bullet_explode(Bullet):
     def __init__(self):
@@ -375,7 +375,7 @@ class big_Bullet_explode(Bullet):
         self.surf.fill((255,255,255))
         self.type=3
         self.expValue=1
-        self.image=pygame.image.load('resource/bullet/big_bullet_red.png')
+        self.image=pygame.image.load('resource/bullet/big_bullet_red.png').convert_alpha()
     def update(self,screen,bullets):
         self.movement()
         #screen.blit(self.image,(round(self.rect.centerx-32-5*self.speedx),round(self.rect.centery-32-5*self.speedy)))
@@ -384,7 +384,7 @@ class big_Bullet_explode(Bullet):
         self.explode(screen,bullets)
         self.checkValid()
     def loadColor(self,color):
-        self.image=pygame.image.load('resource/bullet/big_bullet_'+color+'.png')
+        self.image=pygame.image.load('resource/bullet/big_bullet_'+color+'.png').convert_alpha()
     
     def explode(self,screen,bullets):
         do=0
@@ -419,7 +419,7 @@ class star_Bullet(Bullet):
         self.rect = self.surf.get_rect()
         self.surf.fill((255,255,255))
         self.type=4
-        self.image=pygame.image.load('resource/bullet/star_bullet_grey.png')
+        self.image=pygame.image.load('resource/bullet/star_bullet_grey.png').convert_alpha()
         self.dAngle=random.randint(0,60)
         self.dx=12
         self.dy=12
@@ -433,7 +433,7 @@ class star_Bullet(Bullet):
         self.drawBullet(screen)
         self.checkValid()
     def loadColor(self,color):
-        self.image=pygame.image.load('resource/bullet/star_bullet_'+color+'.png')
+        self.image=pygame.image.load('resource/bullet/star_bullet_'+color+'.png').convert_alpha()
     def drawBullet(self,screen):
         self.dAngle+=3
         gF.drawRotation(self.image,(self.rect.centerx-12,self.rect.centery-12),self.dAngle,screen)
@@ -445,8 +445,8 @@ class scale_Bullet(Bullet):
         self.rect = self.surf.get_rect()
         self.surf.fill((255,255,255))
         self.type=5
-        self.image=pygame.image.load('resource/bullet/scale_bullet_grey.png')
-        self.tempImage=pygame.image.load('resource/bullet/scale_bullet_grey.png')
+        self.image=pygame.image.load('resource/bullet/scale_bullet_grey.png').convert_alpha()
+        self.tempImage=pygame.image.load('resource/bullet/scale_bullet_grey.png').convert_alpha()
         self.lastAngle=0
         #self.cvImage=pygame.image.load('resource/bullet/star_bullet_grey.png')
         self.dx=15
@@ -458,7 +458,7 @@ class scale_Bullet(Bullet):
         self.drawBullet(screen)
         self.checkValid()
     def loadColor(self,color):
-        self.image=pygame.image.load('resource/bullet/scale_bullet_'+color+'.png')
+        self.image=pygame.image.load('resource/bullet/scale_bullet_'+color+'.png').convert_alpha()
     def drawBullet(self,screen):
         self.countAngle()
         angle=270-self.angle
@@ -485,7 +485,7 @@ class scale_Bullet_alter1(Bullet):
         self.frame=0
         self.direction=0
         self.rand=random.random()*1.50
-        self.image=pygame.image.load('resource/bullet/scale_bullet_grey.png')
+        self.image=pygame.image.load('resource/bullet/scale_bullet_grey.png').convert_alpha()
         #self.cvImage=pygame.image.load('resource/bullet/star_bullet_grey.png')
     def checkValid(self):
         if self.frame>=5*60:
@@ -504,7 +504,7 @@ class scale_Bullet_alter1(Bullet):
         self.drawBullet(screen)
         self.checkValid()
     def loadColor(self,color):
-        self.image=pygame.image.load('resource/bullet/scale_bullet_'+color+'.png')
+        self.image=pygame.image.load('resource/bullet/scale_bullet_'+color+'.png').convert_alpha()
     def drawBullet(self,screen):
         self.countAngle()
         if self.rect.right>=400 and self.fro==2:
@@ -523,7 +523,7 @@ class scale_Bullet_alter2(Bullet):
         self.tspeed=0
         self.direction=0
         self.rand=random.random()*0.90
-        self.image=pygame.image.load('resource/bullet/scale_bullet_grey.png')
+        self.image=pygame.image.load('resource/bullet/scale_bullet_grey.png').convert_alpha()
         #self.cvImage=pygame.image.load('resource/bullet/star_bullet_grey.png')
     def checkValid(self):
         if self.frame>=6*60:
@@ -557,7 +557,7 @@ class scale_Bullet_alter2(Bullet):
         self.drawBullet(screen)
         self.checkValid()
     def loadColor(self,color):
-        self.image=pygame.image.load('resource/bullet/scale_bullet_'+color+'.png')
+        self.image=pygame.image.load('resource/bullet/scale_bullet_'+color+'.png').convert_alpha()
     def drawBullet(self,screen):
         self.countAngle()
         if self.rect.right>=400 and self.fro==2:
@@ -572,7 +572,7 @@ class mid_Bullet_gravity(Bullet):
         self.rect = self.surf.get_rect()
         self.surf.fill((255,255,255))
         self.type=2
-        self.image=pygame.image.load('resource/bullet/mid_bullet_grey.png')
+        self.image=pygame.image.load('resource/bullet/mid_bullet_grey.png').convert_alpha()
         self.gravity=0.1
     def setGravity(self,gravity):
         self.gravity=gravity
@@ -583,7 +583,7 @@ class mid_Bullet_gravity(Bullet):
         #screen.blit(self.surf,self.rect)
         self.checkValid()
     def loadColor(self,color):
-        self.image=pygame.image.load('resource/bullet/mid_bullet_'+color+'.png')
+        self.image=pygame.image.load('resource/bullet/mid_bullet_'+color+'.png').convert_alpha()
 
 class orb_Bullet(Bullet):
     def __init__(self):
@@ -592,7 +592,7 @@ class orb_Bullet(Bullet):
         self.rect = self.surf.get_rect()
         self.surf.fill((255,255,255))
         self.type=6
-        self.image=pygame.image.load('resource/bullet/orb_bullet_grey.png')
+        self.image=pygame.image.load('resource/bullet/orb_bullet_grey.png').convert_alpha()
         self.dx=12
         self.dy=12
         self.lastFrame=0
@@ -607,7 +607,7 @@ class orb_Bullet(Bullet):
         #screen.blit(self.surf,self.rect)
         self.checkValid()
     def loadColor(self,color):
-        self.image=pygame.image.load('resource/bullet/orb_bullet_'+color+'.png')
+        self.image=pygame.image.load('resource/bullet/orb_bullet_'+color+'.png').convert_alpha()
     
     def drawBullet(self,screen):
         screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
@@ -619,7 +619,7 @@ class orb_Bullet_gravity(Bullet):
         self.rect = self.surf.get_rect()
         self.surf.fill((255,255,255))
         self.type=6
-        self.image=pygame.image.load('resource/bullet/orb_bullet_grey.png')
+        self.image=pygame.image.load('resource/bullet/orb_bullet_grey.png').convert_alpha()
         self.gravity=0.1
         self.gravMax=999
         self.totalGrav=0
@@ -628,7 +628,7 @@ class orb_Bullet_gravity(Bullet):
         self.gravDirection=2
         self.codeDic=['red','blue','green','purple','pink','jade','yellow']
     def doColorCode(self,code):
-        self.image=pygame.image.load('resource/bullet/orb_bullet_'+self.codeDic[code]+'.png')
+        self.image=pygame.image.load('resource/bullet/orb_bullet_'+self.codeDic[code]+'.png').convert_alpha()
 
     def setGravity(self,gravity):
         self.gravity=gravity
@@ -654,7 +654,7 @@ class orb_Bullet_gravity(Bullet):
         #screen.blit(self.surf,self.rect)
         self.checkValid()
     def loadColor(self,color):
-        self.image=pygame.image.load('resource/bullet/orb_bullet_'+color+'.png')
+        self.image=pygame.image.load('resource/bullet/orb_bullet_'+color+'.png').convert_alpha()
     def drawBullet(self,screen):
         screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
 
@@ -666,7 +666,7 @@ class orb_Bullet_bouncing_leftright(Bullet):
         self.surf.fill((255,255,255))
         self.type=6
         self.bounce=1
-        self.image=pygame.image.load('resource/bullet/orb_bullet_grey.png')
+        self.image=pygame.image.load('resource/bullet/orb_bullet_grey.png').convert_alpha()
     def update(self,screen,bullets):
         self.movement()
         self.bouncing()
@@ -674,7 +674,7 @@ class orb_Bullet_bouncing_leftright(Bullet):
         #screen.blit(self.surf,self.rect)
         self.checkValid()
     def loadColor(self,color):
-        self.image=pygame.image.load('resource/bullet/orb_bullet_'+color+'.png')
+        self.image=pygame.image.load('resource/bullet/orb_bullet_'+color+'.png').convert_alpha()
     
     def bouncing(self):
         if self.bounce>0:
@@ -704,11 +704,11 @@ class flame_Bullet(Bullet):
         #self.image=pygame.image.load('resource/bullet/flame_bullet_red_1.png')
         self.red=[]
         for i in range(1,5):
-            red1=pygame.image.load('resource/bullet/flame_bullet_red_'+str(i)+'.png')
+            red1=pygame.image.load('resource/bullet/flame_bullet_red_'+str(i)+'.png').convert_alpha()
             self.red.append(red1)
         self.blue=[]
         for i in range(1,5):
-            blue1=pygame.image.load('resource/bullet/flame_bullet_blue_'+str(i)+'.png')
+            blue1=pygame.image.load('resource/bullet/flame_bullet_blue_'+str(i)+'.png').convert_alpha()
             self.blue.append(blue1)
         self.dx=22
         self.dy=22
@@ -753,11 +753,11 @@ class flame_Bullet_alter1(Bullet):
         #self.image=pygame.image.load('resource/bullet/flame_bullet_red_1.png')
         self.red=[]
         for i in range(1,5):
-            red1=pygame.image.load('resource/bullet/flame_bullet_red_'+str(i)+'.png')
+            red1=pygame.image.load('resource/bullet/flame_bullet_red_'+str(i)+'.png').convert_alpha()
             self.red.append(red1)
         self.blue=[]
         for i in range(1,5):
-            blue1=pygame.image.load('resource/bullet/flame_bullet_blue_'+str(i)+'.png')
+            blue1=pygame.image.load('resource/bullet/flame_bullet_blue_'+str(i)+'.png').convert_alpha()
             self.blue.append(blue1)
     def checkValid(self):
         if self.frame>=4.5*60:
@@ -844,7 +844,7 @@ class laser_Bullet_main(Bullet):
         self.surf = pygame.Surface((self.ratio,self.ratio))
         self.surf.fill((255,255,255))
         self.rect = self.surf.get_rect()
-        self.image=pygame.image.load('resource/bullet/small_bullet_grey.png')
+        self.image=pygame.image.load('resource/bullet/small_bullet_grey.png').convert_alpha()
         self.dx=4
         self.dy=4
         self.lastFrame=0
@@ -882,7 +882,7 @@ class laser_Bullet_sub(Bullet):
         self.surf = pygame.Surface((self.ratio,self.ratio))
         self.surf.fill((255,255,255))
         self.rect = self.surf.get_rect()
-        self.image=pygame.image.load('resource/bullet/small_bullet_grey.png')
+        self.image=pygame.image.load('resource/bullet/small_bullet_grey.png').convert_alpha()
         self.dx=6
         self.dy=6
         self.length=length
@@ -917,7 +917,7 @@ class big_star_Bullet(Bullet):
         self.rect = self.surf.get_rect()
         self.surf.fill((255,255,255))
         self.type=8
-        self.image=pygame.image.load('resource/bullet/star_bullet_grey.png')
+        self.image=pygame.image.load('resource/bullet/star_bullet_grey.png').convert_alpha()
         self.dAngle=random.randint(0,60)
         self.dx=24
         self.dy=24
@@ -929,7 +929,7 @@ class big_star_Bullet(Bullet):
         self.image=self.image.convert_alpha()
         #self.image.set_alpha(256)
         self.image.fill((0,0,0,0))
-        self.image.blit(global_var.get_value('big_star_bullet_image'), (0, 0), (48*self.colorNum,0, 48, 48))
+        self.image.blit(global_var.get_value('big_star_bullet_image').convert_alpha(), (0, 0), (48*self.colorNum,0, 48, 48))
     
     def update(self,screen,bullets):
         self.movement()
@@ -949,7 +949,7 @@ class circle_Bullet(Bullet):
         self.rect = self.surf.get_rect()
         self.surf.fill((255,255,255))
         self.type=9
-        self.image=pygame.image.load('resource/bullet/small_bullet_grey.png')
+        self.image=pygame.image.load('resource/bullet/small_bullet_grey.png').convert_alpha()
         self.dx=24
         self.dy=24
         self.colorNum=0
@@ -960,7 +960,7 @@ class circle_Bullet(Bullet):
         self.image=self.image.convert_alpha()
         self.image.fill((0,0,0,0))
         #self.image.set_colorkey((0, 0, 0))
-        self.image.blit(global_var.get_value('circle_bullet_image'), (0, 0), (48*self.colorNum,0, 48, 48))
+        self.image.blit(global_var.get_value('circle_bullet_image').convert_alpha(), (0, 0), (48*self.colorNum,0, 48, 48))
     
     def update(self,screen,bullets):
         self.movement()

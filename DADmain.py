@@ -38,14 +38,14 @@ global_var._init()
 #test functions 
 global_var.set_value('ifTest',True)
 global_var.set_value('spellNum',1)
-global_var.set_value('ifSpellTest',True)
+global_var.set_value('ifSpellTest',False)
 testFire=400
  
 #screen=pygame.display.set_mode((640,480))
 pygame.display.set_caption("Touhou Star Salvation")
-back=pygame.image.load('resource/background.jpg')
-point=pygame.image.load('resource/point.png')
-point2=pygame.image.load('resource/point2.png')
+back=pygame.image.load('resource/background.jpg').convert_alpha()
+point=pygame.image.load('resource/point.png').convert_alpha()
+point2=pygame.image.load('resource/point2.png').convert_alpha()
 point=pygame.transform.scale(point,(84,84))
 point2=pygame.transform.scale(point2,(96,96))
 point2.set_alpha(128)
@@ -54,16 +54,16 @@ bigfont= pygame.font.SysFont('arial', 24)
 midfont=pygame.font.SysFont('arial', 20)
 smallfont=pygame.font.SysFont('arial', 16)
 levelText1 = myfont.render('Level 1', True, (0, 0, 0))
-bossMagic=pygame.image.load('resource/bossMagic.png')
+bossMagic=pygame.image.load('resource/bossMagic.png').convert_alpha()
 
 #load background Pic
-back_up=pygame.image.load('resource/up.jpg')
+back_up=pygame.image.load('resource/up.jpg').convert_alpha()
 global_var.set_value('up', back_up)
-back_down=pygame.image.load('resource/down.jpg')
+back_down=pygame.image.load('resource/down.jpg').convert_alpha()
 global_var.set_value('down', back_down)
-back_left=pygame.image.load('resource/left.jpg')
+back_left=pygame.image.load('resource/left.jpg').convert_alpha()
 global_var.set_value('left', back_left)
-back_right=pygame.image.load('resource/right.jpg')
+back_right=pygame.image.load('resource/right.jpg').convert_alpha()
 global_var.set_value('right', back_right)
 
 global_var.set_value('boomStatu',0)
@@ -360,7 +360,8 @@ while running:
     
     
     for star in stars:
-        star.update(screen)
+        pass
+        #star.update(screen)
 
     #collide detectž
     gameRule.missDetect(player,bullets,enemys,effects,miss_sound,items)

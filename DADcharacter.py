@@ -2192,12 +2192,14 @@ class Dumbledore(Boss):
             self.maxHealth=50000
             self.health=50000
             self.gotoPosition(360,170,40)
-            self.randomAngle=random.random()*360
+            self.randomAngle=240
+            #self.randomAngle=random.random()*360
             self.randomAngle2=self.randomAngle
             self.frameLimit=1800
 
+
         if self.lastFrame>=40:
-            if (self.lastFrame-40)%6==0:
+            if (self.lastFrame-40)%1==0:
                 for i in range(0,5):
                     if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').stop()
@@ -2206,9 +2208,9 @@ class Dumbledore(Boss):
                     new_bullet=Bullet.orb_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle+i*(360/5),5.3)
-                    new_bullet.loadColor('lightGreen')
+                    new_bullet.loadColor('lakeBlue')
                     bullets.add(new_bullet)
-            if (self.lastFrame-40)%6==0:
+            if (self.lastFrame-40)%1==0:
                 if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').stop()
                         global_var.get_value('enemyGun_sound2').play()
@@ -2217,7 +2219,7 @@ class Dumbledore(Boss):
                     new_bullet=Bullet.orb_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle2+j*(360/5),5.3)
-                    new_bullet.loadColor('green')
+                    new_bullet.loadColor('lakeBlue')
                     bullets.add(new_bullet)
                 self.randomAngle+=5
                 self.randomAngle2-=5
@@ -3509,7 +3511,8 @@ class Dumbledore(Boss):
                         bullets.add(new_bullet)
 
         if self.lastFrame%100==0:
-            print(self.powerRank,' ',self.health)
+            pass
+            #print(self.powerRank,' ',self.health)
 
         self.lastRank=self.powerRank
         if self.health<=0:
