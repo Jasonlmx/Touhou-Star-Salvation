@@ -2205,13 +2205,18 @@ class Dumbledore(Boss):
                         global_var.set_value('enemyFiring2',True)
                     new_bullet=Bullet.orb_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.setSpeed(self.randomAngle+i*(360/5),5)
+                    new_bullet.setSpeed(self.randomAngle+i*(360/5),5.3)
                     new_bullet.loadColor('lightGreen')
                     bullets.add(new_bullet)
+            if (self.lastFrame-40)%6==0:
+                if not global_var.get_value('enemyFiring2'):
+                        global_var.get_value('enemyGun_sound2').stop()
+                        global_var.get_value('enemyGun_sound2').play()
+                        global_var.set_value('enemyFiring2',True)
                 for j in range(0,5):
                     new_bullet=Bullet.orb_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.setSpeed(self.randomAngle2+j*(360/5),5)
+                    new_bullet.setSpeed(self.randomAngle2+j*(360/5),5.3)
                     new_bullet.loadColor('green')
                     bullets.add(new_bullet)
                 self.randomAngle+=5
@@ -2240,6 +2245,7 @@ class Dumbledore(Boss):
             self.spellName='Glaring Star[Comets]'
             self.gotoPosition(360,120,50)
             self.framePunishment=1700
+            self.bulletSpeed=3
             global_var.get_value('spell_sound').play()
         
         self.cardBonus-=self.framePunishment
@@ -2254,20 +2260,24 @@ class Dumbledore(Boss):
                 global_var.get_value('kira_sound').play()
 
         if self.lastFrame>=300:
-            if (self.lastFrame-300)%120==0:
+            if (self.lastFrame-300)%120<=40 and (self.lastFrame-300)%4==0:
                 if not global_var.get_value('enemyFiring2'):
                     global_var.get_value('enemyGun_sound2').stop()
                     global_var.get_value('enemyGun_sound2').play()
                     global_var.set_value('enemyFiring2',True)
+                if (self.lastFrame-300)%120==0:
+                    self.bulletSpeed=3
                 for i in range(-1,2):
                     new_bullet=Bullet.big_star_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.selfTarget(player.cx,player.cy,8)
                     new_bullet.countAngle()
                     angle=new_bullet.angle+i*28
-                    new_bullet.setSpeed(angle,8)
+                    new_bullet.setSpeed(angle,self.bulletSpeed)
                     new_bullet.doColorCode(1)
                     bullets.add(new_bullet)
+                self.bulletSpeed+=0.7
+                '''
                     for j in range(1,5):
                         new_bullet=Bullet.big_star_Bullet()
                         new_bullet.initial(self.tx,self.ty,1)
@@ -2277,10 +2287,29 @@ class Dumbledore(Boss):
                         new_bullet.setSpeed(angle,8-j*1.3)
                         new_bullet.doColorCode(1)
                         bullets.add(new_bullet)
+                '''
                         
 
-        if self.lastFrame>=50 and (self.lastFrame-50)%120==0:
-            self.gotoPosition(player.cx+random.random()*60-30,random.random()*40+80,50)
+        if self.lastFrame>=50 and (self.lastFrame-50)%240==0:
+            d=random.random()*90+30
+            if self.tx>=player.cx:
+                sign=-1
+            else:
+                sign=1
+            dx=(random.random()*(d-20)+20)*sign
+            y_sign=(-1,1)
+            dy=math.sqrt(d**2-dx**2)*y_sign[random.randint(0,1)]
+            x_now=self.tx+dx
+            y_now=self.ty+dy
+            if x_now<=150:
+                x_now=150
+            if x_now>=570:
+                x_now=570
+            if y_now<140:
+                y_now=140
+            if y_now>220:
+                y_now=220
+            self.gotoPosition(x_now,y_now,50)
 
 
         if self.health<=0:
