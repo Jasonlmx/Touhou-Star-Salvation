@@ -3066,17 +3066,26 @@ class Dumbledore(Boss):
             global_var.get_value('spell_sound').play()
 
         self.cardBonus-=self.framePunishment
-        if (self.lastFrame-60)%300==0:
-            self.eventNum+=1
+        if (self.lastFrame-60)%150==0:
+            if (self.lastFrame-60)%300==0:
+                self.eventNum+=1
             global_var.set_value('bossEvent_'+str(self.eventNum),False)
             new_bullet=Bullet.orb_Bullet_star_pattern_main(40,6,self.eventNum)
             new_bullet.initial(self.tx,self.ty,1)
             new_bullet.selfTarget(player.cx,player.cy,new_bullet.n)
             new_bullet.countAngle()
-            new_bullet.setSpeed(new_bullet.angle+180,new_bullet.n)
+            if (self.lastFrame-60)%300==0:
+                new_bullet.setSpeed(new_bullet.angle+180,new_bullet.n)
+            else:
+                new_bullet.setSpeed(new_bullet.angle,new_bullet.n)
             new_bullet.countAngle()
             new_bullet.splitAngle=new_bullet.angle
-            new_bullet.loadColor('blue')
+            if (self.lastFrame-60)%300==0:
+                new_bullet.loadColor('blue')
+            else:
+                new_bullet.loadColor('green')
+                new_bullet.trackColor='green'
+                new_bullet.transColor='lightGreen'
             bullets.add(new_bullet)
         
         if (self.lastFrame-60)%300==250:

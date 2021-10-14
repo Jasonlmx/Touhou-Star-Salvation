@@ -1348,16 +1348,20 @@ class orb_Bullet_star_pattern_main(orb_Bullet):
             self.direction=-1
         self.moveAngle=self.splitAngle+(30+random.random()*30)*self.direction
         self.resetAngle=self.moveAngle
+        self.transColor='lakeBlue'
+        self.trackColor='blue'
     def update(self,screen,bullets):
-        self.lastFrame+=1
-        self.moveStratege()
-        self.movement()
-        self.fire(bullets)
-        self.sound()
-        self.drawBullet(screen)
-        #screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
-        #screen.blit(self.surf,self.rect)
-        self.checkValid()
+        for i in range(2):
+            self.lastFrame+=1
+            self.moveStratege()
+            self.movement()
+            self.fire(bullets)
+            self.sound()
+            self.drawBullet(screen)
+            #screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
+            #screen.blit(self.surf,self.rect)
+            self.checkValid()
+            
     
     def moveStratege(self):
         if self.lastFrame==2:
@@ -1374,6 +1378,7 @@ class orb_Bullet_star_pattern_main(orb_Bullet):
 
     def sound(self):
         if self.lastFrame%6==0:
+            global_var.get_value('enemyGun_sound3').stop()
             global_var.get_value('enemyGun_sound3').play()
     
     def fire(self,bullets):
@@ -1381,7 +1386,8 @@ class orb_Bullet_star_pattern_main(orb_Bullet):
             new_bullet=orb_Bullet_split_5(self.splitAngle,self.eventNum,self.moveAngle)
             new_bullet.initial(self.tx,self.ty,1)
             new_bullet.setSpeed(0,0)
-            new_bullet.loadColor('blue')
+            new_bullet.loadColor(self.trackColor)
+            new_bullet.transColor=self.transColor
             bullets.add(new_bullet)
             self.moveAngle-=17
         
@@ -1395,6 +1401,7 @@ class orb_Bullet_split_5(orb_Bullet):
         self.eventNum=eventNum
         self.doEvent=True
         self.moveAngle=moveAngle
+        self.transColor='lakeBlue'
     def update(self,screen,bullets):
         self.lastFrame+=1
         self.movement()
@@ -1410,7 +1417,7 @@ class orb_Bullet_split_5(orb_Bullet):
                 new_bullet=orb_Bullet_split_sub(50,50,self.moveAngle)
                 new_bullet.initial(self.tx,self.ty,1)
                 new_bullet.setSpeed(self.splitAngle+i*(360/5),4)
-                new_bullet.loadColor('lakeBlue')
+                new_bullet.loadColor(self.transColor)
                 bullets.add(new_bullet)
             #global_var.set_value('bossEvent_'+str(self.eventNum),False)
             self.kill()

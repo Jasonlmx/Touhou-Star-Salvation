@@ -32,13 +32,13 @@ size = width,height = 960,720
 fullscreen = True
 screen = pygame.display.set_mode(size,RESIZABLE)
 #size = width, height =  pygame.display.list_modes()[0]
-#screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE)
+screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE)
 global_var._init()
 
 #test functions 
 global_var.set_value('ifTest',True)
-global_var.set_value('spellNum',1)
-global_var.set_value('ifSpellTest',False)
+global_var.set_value('spellNum',7)
+global_var.set_value('ifSpellTest',True)
 testFire=400
  
 #screen=pygame.display.set_mode((640,480))
@@ -92,7 +92,7 @@ global_var.set_value('enemySum',0)
 blinder=pygame.Surface((780,200))
 blinder.fill((0,0,0))
 #testBullet=Bullet.small_Bullet()
-# Main loop
+
 bullets=pygame.sprite.Group()
 bullets2=pygame.sprite.Group()
 playerGuns=pygame.sprite.Group()
@@ -191,6 +191,7 @@ if global_var.get_value('ifTest'):
     frame=10020#for test
 pygame.mouse.set_visible(False)
 
+# Main loop
 while running:
     DELTA_T=fpsClock.tick(FPS)
     global_var.set_value('DELTA_T',DELTA_T)
