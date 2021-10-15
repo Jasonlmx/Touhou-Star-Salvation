@@ -1378,8 +1378,8 @@ class orb_Bullet_star_pattern_main(orb_Bullet):
 
     def sound(self):
         if self.lastFrame%6==0:
-            global_var.get_value('enemyGun_sound3').stop()
-            global_var.get_value('enemyGun_sound3').play()
+            global_var.get_value('enemyGun_sound1').stop()
+            global_var.get_value('enemyGun_sound1').play()
     
     def fire(self,bullets):
         if self.lastFrame%self.interval==0:

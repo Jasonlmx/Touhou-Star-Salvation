@@ -2199,7 +2199,7 @@ class Dumbledore(Boss):
 
 
         if self.lastFrame>=40:
-            if (self.lastFrame-40)%5==0:
+            if (self.lastFrame-40)%2==0:
                 for i in range(0,5):
                     if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').stop()
@@ -2207,10 +2207,10 @@ class Dumbledore(Boss):
                         global_var.set_value('enemyFiring2',True)
                     new_bullet=Bullet.scale_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.setSpeed(self.randomAngle+i*(360/5),5.3)
+                    new_bullet.setSpeed(self.randomAngle+i*(360/5),2)
                     new_bullet.loadColor('green')
                     bullets.add(new_bullet)
-            if (self.lastFrame-40)%5==0:
+            if (self.lastFrame-40)%2==0:
                 if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').stop()
                         global_var.get_value('enemyGun_sound2').play()
@@ -2218,7 +2218,7 @@ class Dumbledore(Boss):
                 for j in range(0,5):
                     new_bullet=Bullet.scale_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.setSpeed(self.randomAngle2+j*(360/5),5.3)
+                    new_bullet.setSpeed(self.randomAngle2+j*(360/5),2)
                     new_bullet.loadColor('lightGreen')
                     bullets.add(new_bullet)
                 self.randomAngle+=5
@@ -2558,17 +2558,24 @@ class Dumbledore(Boss):
         if self.lastFrame>=80:
             if self.lastFrame%1==0:
                 path=math.sin(frame/1.3/180*math.pi)*170+360
-                rx=random.random()*600+60
-                while rx>path-100 and rx<path+100:
-                    rx=random.random()*600+60
-                new_bullet=Bullet.orb_Bullet()
-                new_bullet.initial(rx,30,1)
-                new_bullet.setSpeed(89.5+random.random(),3.5+random.random()*3)
+                n=1
                 if self.lastFrame%2==0:
-                    new_bullet.loadColor('pink')
-                else:
-                    new_bullet.loadColor('purple')
-                bullets.add(new_bullet)
+                    n=3
+                for i in range(0,n):
+                    rx=random.random()*600+60
+                    while rx>path-100 and rx<path+100:
+                        rx=random.random()*600+60
+                    if self.lastFrame%2==0:
+                        new_bullet=Bullet.star_Bullet()
+                    else:
+                        new_bullet=Bullet.big_star_Bullet()
+                    new_bullet.initial(rx,30,1)
+                    new_bullet.setSpeed(89.5+random.random(),3.5+random.random()*3)
+                    if self.lastFrame%2==0:
+                        new_bullet.loadColor('pink')
+                    else:
+                        new_bullet.doColorCode(2)
+                    bullets.add(new_bullet)
 
         if (self.lastFrame-100)%60==0:
             if not global_var.get_value('enemyFiring1'):
@@ -2577,7 +2584,7 @@ class Dumbledore(Boss):
                 global_var.set_value('enemyFiring1',True)
             new_bullet=Bullet.big_star_Bullet()
             new_bullet.initial(self.tx,self.ty,1)
-            new_bullet.selfTarget(player.cx,player.cy,2.9)
+            new_bullet.selfTarget(player.cx,player.cy,4)
             new_bullet.countAngle()
             angle=new_bullet.angle
             new_bullet.doColorCode(1)
@@ -2586,8 +2593,15 @@ class Dumbledore(Boss):
                 if i!=0:
                     new_bullet=Bullet.big_star_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.setSpeed(angle+i*20,2.9)
+                    new_bullet.setSpeed(angle+i*40,4)
                     new_bullet.doColorCode(1)
+                    bullets.add(new_bullet)
+            for i in range(1,6):
+                for j in range(-2,3):
+                    new_bullet=Bullet.orb_Bullet()
+                    new_bullet.initial(self.tx,self.ty,1)
+                    new_bullet.setSpeed(angle+j*40,4-i*0.5)
+                    new_bullet.loadColor('red')
                     bullets.add(new_bullet)
 
         if self.lastFrame>=100 and (self.lastFrame-100)%120==0:
@@ -3070,7 +3084,10 @@ class Dumbledore(Boss):
             if (self.lastFrame-60)%300==0:
                 self.eventNum+=1
             global_var.set_value('bossEvent_'+str(self.eventNum),False)
-            new_bullet=Bullet.orb_Bullet_star_pattern_main(40,6,self.eventNum)
+            if (self.lastFrame-60)%300==0:
+                new_bullet=Bullet.orb_Bullet_star_pattern_main(35,8,self.eventNum)
+            else:
+                new_bullet=Bullet.orb_Bullet_star_pattern_main(40,6,self.eventNum)
             new_bullet.initial(self.tx,self.ty,1)
             new_bullet.selfTarget(player.cx,player.cy,new_bullet.n)
             new_bullet.countAngle()
@@ -3138,17 +3155,18 @@ class Dumbledore(Boss):
             self.frameLimit=2100
         
         if self.lastFrame>=80:
-            if (self.lastFrame-80)%15==0:
-                if not global_var.get_value('enemyFiring3'):
-                    global_var.get_value('enemyGun_sound3').stop()
-                    global_var.get_value('enemyGun_sound3').play()
-                    global_var.set_value('enemyFiring3',True)
+            if (self.lastFrame-80)%30<=2:
+
+                if not global_var.get_value('enemyFiring1'):
+                    global_var.get_value('enemyGun_sound1').stop()
+                    global_var.get_value('enemyGun_sound1').play()
+                    global_var.set_value('enemyFiring1',True)
                 bulletNum=random.randint(17,28)
                 sx=self.tx-100+random.random()*200
                 sy=self.ty-100+random.random()*200
-                sspeed=4+1*random.random()
+                sspeed=3+1*random.random()
                 for i in range(0,bulletNum):
-                    new_bullet=Bullet.mid_Bullet()
+                    new_bullet=Bullet.scale_Bullet()
                     new_bullet.initial(sx,sy,1)
                     new_bullet.setSpeed(self.randomAngle+i*(360/bulletNum),sspeed)
                     new_bullet.loadColor('blue')
