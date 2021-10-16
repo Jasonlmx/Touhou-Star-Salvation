@@ -1428,7 +1428,7 @@ class orb_Bullet_split_sub(orb_Bullet):
         self.moveFrame=moveFrame
         self.stayFrame=stayFrame
         self.moveAngle=moveAngle
-        self.speed=2.5
+        self.speed=1.8
 
     def update(self,screen,bullets):
         self.lastFrame+=1
@@ -1563,10 +1563,10 @@ class big_Bullet_tracing_test(big_Bullet):
         
         if self.lastFrame>=self.preFrame+self.stayFrame-40:
             if (self.lastFrame-self.preFrame+self.stayFrame)%4==0:
-                if not global_var.get_value('enemyFiring3'):
-                    global_var.get_value('enemyGun_sound3').stop()
-                    global_var.get_value('enemyGun_sound3').play()
-                    global_var.set_value('enemyFiring3',True)
+                if not global_var.get_value('enemyFiring1'):
+                    global_var.get_value('enemyGun_sound1').stop()
+                    global_var.get_value('enemyGun_sound1').play()
+                    global_var.set_value('enemyFiring1',True)
                 angle=random.random()*360
                 speed=0.1
                 for i in range(0,1):
