@@ -134,6 +134,8 @@ def loadImage():
     circle_bullet_image=pygame.image.load('resource/bullet/circle_bullet.png')
     circle_bullet_image=pygame.transform.scale(circle_bullet_image,(384,48))
     global_var.set_value('circle_bullet_image',circle_bullet_image)
+    bullet_create_image=pygame.image.load('resource/bullet/bullet_create.png')
+    global_var.set_value('bullet_create_image',bullet_create_image)
 
     graze_text=pygame.Surface((96,24))
     graze_text=graze_text.convert_alpha()

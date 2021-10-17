@@ -168,24 +168,24 @@ class butterfly(enemy):
         super(butterfly,self).__init__()
         self.health=1000
         self.down=[]
-        self.deadImage=pygame.image.load('resource/sprite/sprite_dead.png')
+        self.deadImage=pygame.image.load('resource/sprite/sprite_dead.png').convert_alpha()
 
         for i in range(1,6):
-            down1=pygame.image.load('resource/enemy/butterfly_down_'+str(i)+'.png')
+            down1=pygame.image.load('resource/enemy/butterfly_down_'+str(i)+'.png').convert_alpha()
             down1=pygame.transform.scale(down1,(98,98))
             self.down.append(down1)
         self.right=[]
         for i in range(1,4):
-            right1=pygame.image.load('resource/enemy/butterfly_right_'+str(i)+'_1.png')
-            right2=pygame.image.load('resource/enemy/butterfly_right_'+str(i)+'_2.png')
+            right1=pygame.image.load('resource/enemy/butterfly_right_'+str(i)+'_1.png').convert_alpha()
+            right2=pygame.image.load('resource/enemy/butterfly_right_'+str(i)+'_2.png').convert_alpha()
             right1=pygame.transform.scale(right1,(98,98))
             right2=pygame.transform.scale(right2,(98,98))
             self.right.append(right1)
             self.right.append(right2)
         self.left=[]
         for i in range(1,4):
-            left1=pygame.image.load('resource/enemy/butterfly_right_'+str(i)+'_1.png')
-            left2=pygame.image.load('resource/enemy/butterfly_right_'+str(i)+'_2.png')
+            left1=pygame.image.load('resource/enemy/butterfly_right_'+str(i)+'_1.png').convert_alpha()
+            left2=pygame.image.load('resource/enemy/butterfly_right_'+str(i)+'_2.png').convert_alpha()
             left1=pygame.transform.flip(left1,True,False)
             left2=pygame.transform.flip(left2,True,False)
             left1=pygame.transform.scale(left1,(98,98))
@@ -252,6 +252,7 @@ class spirit(enemy):
     def draw(self,screen,frame):
         image=pygame.Surface((48,48))
         image.set_alpha(256)
+        image=image.convert_alpha()
         image.set_colorkey((0, 0, 0))
         self.frame+=1
         self.countAngle()
@@ -317,6 +318,7 @@ class ghost(enemy):
         gF.drawRotation(nimbusImage,(self.rect.centerx-24,self.rect.centery-24),self.nimbusAngle,screen)
         image=pygame.Surface((48,48))
         image.set_alpha(256)
+        image=image.convert_alpha()
         image.set_colorkey((0, 0, 0))
         self.frame+=1
         self.nimbusAngle+=4
@@ -2201,6 +2203,9 @@ class Dumbledore(Boss):
 
         if self.lastFrame>=40:
             if (self.lastFrame-40)%5==0:
+                new_effect=Effect.bulletCreate(5)
+                new_effect.initial(self.tx,self.ty,128,32,15)
+                effects.add(new_effect)
                 for i in range(0,5):
                     if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').stop()
@@ -2225,16 +2230,24 @@ class Dumbledore(Boss):
                 self.randomAngle+=5
                 self.randomAngle2-=5
 
-            if (self.lastFrame-40)%50<=1:
-                n=1
+            if (self.lastFrame-40)%50==25:
+                new_effect=Effect.bulletCreate(4)
+                new_effect.initial(self.tx,self.ty,192,48,25)
+                effects.add(new_effect)
+            if (self.lastFrame-40)%50<=5:
+                n=(self.lastFrame-40)%50
                 if (self.lastFrame-40)%50==0:
                     self.randomAngle3=random.random()*360
                     n=0
+                    if not global_var.get_value('enemyFiring1'):
+                        global_var.get_value('enemyGun_sound1').stop()
+                        global_var.get_value('enemyGun_sound1').play()
+                        global_var.set_value('enemyFiring1',True)
                 for i in range(0,30):
                     new_bullet=Bullet.scale_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle3+i*(360/30),4-0.1*n)
-                    new_bullet.loadColor('green')
+                    new_bullet.loadColor('lightBlue')
                     bullets.add(new_bullet)
 
             if (self.lastFrame-40)%100==0:
@@ -2266,9 +2279,14 @@ class Dumbledore(Boss):
             global_var.get_value('spell_sound').play()
         
         self.cardBonus-=self.framePunishment
+        if  (self.lastFrame-50)%40==25:
+            self.randomPos=(random.random()*400+160,random.random()*30+30)
+            new_effect=Effect.bulletCreate(2)
+            new_effect.initial(self.randomPos[0],self.randomPos[1],144,32,15)
+            effects.add(new_effect)
         if self.lastFrame>=50 and (self.lastFrame-50)%40==0:
             new_bullet=Bullet.big_star_Bullet_comet(1,40)
-            new_bullet.initial(random.random()*400+160,random.random()*30+30,1)
+            new_bullet.initial(self.randomPos[0],self.randomPos[1],1)
             new_bullet.setSpeed(random.random()*140+20+0,4+random.random()*3)
             new_bullet.doColorCode(2)
             bullets.add(new_bullet)
@@ -2278,6 +2296,9 @@ class Dumbledore(Boss):
 
         if self.lastFrame>=300:
             if (self.lastFrame-300)%120<=40 and (self.lastFrame-300)%4==0:
+                new_effect=Effect.bulletCreate(1)
+                new_effect.initial(self.tx,self.ty,144,64,4)
+                effects.add(new_effect)
                 if not global_var.get_value('enemyFiring2'):
                     global_var.get_value('enemyGun_sound2').stop()
                     global_var.get_value('enemyGun_sound2').play()
@@ -2366,9 +2387,16 @@ class Dumbledore(Boss):
             self.randomAngle=random.random()*360
             self.randomAngle2=self.randomAngle
             self.frameLimit=1800
-        
+            self.effectSign=0
         if self.lastFrame>=40:
             if (self.lastFrame-40)%4==0:
+                self.effectSign+=1
+                if self.effectSign%2==0:
+                    new_effect=Effect.bulletCreate(3)
+                else:
+                    new_effect=Effect.bulletCreate(4)
+                new_effect.initial(self.tx,self.ty,96,32,4)
+                effects.add(new_effect)
                 for i in range(0,7):
                     if not global_var.get_value('enemyFiring1'):
                         global_var.get_value('enemyGun_sound1').stop()
@@ -2462,7 +2490,12 @@ class Dumbledore(Boss):
         if self.lastFrame%300==0:
             self.gotoPosition(player.cx+random.random()*60-30,random.random()*40+80,50)
         
-        if self.lastFrame%150==0:
+        if self.lastFrame%150==140:
+            new_effect=Effect.bulletCreate(4)
+            new_effect.initial(self.tx,self.ty,256,48,10)
+            effects.add(new_effect)
+
+        if self.lastFrame>=100 and self.lastFrame%150==0:
             fireAngle=random.random()*360
             if not global_var.get_value('enemyFiring1'):
                 global_var.get_value('enemyGun_sound1').stop()
@@ -2510,9 +2543,13 @@ class Dumbledore(Boss):
             self.health=50000
             self.gotoPosition(360,200,40)
             self.randomAngle=random.random()*360
+            self.randomAngle2=self.randomAngle-360/30
             self.frameLimit=1800
         if self.lastFrame>=100:
-            if (self.lastFrame-100)%8==0:
+            if (self.lastFrame-100)%10==0:
+                new_effect=Effect.bulletCreate(4)
+                new_effect.initial(self.tx,self.ty,96,32,10)
+                effects.add(new_effect)
                 for i in range(0,15):
                     if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').stop()
@@ -2520,24 +2557,30 @@ class Dumbledore(Boss):
                         global_var.set_value('enemyFiring2',True)
                     new_bullet=Bullet.mid_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.setSpeed(self.randomAngle+i*(360/15),5)
-                    new_bullet.loadColor('blue')
+                    new_bullet.setSpeed(self.randomAngle+i*(360/15),3.6)
+                    new_bullet.loadColor('seaBlue')
                     bullets.add(new_bullet)
                 if self.lastFrame%80>=40:
-                    self.randomAngle+=7
+                    self.randomAngle2+=7
                 else:
-                    self.randomAngle-=7
-            if (self.lastFrame-100)%90==0:
-                if not global_var.get_value('enemyFiring1'):
-                    global_var.get_value('enemyGun_sound1').stop()
-                    global_var.get_value('enemyGun_sound1').play()
-                    global_var.set_value('enemyFiring1',True)
-                for i in range(0,40):
-                    new_bullet=Bullet.orb_Bullet()
+                    self.randomAngle2-=7
+
+                for i in range(0,15):
+                    if not global_var.get_value('enemyFiring2'):
+                        global_var.get_value('enemyGun_sound2').stop()
+                        global_var.get_value('enemyGun_sound2').play()
+                        global_var.set_value('enemyFiring2',True)
+                    new_bullet=Bullet.mid_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.setSpeed(self.randomAngle+i*(360/40),5)
-                    new_bullet.loadColor('darkBlue')
+                    new_bullet.setSpeed(self.randomAngle2+i*(360/15),3.6)
+                    new_bullet.loadColor('seaBlue')
                     bullets.add(new_bullet)
+                if self.lastFrame%80>=40:
+                    self.randomAngle-=7
+                else:
+                    self.randomAngle+=7
+
+        
 
             if (self.lastFrame-40)%90==0:
                     self.gotoPosition(random.random()*60+330,random.random()*20+160,40)
@@ -2572,6 +2615,7 @@ class Dumbledore(Boss):
 
         if self.lastFrame>=80:
             if self.lastFrame%1==0:
+                new_effect=Effect.bulletCreate(1)
                 path=math.sin(frame/1.3/180*math.pi)*170+360
                 n=1
                 if self.lastFrame%2==0:
@@ -2588,10 +2632,16 @@ class Dumbledore(Boss):
                     new_bullet.setSpeed(89.5+random.random(),3.5+random.random()*3)
                     if self.lastFrame%2==0:
                         new_bullet.loadColor('pink')
+                        new_effect.initial(rx,30,64,24,3)
                     else:
                         new_bullet.doColorCode(2)
+                        new_effect.initial(rx,30,128,64,3)
                     bullets.add(new_bullet)
-
+                    effects.add(new_effect)
+        if (self.lastFrame-40)%60==50:
+            new_effect=Effect.bulletCreate(1)
+            new_effect.initial(self.tx,self.ty,192,48,10)
+            effects.add(new_effect)
         if (self.lastFrame-100)%60==0:
             if not global_var.get_value('enemyFiring1'):
                 global_var.get_value('enemyGun_sound1').stop()
@@ -2665,6 +2715,9 @@ class Dumbledore(Boss):
         if self.lastFrame>=100:
             if (self.lastFrame-100)%180<=90:
                 if self.lastFrame%12==0:
+                    new_effect=Effect.bulletCreate(3)
+                    new_effect.initial(self.tx,self.ty,192,48,12)
+                    effects.add(new_effect)
                     if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').stop()
                         global_var.get_value('enemyGun_sound2').play()
@@ -2680,6 +2733,9 @@ class Dumbledore(Boss):
             if (self.lastFrame-100)%180>=90:
                 
                 if self.lastFrame%6==0:
+                    new_effect=Effect.bulletCreate(1)
+                    new_effect.initial(self.tx,self.ty,192,48,12)
+                    effects.add(new_effect)
                     if not global_var.get_value('enemyFiring1'):
                         global_var.get_value('enemyGun_sound1').stop()
                         global_var.get_value('enemyGun_sound1').play()
@@ -2821,6 +2877,9 @@ class Dumbledore(Boss):
                     global_var.get_value('kira_sound').play()
                     global_var.set_value('kiraing',True)
                 self.randomAngle2+=0.84
+                new_effect=Effect.bulletCreate(2)
+                new_effect.initial(self.tx,self.ty,100,24,4)
+                effects.add(new_effect)
                 for i in range(0,8):
                     new_bullet=Bullet.scale_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
@@ -2855,8 +2914,18 @@ class Dumbledore(Boss):
 
         self.cardBonus-=self.framePunishment
         if self.lastFrame>=70:
+            if (self.lastFrame-70)%700<=400 or (self.lastFrame-70)%700==690:
+                if (self.lastFrame-70)%700%200==190 or self.lastFrame==70 or (self.lastFrame-70)%700==690:
+                    new_effect=Effect.bulletCreate(3)
+                    new_effect.initial(self.tx,self.ty,144,64,10)
+                    effects.add(new_effect)
+            
+            if (self.lastFrame-70)%700==540:
+                new_effect=Effect.bulletCreate(3)
+                new_effect.initial(self.tx,self.ty,144,64,10)
+                effects.add(new_effect)
             if (self.lastFrame-70)%700<=400:
-                if (self.lastFrame-70)%200==0:
+                if (self.lastFrame-70)%700%200==0:
                     new_bullet=Bullet.star_Bullet_fountain()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.selfTarget(player.cx,player.cy,5)

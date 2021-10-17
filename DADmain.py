@@ -37,8 +37,8 @@ global_var._init()
 
 #test functions 
 global_var.set_value('ifTest',True)
-global_var.set_value('spellNum',7)
-global_var.set_value('ifSpellTest',True)
+global_var.set_value('spellNum',5)
+global_var.set_value('ifSpellTest',False)
 testFire=400
  
 #screen=pygame.display.set_mode((640,480))

@@ -352,3 +352,47 @@ class grazeEffect(pygame.sprite.Sprite):
 
     def draw(self,screen):
         pygame.draw.circle(screen,self.color,(round(self.tx),round(self.ty)),self.maxRadius,self.width)
+
+class bulletCreate(pygame.sprite.Sprite):
+    def __init__(self,code):
+        super(bulletCreate,self).__init__()
+        #self.surf = pygame.Surface((32,32))
+        self.colorNum=code
+        self.tx=0
+        self.ty=0
+        self.max=64
+        self.min=24
+        self.maxFrame=10
+        self.lastFrame=0
+        self.upper=True
+        self.angle=random.random()*360
+        self.alpha=180
+        self.getImage()
+    def getImage(self):
+        self.image=pygame.Surface((32,32))
+        self.image.fill((0,0,0,0))
+        self.image=self.image.convert_alpha()
+        self.image.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*self.colorNum,0, 32, 32))
+    
+    def initial(self,centerx,centery,Max,Min,maxFrame):
+        self.tx=centerx
+        self.ty=centery
+        self.max=Max
+        self.min=Min
+        self.maxFrame=maxFrame
+    
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
+
+    def update(self,screen):
+        size=round(self.max-(self.lastFrame/self.maxFrame)*(self.max-self.min))
+        self.alpha=round((self.lastFrame/self.maxFrame)*(256-180)+180)
+        self.temp=pygame.transform.scale(self.image,(size,size))
+        self.temp.set_alpha(self.alpha)
+        self.draw(size,screen)
+        self.lastFrame+=1
+        self.checkValid()
+
+    def draw(self,size,screen):
+        gF.drawRotation(self.temp,(round(self.tx-size/2),round(self.ty-size/2)),self.angle,screen)
