@@ -32,13 +32,13 @@ size = width,height = 960,720
 fullscreen = True
 screen = pygame.display.set_mode(size,RESIZABLE)
 #size = width, height =  pygame.display.list_modes()[0]
-screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE)
+#screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE)
 global_var._init()
 
 #test functions 
 global_var.set_value('ifTest',True)
-global_var.set_value('spellNum',5)
-global_var.set_value('ifSpellTest',False)
+global_var.set_value('spellNum',7)
+global_var.set_value('ifSpellTest',True)
 testFire=400
  
 #screen=pygame.display.set_mode((640,480))
@@ -351,7 +351,7 @@ while running:
         
     for bullet in bullets:
         bulletSum+=1
-        bullet.update(screen,bullets)
+        bullet.update(screen,bullets,effects)
 
     for effect in effects:
         if effect.upper:

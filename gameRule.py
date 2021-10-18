@@ -14,21 +14,22 @@ import gameRule
 
 def cancalAllBullet(bullets,items,effects,doBonus):
     for bullet in bullets:
-        new_effect=Effect.bulletVanish()
-        if bullet.type!=5 and bullet.type!=7:
-            new_effect.initial(bullet.image,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
-        elif bullet.type==5:
-            new_effect.initial(bullet.tempImage,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
-        elif bullet.type==7:
-            if bullet.color=='red':
-                new_effect.initial(bullet.red[0],bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
-            else:
-                new_effect.initial(bullet.blue[0],bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
+        if bullet.cancalable:
+            new_effect=Effect.bulletVanish()
+            if bullet.type!=5 and bullet.type!=7:
+                new_effect.initial(bullet.image,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
+            elif bullet.type==5:
+                new_effect.initial(bullet.tempImage,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
+            elif bullet.type==7:
+                if bullet.color=='red':
+                    new_effect.initial(bullet.red[0],bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
+                else:
+                    new_effect.initial(bullet.blue[0],bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
 
-        effects.add(new_effect)
-        if doBonus:
-            Bullet.createItem(bullet.tx,bullet.ty,items)
-        bullet.kill()
+            effects.add(new_effect)
+            if doBonus:
+                Bullet.createItem(bullet.tx,bullet.ty,items)
+            bullet.kill()
 
 def addStars(screen,stars):
     new_star=gF.star_effect()
@@ -161,14 +162,15 @@ def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses):
     #detect boom-cancelled bullets
     bullet_cancel=pygame.sprite.groupcollide(bullets,booms,0,0)  
     for bullet in bullet_cancel:
-        new_effect=Effect.bulletVanish()
-        if bullet.type!=5:
-            new_effect.initial(bullet.image,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
-        else:
-            new_effect.initial(bullet.tempImage,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
-        effects.add(new_effect)
-        Bullet.createItem(bullet.tx,bullet.ty,items)
-        bullet.kill()
+        if bullet.cancalable:
+            new_effect=Effect.bulletVanish()
+            if bullet.type!=5:
+                new_effect.initial(bullet.image,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
+            else:
+                new_effect.initial(bullet.tempImage,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
+            effects.add(new_effect)
+            Bullet.createItem(bullet.tx,bullet.ty,items)
+            bullet.kill()
     
     #detect boom-hit enemy
     enemy_boomed=pygame.sprite.groupcollide(enemys,booms,0,0)

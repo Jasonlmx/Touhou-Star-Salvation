@@ -1518,9 +1518,9 @@ class Boss(pygame.sprite.Sprite):
     
     def drawMagic(self,screen,frame):
         w,h=self.magicImage.get_size()
-        size=round(w+math.sin(frame*math.pi/180*2)*50)+40
+        size=round(w+math.sin(frame*math.pi/180*2.5)*70)+160
         tempImage=pygame.transform.scale(self.magicImage,(size,size))
-        rotatePeriod=50
+        rotatePeriod=45
         gF.drawRotation(tempImage,(self.rect.centerx-round(size/2),self.rect.centery-round(size/2)),frame%rotatePeriod*(360/rotatePeriod),screen)
 
     def drawTracker(self,screen):
@@ -2997,6 +2997,9 @@ class Dumbledore(Boss):
         
         if self.lastFrame>=60:
             if (self.lastFrame-60)%13==0:
+                new_effect=Effect.bulletCreate(3)
+                new_effect.initial(self.tx,self.ty,192,100,13)
+                effects.add(new_effect)
                 global_var.get_value('enemyGun_sound2').play()
                 for i in range(0,8):
                     new_bullet=Bullet.star_Bullet_Part4_Hex()
@@ -3120,6 +3123,10 @@ class Dumbledore(Boss):
                 global_var.get_value('enemyGun_sound2').stop()
                 global_var.get_value('enemyGun_sound2').play()
                 global_var.set_value('enemyFiring2',True)
+            new_effect=Effect.bulletCreate(4)
+            new_effect.initial(self.tx,self.ty,128,64,7)
+            effects.add(new_effect)
+
             for i in range(0,5):
                 new_bullet=Bullet.mid_Bullet()
                 new_bullet.initial(self.tx,self.ty,1)
@@ -3176,7 +3183,7 @@ class Dumbledore(Boss):
             new_bullet.splitAngle=new_bullet.angle
             new_bullet.loadColor('orange')
             new_bullet.trackColor='orange'
-            new_bullet.transColor='yellow'
+            new_bullet.transColor='lakeBlue'
             bullets.add(new_bullet)
 
             new_bullet=Bullet.orb_Bullet_star_pattern_main(35,8,self.eventNum)
@@ -3188,7 +3195,7 @@ class Dumbledore(Boss):
             new_bullet.splitAngle=new_bullet.angle
             new_bullet.loadColor('red')
             new_bullet.trackColor='red'
-            new_bullet.transColor='pink'
+            new_bullet.transColor='blue'
             bullets.add(new_bullet)
 
         if (self.lastFrame-60)%300==150:
@@ -3251,6 +3258,9 @@ class Dumbledore(Boss):
                 sx=self.tx-100+random.random()*200
                 sy=self.ty-100+random.random()*200
                 sspeed=3+1*random.random()
+                new_effect=Effect.bulletCreate(0)
+                new_effect.initial(sx,sy,128,64,10)
+                effects.add(new_effect)
                 for i in range(0,bulletNum):
                     new_bullet=Bullet.scale_Bullet()
                     new_bullet.initial(sx,sy,1)
@@ -3301,6 +3311,9 @@ class Dumbledore(Boss):
             if (self.lastFrame-80)%interval==0:
                 sx=self.tx-100+random.random()*200
                 sy=self.ty-100+random.random()*150
+                new_effect=Effect.bulletCreate(4)
+                new_effect.initial(sx,sy,128,64,7)
+                effects.add(new_effect)
                 for i in range(0,intense):
                     new_bullet=Bullet.orb_Bullet_bouncing_5()
                     new_bullet.initial(sx,sy,1)
@@ -3477,6 +3490,10 @@ class Dumbledore(Boss):
 
         intervalAngle=50
         if self.lastFrame>=160:
+            if self.lastFrame%270==140:
+                new_effect=Effect.bulletCreate(5)
+                new_effect.initial(self.tx,self.ty,256,144,20)
+                effects.add(new_effect)
             if (self.lastFrame-160)%270==0:
                 if not global_var.get_value('enemyFiring3'):
                     global_var.get_value('enemyGun_sound3').stop()

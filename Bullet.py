@@ -226,6 +226,10 @@ class Bullet(pygame.sprite.Sprite):
         self.dy=0
         self.distance=10000
         self.graze=1
+        self.cancalable=True
+    
+    def genEffect(self,effects):
+        pass
 
     def initial(self,posx,posy,occupy):
         self.tx=posx
@@ -320,7 +324,7 @@ class small_Bullet(Bullet):
         self.image=pygame.image.load('resource/bullet/small_bullet_grey.png')
         self.dx=6
         self.dy=6
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.movement()
         screen.blit(self.image,(self.rect.centerx-6,self.rect.centery-6))
         #screen.blit(self.surf,self.rect)
@@ -339,7 +343,7 @@ class mid_Bullet(Bullet):
         self.dx=12
         self.dy=12
 
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.movement()
         self.drawBullet(screen)
         #screen.blit(self.surf,self.rect)
@@ -361,7 +365,7 @@ class big_Bullet(Bullet):
         self.image.set_alpha(210)
         self.dx=48
         self.dy=48
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.movement()
         screen.blit(self.image,(self.rect.centerx-48,self.rect.centery-48))
         #screen.blit(self.surf,self.rect)
@@ -378,7 +382,7 @@ class big_Bullet_explode(Bullet):
         self.type=3
         self.expValue=1
         self.image=pygame.image.load('resource/bullet/big_bullet_red.png').convert_alpha()
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.movement()
         #screen.blit(self.image,(round(self.rect.centerx-32-5*self.speedx),round(self.rect.centery-32-5*self.speedy)))
         screen.blit(self.image,(self.rect.centerx-48,self.rect.centery-48))
@@ -427,7 +431,7 @@ class star_Bullet(Bullet):
         self.dy=12
         self.lastFrame=0
         #self.cvImage=pygame.image.load('resource/bullet/star_bullet_grey.png')
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
@@ -453,7 +457,7 @@ class scale_Bullet(Bullet):
         #self.cvImage=pygame.image.load('resource/bullet/star_bullet_grey.png')
         self.dx=15
         self.dy=15
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.movement()
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
         #screen.blit(self.surf,self.rect)
@@ -492,7 +496,7 @@ class scale_Bullet_alter1(Bullet):
     def checkValid(self):
         if self.frame>=5*60:
             self.kill()
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.frame+=1
         if self.frame==1:
             self.countAngle()
@@ -534,7 +538,7 @@ class scale_Bullet_alter2(Bullet):
     def getTspeed(self):
         self.tspeed=math.sqrt(math.pow(self.speedx,2)+math.pow(self.speedy,2))
 
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.frame+=1
         if self.frame==1:
             self.countAngle()
@@ -578,7 +582,7 @@ class mid_Bullet_gravity(Bullet):
         self.gravity=0.1
     def setGravity(self,gravity):
         self.gravity=gravity
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.movement()
         self.speedy+=self.gravity
         screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
@@ -601,7 +605,7 @@ class orb_Bullet(Bullet):
         self.codeDic=['red','blue','green','purple','pink','jade','yellow']
     def doColorCode(self,code):
         self.image=pygame.image.load('resource/bullet/orb_bullet_'+self.codeDic[code]+'.png')
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         self.drawBullet(screen)
@@ -638,7 +642,7 @@ class orb_Bullet_gravity(Bullet):
     def setGravMax(self,gravMax):
         self.gravMax=gravMax
 
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.movement()
         if self.totalGrav<self.gravMax:
             if self.gravDirection==2:
@@ -669,7 +673,7 @@ class orb_Bullet_bouncing_leftright(Bullet):
         self.type=6
         self.bounce=1
         self.image=pygame.image.load('resource/bullet/orb_bullet_grey.png').convert_alpha()
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.movement()
         self.bouncing()
         screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
@@ -714,7 +718,7 @@ class flame_Bullet(Bullet):
             self.blue.append(blue1)
         self.dx=22
         self.dy=22
-    def update(self,screen,bullet):
+    def update(self,screen,bullet,effects):
         self.movement()
         self.toggle()
         self.drawBullet(screen)
@@ -764,7 +768,7 @@ class flame_Bullet_alter1(Bullet):
     def checkValid(self):
         if self.frame>=4.5*60:
             self.kill()
-    def update(self,screen,bullet):
+    def update(self,screen,bullet,effects):
         self.frame+=1
         self.countAngle()
         if self.frame>40 and self.frame<100 and self.frame%2==0:
@@ -819,7 +823,7 @@ class star_Bullet_delaySelfTarget(star_Bullet):
         self.playery=playery
         self.speed=speed
 
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.drawBullet(screen)
         if self.motion==1 and self.waitSec==self.delay:
             if self.fro==1:
@@ -860,7 +864,7 @@ class laser_Bullet_main(Bullet):
         #self.image.set_alpha(256)
         self.image.blit(global_var.get_value('laser_bullet_image'), (0, 0), (64*self.colorNum,0, 16, 15))
 
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         new_sub=laser_Bullet_sub(self.length,self.ratio)
@@ -900,7 +904,7 @@ class laser_Bullet_sub(Bullet):
         #self.image.set_alpha(256)
         self.image.blit(global_var.get_value('laser_bullet_image'), (0, 0), (64*self.colorNum,0, 16, 15)) 
 
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.frame+=1
         self.movement()
         #screen.blit(self.surf,self.rect)
@@ -933,7 +937,7 @@ class big_star_Bullet(Bullet):
         self.image.fill((0,0,0,0))
         self.image.blit(global_var.get_value('big_star_bullet_image').convert_alpha(), (0, 0), (48*self.colorNum,0, 48, 48))
     
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.movement()
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
         #screen.blit(self.surf,self.rect)
@@ -964,7 +968,7 @@ class circle_Bullet(Bullet):
         #self.image.set_colorkey((0, 0, 0))
         self.image.blit(global_var.get_value('circle_bullet_image').convert_alpha(), (0, 0), (48*self.colorNum,0, 48, 48))
     
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.movement()
         self.drawBullet(screen)
         #screen.blit(self.surf,self.rect)
@@ -986,7 +990,7 @@ class star_Bullet_Part4_Hex(star_Bullet):
         self.rotationAngle=0.3
         self.speed=4
         self.dAngle=random.randint(0,60)
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         self.moving_strategy()
@@ -1007,7 +1011,7 @@ class orb_Bullet_Part6_delay(orb_Bullet):
         self.changeSpeed=6
         self.changeFrame=30
         self.lastFrame=0
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         self.moving_strategy()
@@ -1032,7 +1036,7 @@ class orb_Bullet_Part7_delay(orb_Bullet):
         self.changeFrame=60
         self.lastFrame=0
     
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         self.moving_strategy()
@@ -1056,7 +1060,7 @@ class mid_Bullet_Part8_acc(mid_Bullet):
         self.lastFrame=0
         self.delayAcc=30
 
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         self.countAngle()
@@ -1075,7 +1079,7 @@ class orb_Bullet_bouncing_limit(orb_Bullet):
         self.bounceMax=1
         self.limit=limit
         self.lastFrame=0
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         self.bouncing()
@@ -1101,7 +1105,7 @@ class big_star_Bullet_comet(big_star_Bullet):
         self.lastFrame=0
         self.bounceMax=20
         self.subSpeed=subSpeed
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         self.bouncing()
@@ -1171,7 +1175,7 @@ class star_Bullet_fountain(big_star_Bullet):
         self.randomAngle=random.random()*360
         self.eruptRandomAngle=16
 
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.detect()
         if self.touched:
@@ -1179,13 +1183,13 @@ class star_Bullet_fountain(big_star_Bullet):
         self.movement()
         if not self.touched and self.lastFrame%20==0:
             global_var.get_value('kira_sound').play()
-        self.fire(bullets)
+        self.fire(bullets,effects)
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
         #screen.blit(self.surf,self.rect)
         self.drawBullet(screen)
         self.checkValid()
-    
-    def fire(self,bullets):
+
+    def fire(self,bullets,effects):
         if self.touched and self.touchFrame==1:
             new_laser=laser_Bullet_main()
             new_laser.length=60
@@ -1201,6 +1205,9 @@ class star_Bullet_fountain(big_star_Bullet):
             elif self.touch_direction==4:
                 new_laser.setSpeed(90,laserSpeed)
             bullets.add(new_laser)
+            new_effect=Effect.bulletCreate(7)
+            new_effect.initial(self.tx,self.ty,32,32,60)
+            effects.add(new_effect)
             global_var.get_value('laser_sound').play()
         if self.touched and self.touchFrame%8==0 and self.touchFrame<=90:
             new_bullet=orb_Bullet_gravity()
@@ -1226,6 +1233,9 @@ class star_Bullet_fountain(big_star_Bullet):
             new_bullet.doColorCode(random.randint(0,6))
             bullets.add(new_bullet)
         if self.touched and self.touchFrame%90==0 and self.touchFrame!=0:
+            new_effect=Effect.bulletCreate(3)
+            new_effect.initial(self.tx,self.ty,84,32,25)
+            effects.add(new_effect)
             self.randomAngle=random.random()*360
             for i in range(0,18):
                 new_bullet=star_Bullet()
@@ -1261,7 +1271,7 @@ class orb_Bullet_distance(orb_Bullet):
         self.distance=1000
         self.tempImage=0
 
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         self.checkDistance()
@@ -1308,7 +1318,7 @@ class big_star_Bullet_distance(big_star_Bullet):
         dy=abs(py-self.ty)
         self.distance=math.sqrt(math.pow(dx,2)+math.pow(dy,2))
 
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         self.checkDistance()
@@ -1350,12 +1360,13 @@ class orb_Bullet_star_pattern_main(orb_Bullet):
         self.resetAngle=self.moveAngle
         self.transColor='lakeBlue'
         self.trackColor='blue'
-    def update(self,screen,bullets):
+        self.cancalable=False
+    def update(self,screen,bullets,effects):
         for i in range(2):
             self.lastFrame+=1
             self.moveStratege()
             self.movement()
-            self.fire(bullets)
+            self.fire(bullets,effects)
             self.sound()
             self.drawBullet(screen)
             #screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
@@ -1381,8 +1392,16 @@ class orb_Bullet_star_pattern_main(orb_Bullet):
             global_var.get_value('enemyGun_sound1').stop()
             global_var.get_value('enemyGun_sound1').play()
     
-    def fire(self,bullets):
+    def fire(self,bullets,effects):
         if self.lastFrame%self.interval==0:
+            
+            if self.trackColor=='orange':
+                new_effect=Effect.bulletCreate(6)
+            else:
+                new_effect=Effect.bulletCreate(1)
+            new_effect.initial(self.tx,self.ty,64,24,self.interval*2)
+            effects.add(new_effect)
+
             new_bullet=orb_Bullet_split_5(self.splitAngle,self.eventNum,self.moveAngle)
             new_bullet.initial(self.tx,self.ty,1)
             new_bullet.setSpeed(0,0)
@@ -1402,7 +1421,7 @@ class orb_Bullet_split_5(orb_Bullet):
         self.doEvent=True
         self.moveAngle=moveAngle
         self.transColor='lakeBlue'
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         self.drawBullet(screen)
@@ -1430,7 +1449,7 @@ class orb_Bullet_split_sub(orb_Bullet):
         self.moveAngle=moveAngle
         self.speed=1.8
 
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.checkFrame()
         self.movement()
@@ -1451,7 +1470,7 @@ class orb_Bullet_bouncing_5(orb_Bullet):
         super(orb_Bullet_bouncing_5,self).__init__()
         self.bounceMax=1
         self.lastFrame=0
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         self.bouncing()
@@ -1486,11 +1505,11 @@ class big_Bullet_tracing_test(big_Bullet):
         self.lastFrame=0
         self.transSpeed=4
         self.transFrame=100
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.motionStrat()
         self.movement()
-        self.fire(bullets)
+        self.fire(bullets,effects)
         self.drawBullet(screen)
         #screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
         #screen.blit(self.surf,self.rect)
@@ -1516,13 +1535,16 @@ class big_Bullet_tracing_test(big_Bullet):
         if self.lastFrame>=self.preFrame+self.stayFrame+self.transFrame:
             self.kill()
     
-    def fire(self,bullets):
+    def fire(self,bullets,effects):
         if self.lastFrame<self.preFrame:
             self.countAngle()
             intervalAngle=30
             adjust=0
             speedAdjust=0
             if self.lastFrame%8==0:
+                new_effect=Effect.bulletCreate(0)
+                new_effect.initial(self.tx,self.ty,64,32,8)
+                effects.add(new_effect)
                 if not global_var.get_value('enemyFiring1'):
                     global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()
@@ -1541,6 +1563,9 @@ class big_Bullet_tracing_test(big_Bullet):
         
         if self.lastFrame>=self.preFrame and self.lastFrame<self.preFrame+self.stayFrame:
             if (self.lastFrame-self.preFrame)%25==0:
+                new_effect=Effect.bulletCreate(3)
+                new_effect.initial(self.tx,self.ty,84,32,25)
+                effects.add(new_effect)
                 if not global_var.get_value('enemyFiring2'):
                     global_var.get_value('enemyGun_sound2').stop()
                     global_var.get_value('enemyGun_sound2').play()
@@ -1563,6 +1588,9 @@ class big_Bullet_tracing_test(big_Bullet):
         
         if self.lastFrame>=self.preFrame+self.stayFrame-40:
             if (self.lastFrame-self.preFrame+self.stayFrame)%4==0:
+                new_effect=Effect.bulletCreate(5)
+                new_effect.initial(self.tx,self.ty,84,32,4)
+                effects.add(new_effect)
                 if not global_var.get_value('enemyFiring1'):
                     global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()
@@ -1585,7 +1613,7 @@ class orb_bullet_delay(orb_Bullet):
         self.endSpeed=4.5
         self.accFrame=120
     
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         self.motionStrat()
@@ -1623,7 +1651,7 @@ class mid_bullet_delay(mid_Bullet):
         self.delay=40
         self.lastFrame=0
         self.speed=5
-    def update(self,screen,bullets):
+    def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         self.motionStrat()
