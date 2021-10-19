@@ -897,8 +897,34 @@ class ghost_slytherin_spirit(ghost):
         angleAdjust=self.adjMax*math.sin(self.lastFrame/180*math.pi*5)
         self.setSpeed(angle+angleAdjust,2.2)
     
-    def fire(self,frame,bullets):
+    def update(self,screen,frame,bullets,bullets2,effects,items):
+        if self.startFrame==-1:
+            self.startFrame=frame
+        existFrame=frame-self.startFrame
+        self.lastFrame+=1
+        if existFrame>=10:
+            self.checkValid(effects,items,bullets)
+        if self.aiType==0:
+            self.ai_left()
+        if self.aiType==1:
+            self.ai_right()
+        if self.aiType==2:
+            self.ai_down()
+        if self.aiType==3:
+            self.ai_incline()
+        if self.aiType==-1:
+            self.ai_move()
+        self.tx+=self.speedx
+        self.ty+=self.speedy
+        self.truePos()
+        self.fire(frame,bullets,effects)
+        self.draw(screen,frame)
+    
+    def fire(self,frame,bullets,effects):
         if self.lastFrame%2==0:
+            new_effect=Effect.bulletCreate(5)
+            new_effect.initial(self.tx,self.ty,64,16,16)
+            effects.add(new_effect)
             if not global_var.get_value('enemyFiring2'):
                 global_var.get_value('enemyGun_sound2').stop()
                 global_var.get_value('enemyGun_sound2').play()
@@ -967,6 +993,9 @@ class ghost_hufflepuff_spirit(ghost):
             if not self.fireWatcher and self.bounceLim>0:
                 self.fireDensity=round(self.fireDensity*1.2)
                 angle=random.random()*360
+                new_effect=Effect.bulletCreate(3)
+                new_effect.initial(self.tx,self.ty,128,64,10)
+                effects.add(new_effect)
                 for i in range(0,self.fireDensity):
                     new_bullet=Bullet.star_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
@@ -983,6 +1012,9 @@ class ghost_hufflepuff_spirit(ghost):
         
         if self.bounceLim==0 and not self.deadFire:
             angle=random.random()*360
+            new_effect=Effect.bulletCreate(3)
+            new_effect.initial(self.tx,self.ty,192,84,20)
+            effects.add(new_effect)
             for i in range(0,20):
                 for j in range(0,6):
                     new_bullet=Bullet.orb_Bullet()
@@ -995,6 +1027,9 @@ class ghost_hufflepuff_spirit(ghost):
         if self.lastFrame%4==0:
             self.getDistance()
             if self.distance>=60:
+                new_effect=Effect.bulletCreate(3)
+                new_effect.initial(self.tx,self.ty,100,32,8)
+                effects.add(new_effect)
                 self.startAngle+=28.1
                 new_bullet=Bullet.orb_bullet_delay()
                 new_bullet.retainFrame=120
@@ -1067,6 +1102,7 @@ class ghost_gryffindor_spirit(ghost):
                 self.actionFrame=-50
                 self.time+=1
                 self.holdFrame+=30
+                global_var.get_value("kira1_sound").stop()
                 global_var.get_value("kira1_sound").play()
             self.setSpeed(self.targetAngle,self.speed)
         if self.lastFrame>=self.maxLastFrame:
@@ -1085,10 +1121,39 @@ class ghost_gryffindor_spirit(ghost):
         if self.health<=0:
             self.doKill(effects,items,bullets)
     
-    def fire(self,frame,bullets):
+    def update(self,screen,frame,bullets,bullets2,effects,items):
+        if self.startFrame==-1:
+            self.startFrame=frame
+        existFrame=frame-self.startFrame
+        self.lastFrame+=1
+        if existFrame>=10:
+            self.checkValid(effects,items,bullets)
+        if self.aiType==0:
+            self.ai_left()
+        if self.aiType==1:
+            self.ai_right()
+        if self.aiType==2:
+            self.ai_down()
+        if self.aiType==3:
+            self.ai_incline()
+        if self.aiType==-1:
+            self.ai_move()
+        self.tx+=self.speedx
+        self.ty+=self.speedy
+        self.truePos()
+        self.fire(frame,bullets,effects)
+        self.draw(screen,frame)
+    
+    def fire(self,frame,bullets,effects):
         if self.actionFrame>=self.accFrame and self.actionFrame<=self.accFrame+self.holdFrame:
             d_Frame=self.actionFrame-self.accFrame
+            maxRandom=round(30-d_Frame/2)
+            if maxRandom<10:
+                maxRandom=10
             if d_Frame%15==0:
+                new_effect=Effect.bulletCreate(1)
+                new_effect.initial(self.tx,self.ty,128,64,30)
+                effects.add(new_effect)
                 if not global_var.get_value('enemyFiring3'):
                     global_var.get_value('enemyGun_sound3').stop()
                     global_var.get_value('enemyGun_sound3').play()
@@ -1105,15 +1170,18 @@ class ghost_gryffindor_spirit(ghost):
                         new_bullet.setSpeed(self.targetAngle+90*direct,0.2-0.03*i)
                         new_bullet.loadColor('red')
                         bullets.add(new_bullet)
-            if d_Frame%4==0:
+            if d_Frame%2==0:
+                new_effect=Effect.bulletCreate(1)
+                new_effect.initial(self.tx,self.ty,64,16,16)
+                effects.add(new_effect)
                 if not global_var.get_value('enemyFiring1'):
                     global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()
                     global_var.set_value('enemyFiring1',True)
-                for i in range(2):
+                for i in range(3):
                     new_bullet=Bullet.star_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
-                    r=random.random()*30-15
+                    r=random.random()*maxRandom-round(maxRandom/2)
                     s=random.random()*2-1
                     new_bullet.setSpeed(self.angle-180+r,9+s)
                     new_bullet.loadColor('red')
@@ -1147,8 +1215,34 @@ class ghost_ravenclaw_spirit(ghost):
         if self.lastFrame>=self.maxLastFrame:
             self.doKill(effects,items,bullets)
     
-    def fire(self,frame,bullets):
+    def update(self,screen,frame,bullets,bullets2,effects,items):
+        if self.startFrame==-1:
+            self.startFrame=frame
+        existFrame=frame-self.startFrame
+        self.lastFrame+=1
+        if existFrame>=10:
+            self.checkValid(effects,items,bullets)
+        if self.aiType==0:
+            self.ai_left()
+        if self.aiType==1:
+            self.ai_right()
+        if self.aiType==2:
+            self.ai_down()
+        if self.aiType==3:
+            self.ai_incline()
+        if self.aiType==-1:
+            self.ai_move()
+        self.tx+=self.speedx
+        self.ty+=self.speedy
+        self.truePos()
+        self.fire(frame,bullets,effects)
+        self.draw(screen,frame)
+
+    def fire(self,frame,bullets,effects):
         if self.lastFrame%9==0:
+            new_effect=Effect.bulletCreate(6)
+            new_effect.initial(self.tx,self.ty,128,64,18)
+            effects.add(new_effect)
             self.fireAngle+=8.3*self.direct
             if not global_var.get_value('enemyFiring2'):
                 global_var.get_value('enemyGun_sound2').stop()
@@ -3610,6 +3704,17 @@ class Dumbledore(Boss):
             if (self.lastFrame-120)%interval==0 and global_var.get_value('enemySum')<=0:
                 angle=random.random()*360
                 self.spell10_time+=1
+                if self.spell10_time%4==0:
+                    colorCode=1
+                elif self.spell10_time%4==1:
+                    colorCode=3
+                elif self.spell10_time%4==2:
+                    colorCode=6
+                elif self.spell10_time%4==3:
+                    colorCode=5
+                new_effect=Effect.bulletCreate(colorCode)
+                new_effect.initial(self.tx,self.ty,128,64,interval)
+                effects.add(new_effect)
                 if not global_var.get_value('enemyFiring3'):
                     global_var.get_value('enemyGun_sound3').stop()
                     global_var.get_value('enemyGun_sound3').play()
@@ -3623,6 +3728,9 @@ class Dumbledore(Boss):
             
             if (self.lastFrame-120)%(interval*3)==0 and global_var.get_value('bulletSum')<=20:
                 direct=random.randint(0,1)
+                new_effect=Effect.bulletCreate(5)
+                new_effect.initial(self.tx,self.ty,144,64,10)
+                effects.add(new_effect)
                 if not global_var.get_value('enemyFiring1'):
                     global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()

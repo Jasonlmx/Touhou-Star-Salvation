@@ -1206,7 +1206,7 @@ class star_Bullet_fountain(big_star_Bullet):
                 new_laser.setSpeed(90,laserSpeed)
             bullets.add(new_laser)
             new_effect=Effect.bulletCreate(7)
-            new_effect.initial(self.tx,self.ty,32,32,60)
+            new_effect.initial(self.tx,self.ty,84,48,60)
             effects.add(new_effect)
             global_var.get_value('laser_sound').play()
         if self.touched and self.touchFrame%8==0 and self.touchFrame<=90:

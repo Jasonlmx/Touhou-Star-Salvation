@@ -37,7 +37,7 @@ global_var._init()
 
 #test functions 
 global_var.set_value('ifTest',True)
-global_var.set_value('spellNum',7)
+global_var.set_value('spellNum',10)
 global_var.set_value('ifSpellTest',True)
 testFire=400
  
