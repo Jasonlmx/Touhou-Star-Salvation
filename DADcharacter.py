@@ -949,6 +949,7 @@ class ghost_hufflepuff_spirit(ghost):
         self.deadFire=False
         self.distance=0
         self.startAngle=random.random()*360
+        self.startAngle2=random.random()*360
     def ai_move(self):
         if self.lastFrame==1:
             angle=random.random()*360
@@ -1038,6 +1039,16 @@ class ghost_hufflepuff_spirit(ghost):
                 new_bullet.accFrame=60
                 new_bullet.initial(self.tx,self.ty,1)
                 new_bullet.setSpeed(self.startAngle,0.1)
+                new_bullet.loadColor('blue')
+                bullets.add(new_bullet)
+                self.startAngle2-=35.4
+                new_bullet=Bullet.orb_bullet_delay()
+                new_bullet.retainFrame=120
+                new_bullet.startSpeed=0.1
+                new_bullet.endSpeed=5
+                new_bullet.accFrame=60
+                new_bullet.initial(self.tx,self.ty,1)
+                new_bullet.setSpeed(self.startAngle2,0.1)
                 new_bullet.loadColor('blue')
                 bullets.add(new_bullet)
         
@@ -1147,7 +1158,7 @@ class ghost_gryffindor_spirit(ghost):
     def fire(self,frame,bullets,effects):
         if self.actionFrame>=self.accFrame and self.actionFrame<=self.accFrame+self.holdFrame:
             d_Frame=self.actionFrame-self.accFrame
-            maxRandom=round(30-d_Frame/2)
+            maxRandom=round(70-d_Frame*3)
             if maxRandom<10:
                 maxRandom=10
             if d_Frame%15==0:
@@ -1158,16 +1169,16 @@ class ghost_gryffindor_spirit(ghost):
                     global_var.get_value('enemyGun_sound3').stop()
                     global_var.get_value('enemyGun_sound3').play()
                     global_var.set_value('enemyFiring3',True)
-                for i in range(0,6):
+                for i in range(0,9):
                     for j in range(0,2):
                         if j==0:
                             direct=-1
                         else:
                             direct=1
                         new_bullet=Bullet.mid_bullet_delay()
-                        new_bullet.setDelay(40,4-i*0.7)
+                        new_bullet.setDelay(40,9-i*0.9)
                         new_bullet.initial(self.tx,self.ty,1)
-                        new_bullet.setSpeed(self.targetAngle+90*direct,0.2-0.03*i)
+                        new_bullet.setSpeed(self.targetAngle+90*direct,0.2-0.02*i)
                         new_bullet.loadColor('red')
                         bullets.add(new_bullet)
             if d_Frame%2==0:
@@ -1591,14 +1602,15 @@ class Boss(pygame.sprite.Sprite):
         self.cardBonus=10000000
         self.framePunishment=3700
         self.maxSpell=0
-        self.magicImage=pygame.transform.scale(pygame.image.load('resource/bossMagic.png'),(252,252))
+        self.magicImage=pygame.transform.scale(pygame.image.load('resource/bossMagic.png'),(252,252)).convert_alpha()
+        self.magicImage.set_alpha(230)
         self.tracker=global_var.get_value('bossTracker')
-        self.bossSpell=pygame.transform.scale(pygame.image.load('resource/text/bossSpell.png'),(16,16))
+        self.bossSpell=pygame.transform.scale(pygame.image.load('resource/text/bossSpell.png'),(16,16)).convert_alpha()
         self.ifBlock=False
         self.maxMovingFrame=0
         self.tempx=0
         self.tempy=0
-        self.deadImage=pygame.image.load('resource/sprite/sprite_dead.png')
+        self.deadImage=pygame.image.load('resource/sprite/sprite_dead.png').convert_alpha()
     def setSpeed(self,angle,speed):
         s=math.sin(math.radians(angle))
         c=math.cos(math.radians(angle))
@@ -1612,10 +1624,12 @@ class Boss(pygame.sprite.Sprite):
     
     def drawMagic(self,screen,frame):
         w,h=self.magicImage.get_size()
-        size=round(w+math.sin(frame*math.pi/180*2.5)*70)+160
-        tempImage=pygame.transform.scale(self.magicImage,(size,size))
-        rotatePeriod=45
-        gF.drawRotation(tempImage,(self.rect.centerx-round(size/2),self.rect.centery-round(size/2)),frame%rotatePeriod*(360/rotatePeriod),screen)
+        size=round(w+math.sin(frame*math.pi/180)*1)+140
+        #tempImage=pygame.transform.scale(self.magicImage,(size,size))
+        rotatePeriod=480
+        height=round((math.sin((frame+90)*math.pi/180*0.5)*0.3+0.7)*size)
+        tempImage=pygame.transform.scale(self.magicImage,(size,height))
+        gF.drawRotation(tempImage,(self.rect.centerx-round(size/2),self.rect.centery-round(height/2)),frame%rotatePeriod*(360/rotatePeriod),screen)
 
     def drawTracker(self,screen):
         screen.blit(self.tracker,(self.rect.centerx-20,670))
