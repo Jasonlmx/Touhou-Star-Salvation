@@ -1624,10 +1624,10 @@ class Boss(pygame.sprite.Sprite):
     
     def drawMagic(self,screen,frame):
         w,h=self.magicImage.get_size()
-        size=round(w+math.sin(frame*math.pi/180)*1)+140
+        size=round(w+math.sin(frame*math.pi/180)*1)+100
         #tempImage=pygame.transform.scale(self.magicImage,(size,size))
         rotatePeriod=480
-        height=round((math.sin((frame+90)*math.pi/180*0.5)*0.3+0.7)*size)
+        height=round((math.sin((frame+90)*math.pi/180*0.8)*0.25+0.75)*size)
         tempImage=pygame.transform.scale(self.magicImage,(size,height))
         gF.drawRotation(tempImage,(self.rect.centerx-round(size/2),self.rect.centery-round(height/2)),frame%rotatePeriod*(360/rotatePeriod),screen)
 
@@ -2653,8 +2653,15 @@ class Dumbledore(Boss):
             self.randomAngle=random.random()*360
             self.randomAngle2=self.randomAngle-360/30
             self.frameLimit=1800
+            #self.color=['purple','seaBlue']
+            self.colorNow=-1
         if self.lastFrame>=100:
             if (self.lastFrame-100)%10==0:
+                self.colorNow+=1
+                if self.colorNow%4>=2:
+                    color="purple"
+                else:
+                    color="seaBlue"
                 new_effect=Effect.bulletCreate(4)
                 new_effect.initial(self.tx,self.ty,96,32,10)
                 effects.add(new_effect)
@@ -2666,7 +2673,7 @@ class Dumbledore(Boss):
                     new_bullet=Bullet.mid_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle+i*(360/15),3.6)
-                    new_bullet.loadColor('seaBlue')
+                    new_bullet.loadColor(color)
                     bullets.add(new_bullet)
                 if self.lastFrame%80>=40:
                     self.randomAngle2+=7
@@ -2681,7 +2688,7 @@ class Dumbledore(Boss):
                     new_bullet=Bullet.mid_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle2+i*(360/15),3.6)
-                    new_bullet.loadColor('seaBlue')
+                    new_bullet.loadColor(color)
                     bullets.add(new_bullet)
                 if self.lastFrame%80>=40:
                     self.randomAngle-=7
