@@ -1432,7 +1432,7 @@ class Marisa(Player):
         self.surf = pygame.Surface((6,6))
         self.surf.fill((255,255,255))
         self.rect = self.surf.get_rect()
-        self.image=global_var.get_value('pl00')
+        self.image=global_var.get_value('pl01')
         self.image=pygame.transform.scale(self.image,(384,216))
         self.interval=5
         self.part=0
@@ -1626,9 +1626,15 @@ class Boss(pygame.sprite.Sprite):
         w,h=self.magicImage.get_size()
         size=round(w+math.sin(frame*math.pi/180)*1)+100
         #tempImage=pygame.transform.scale(self.magicImage,(size,size))
-        rotatePeriod=480
+        temp=pygame.Surface((size,size))
+        temp.fill((0,0,0,0))
+        temp=temp.convert_alpha()
+        innerPeriod=480
+        gF.drawRotation(pygame.transform.scale(self.magicImage,(size,size)),(0,0),frame%innerPeriod*(360/innerPeriod),temp)
+        rotatePeriod=840
         height=round((math.sin((frame+90)*math.pi/180*0.8)*0.25+0.75)*size)
-        tempImage=pygame.transform.scale(self.magicImage,(size,height))
+        tempImage=pygame.transform.scale(temp,(size,height))
+        #screen.blit(temp,(self.rect.centerx-round(size/2),self.rect.centery-round(size/2)))
         gF.drawRotation(tempImage,(self.rect.centerx-round(size/2),self.rect.centery-round(height/2)),frame%rotatePeriod*(360/rotatePeriod),screen)
 
     def drawTracker(self,screen):
@@ -2896,38 +2902,22 @@ class Dumbledore(Boss):
 
         self.cardBonus-=self.framePunishment
         if self.lastFrame>=80:
-            if (self.lastFrame-80)%200<=150:
-                if self.lastFrame%5==0:
-                    if not global_var.get_value('enemyFiring2'):
-                            global_var.get_value('enemyGun_sound2').stop()
-                            global_var.get_value('enemyGun_sound2').play()
-                            global_var.set_value('enemyFiring2',True)
-                    sx=self.tx-8+random.random()*16
-                    sy=self.ty-8+random.random()*16
-                    for j in range(0,3):
-                        for i in range(0,3):
-                            new_bullet=Bullet.orb_Bullet()
-                            new_bullet.initial(sx,sy,1)
-                            new_bullet.setSpeed(self.randomAngle-j*120+i*3*self.directToggle,4.6-0.5*i)
-                            new_bullet.loadColor('blue')
-                            bullets.add(new_bullet)
-                self.randomAngle+=60+60*random.random()
-            else:
-                self.randomAngle=random.random()*360
-            if (self.lastFrame-80)%200==151 or (self.lastFrame-80)%200==0 :
-                for j in range(0,3):
-                    self.randomAngle=random.random()*360
-                    for i in range(0,20):
-                        new_bullet=Bullet.star_Bullet()
+            if (self.lastFrame-80)%100==50:
+                for j in range(0,2):
+                    #self.randomAngle=random.random()*360
+                    for i in range(0,30):
+                        if i%2==0:
+                            new_bullet=Bullet.star_bullet_side_selfTarget()
+                            new_bullet.loadColor('purple')
+                        else:
+                            new_bullet=Bullet.star_Bullet()
+                            new_bullet.loadColor('darkBlue')
                         new_bullet.initial(self.tx,self.ty,1)
-                        new_bullet.setSpeed(self.randomAngle+i*(360/20),3.5-j*0.6)
-                        new_bullet.loadColor('purple')
+                        new_bullet.setSpeed(self.randomAngle+i*(360/30),3-1*j)
+                        new_bullet.speed=7
+                        
                         bullets.add(new_bullet)
-            if (self.lastFrame-80)%200==151:
-                if self.directToggle==1:
-                    self.directToggle=-1
-                else:
-                    self.directToggle=1
+                self.randomAngle=random.random()*360
         
         if self.lastFrame>=80 and (self.lastFrame-80)%200==120:
             self.gotoPosition(random.random()*30+345,random.random()*30+225,60)

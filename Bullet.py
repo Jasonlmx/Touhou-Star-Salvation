@@ -1670,3 +1670,48 @@ class mid_bullet_delay(mid_Bullet):
                     global_var.set_value('kiraing',True)
             self.countAngle()
             self.setSpeed(self.angle,self.speed)
+
+class star_bullet_side_selfTarget(star_Bullet):
+    def __init__(self):
+        super(star_bullet_side_selfTarget,self).__init__()
+        self.speed=0
+        self.bounce=1
+    def setSpeed(self,angle,speed):
+        s=math.sin(math.radians(angle))
+        c=math.cos(math.radians(angle))
+        self.speedy=s*speed
+        self.speedx=c*speed
+        self.speed=speed
+
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.movement()
+        self.motion_strategy(effects)
+        self.drawBullet(screen)
+        self.checkValid()
+    
+    def checkValid(self):
+        if self.rect.top>=720-20:
+            self.kill()
+        if self.rect.bottom<=0+20:
+            self.kill()
+        if self.rect.right<=0+50:
+            self.kill()
+        if self.rect.left>=670:
+            self.kill()
+
+    def motion_strategy(self,effects):
+        bound=False
+        if self.tx<=60 or self.tx>=660 or self.ty<=30:
+            bound=True
+        if self.bounce>=1 and bound and self.ty<=500:
+            self.loadColor('blue')
+            new_effect=Effect.bulletCreate(4)
+            new_effect.initial(self.tx,self.ty,84,48,5)
+            effects.add(new_effect)
+            global_var.get_value('kira_sound').stop()
+            global_var.get_value('kira_sound').play()
+            self.bounce=0
+            px=global_var.get_value('player1x')
+            py=global_var.get_value('player1y')
+            self.selfTarget(px,py,self.speed)

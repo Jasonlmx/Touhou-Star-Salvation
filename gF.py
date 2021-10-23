@@ -87,6 +87,7 @@ def loadImage():
 
     global_var.set_value('levelText01',pygame.image.load('resource/text/levelText01.png').convert_alpha())
     global_var.set_value('pl00',pygame.image.load('resource/player/pl00/playerImage.png').convert_alpha())
+    global_var.set_value('pl01',pygame.image.load('resource/player/pl01/playerImage.png').convert_alpha())
     global_var.set_value('mainText',pygame.image.load('resource/text/mainText01.png').convert_alpha())
     global_var.set_value('cloud_bg',pygame.image.load('resource/background/cloud.png').convert_alpha())
     global_var.set_value('lake_bg',pygame.image.load('resource/background/lake.png').convert_alpha())
