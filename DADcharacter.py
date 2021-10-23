@@ -2331,7 +2331,7 @@ class Dumbledore(Boss):
                         global_var.get_value('enemyGun_sound2').stop()
                         global_var.get_value('enemyGun_sound2').play()
                         global_var.set_value('enemyFiring2',True)
-                    new_bullet=Bullet.scale_Bullet()
+                    new_bullet=Bullet.satsu_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle+i*(360/5),5.3)
                     new_bullet.loadColor('lightGreen')
@@ -2342,7 +2342,7 @@ class Dumbledore(Boss):
                         global_var.get_value('enemyGun_sound2').play()
                         global_var.set_value('enemyFiring2',True)
                 for j in range(0,5):
-                    new_bullet=Bullet.scale_Bullet()
+                    new_bullet=Bullet.satsu_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle2+j*(360/5),5.3)
                     new_bullet.loadColor('lightGreen')
@@ -2364,7 +2364,7 @@ class Dumbledore(Boss):
                         global_var.get_value('enemyGun_sound1').play()
                         global_var.set_value('enemyFiring1',True)
                 for i in range(0,30):
-                    new_bullet=Bullet.scale_Bullet()
+                    new_bullet=Bullet.bact_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle3+i*(360/30),4-0.1*n)
                     new_bullet.loadColor('lightBlue')
@@ -2850,7 +2850,7 @@ class Dumbledore(Boss):
                         global_var.get_value('enemyGun_sound2').play()
                         global_var.set_value('enemyFiring2',True)
                     for i in range(0,30):
-                        new_bullet=Bullet.circle_Bullet()
+                        new_bullet=Bullet.butterfly_Bullet()
                         new_bullet.initial(self.tx,self.ty,1)
                         new_bullet.doColorCode(3)
                         new_bullet.setSpeed(self.randomAngle+i*(360/30),5)
@@ -2868,7 +2868,7 @@ class Dumbledore(Boss):
                         global_var.get_value('enemyGun_sound1').play()
                         global_var.set_value('enemyFiring1',True)
                     for i in range(0,9):
-                        new_bullet=Bullet.circle_Bullet()
+                        new_bullet=Bullet.butterfly_Bullet()
                         new_bullet.initial(self.tx,self.ty,1)
                         new_bullet.doColorCode(1)
                         new_bullet.setSpeed(self.randomAngle2+i*(360/9),5)

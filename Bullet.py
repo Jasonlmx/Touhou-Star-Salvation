@@ -977,9 +977,131 @@ class circle_Bullet(Bullet):
     def drawBullet(self,screen):
         screen.blit(self.image,(self.rect.centerx-24,self.rect.centery-24))
     
+class butterfly_Bullet(Bullet):
+    def __init__(self):
+        super(butterfly_Bullet,self).__init__()
+        self.surf = pygame.Surface((16,16))
+        self.rect = self.surf.get_rect()
+        self.surf.fill((255,255,255))
+        self.type=10
+        self.dx=24
+        self.dy=24
+        self.colorNum=0
+        self.lastAngle=-10000
+    def doColorCode(self,code):
+        self.colorNum=code
+        self.image=pygame.Surface((48,48))
+        #self.image.set_alpha(256)
+        self.image=self.image.convert_alpha()
+        self.image.fill((0,0,0,0))
+        #self.image.set_colorkey((0, 0, 0))
+        self.image.blit(global_var.get_value('butterfly_bullet_image').convert_alpha(), (0, 0), (48*self.colorNum,0, 48, 48))
     
+    def update(self,screen,bullets,effects):
+        self.movement()
+        #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
+        screen.blit(self.surf,self.rect)
+        self.drawBullet(screen)
+        self.checkValid()
 
+    def drawBullet(self,screen):
+        self.countAngle()
+        angle=270-self.angle
+        if round(angle)!=round(self.lastAngle):
+            self.tempImage=pygame.transform.rotate(self.image, angle)
+        #print(str(round(angle))+':'+str(round(self.lastAngle))+'->'+str(round(angle)!=round(self.lastAngle)))
+        self.lastAngle=angle
+        #w=30
+        #h=30
+        #pos=gF.returnPosition(w,h,(self.rect.centerx-15,self.rect.centery-15),angle)
+        size=w,h=self.tempImage.get_size()
+        #print(size)
+        screen.blit(self.tempImage,(self.rect.centerx-round(w/2),self.rect.centery-round(h/2)))
+        #screen.blit(self.tempImage,pos)
+        #gF.drawRotation(self.image,(self.rect.centerx-10,self.rect.centery-10),270-self.angle,screen)
+
+class rice_Bullet(Bullet):
+    def __init__(self):
+        super(rice_Bullet,self).__init__()
+        self.surf = pygame.Surface((8,8))
+        self.rect = self.surf.get_rect()
+        self.surf.fill((255,255,255))
+        self.type=11
+        self.dx=12
+        self.dy=12
+        self.colorNum=0
+        self.lastAngle=-10000
+        self.colorDict={'grey':0,'red':1,'lightRed':2,'purple':3,'pink':4,'blue':5,'seaBlue':6,'skyBlue':7,'lightBlue':8,'lakeBlue':8,'darkGreen':9,'green':10,'lightGreen':11,'yellow':12,'lemonYellow':13,'orange':14,'white':15}
     
+    def doColorCode(self,code):
+        self.colorNum=code
+        self.image=pygame.Surface((24,24))
+        #self.image.set_alpha(256)
+        self.image=self.image.convert_alpha()
+        self.image.fill((0,0,0,0))
+        #self.image.set_colorkey((0, 0, 0))
+        self.image.blit(global_var.get_value('rice_bullet_image').convert_alpha(), (0, 0), (24*self.colorNum,0, 24, 24))
+    
+    def loadColor(self,color):
+        self.doColorCode(self.colorDict[color])
+
+    def update(self,screen,bullets,effects):
+        self.movement()
+        #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
+        screen.blit(self.surf,self.rect)
+        self.drawBullet(screen)
+        self.checkValid()
+
+    def drawBullet(self,screen):
+        self.countAngle()
+        angle=270-self.angle
+        if round(angle)!=round(self.lastAngle):
+            self.tempImage=pygame.transform.rotate(self.image, angle)
+        #print(str(round(angle))+':'+str(round(self.lastAngle))+'->'+str(round(angle)!=round(self.lastAngle)))
+        self.lastAngle=angle
+        #w=30
+        #h=30
+        #pos=gF.returnPosition(w,h,(self.rect.centerx-15,self.rect.centery-15),angle)
+        size=w,h=self.tempImage.get_size()
+        #print(size)
+        screen.blit(self.tempImage,(self.rect.centerx-round(w/2),self.rect.centery-round(h/2)))
+        #screen.blit(self.tempImage,pos)
+        #gF.drawRotation(self.image,(self.rect.centerx-10,self.rect.centery-10),270-self.angle,screen)
+
+class satsu_Bullet(rice_Bullet):
+    def __init__(self):
+        super(satsu_Bullet,self).__init__()
+        self.surf = pygame.Surface((7,7))
+        self.rect = self.surf.get_rect()
+        self.surf.fill((255,255,255))
+        self.type=12
+    
+    def doColorCode(self,code):
+        self.colorNum=code
+        self.image=pygame.Surface((24,24))
+        #self.image.set_alpha(256)
+        self.image=self.image.convert_alpha()
+        self.image.fill((0,0,0,0))
+        #self.image.set_colorkey((0, 0, 0))
+        self.image.blit(global_var.get_value('satsu_bullet_image').convert_alpha(), (0, 0), (24*self.colorNum,0, 24, 24))
+
+class bact_Bullet(rice_Bullet):
+    def __init__(self):
+        super(bact_Bullet,self).__init__()
+        self.surf = pygame.Surface((8,8))
+        self.rect = self.surf.get_rect()
+        self.surf.fill((255,255,255))
+        self.type=13
+    
+    def doColorCode(self,code):
+        self.colorNum=code
+        self.image=pygame.Surface((24,24))
+        #self.image.set_alpha(256)
+        self.image=self.image.convert_alpha()
+        self.image.fill((0,0,0,0))
+        #self.image.set_colorkey((0, 0, 0))
+        self.image.blit(global_var.get_value('bact_bullet_image').convert_alpha(), (0, 0), (24*self.colorNum,0, 24, 24))
+
 #bullets modified for lightness level
 class star_Bullet_Part4_Hex(star_Bullet):
     def __init__(self):

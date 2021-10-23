@@ -16,7 +16,8 @@ def cancalAllBullet(bullets,items,effects,doBonus):
     for bullet in bullets:
         if bullet.cancalable:
             new_effect=Effect.bulletVanish()
-            if bullet.type!=5 and bullet.type!=7:
+            exception=(5,7,10,11,12,13)
+            if not bullet.type in exception:
                 new_effect.initial(bullet.image,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
             elif bullet.type==5:
                 new_effect.initial(bullet.tempImage,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
@@ -25,6 +26,8 @@ def cancalAllBullet(bullets,items,effects,doBonus):
                     new_effect.initial(bullet.red[0],bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
                 else:
                     new_effect.initial(bullet.blue[0],bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
+            elif bullet.type==10 or bullet.type==11 or bullet.type==12 or bullet.type==13:
+                new_effect.initial(bullet.tempImage,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
 
             effects.add(new_effect)
             if doBonus:
@@ -164,10 +167,19 @@ def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses):
     for bullet in bullet_cancel:
         if bullet.cancalable:
             new_effect=Effect.bulletVanish()
-            if bullet.type!=5:
+            exception=(5,7,10,11,12,13)
+            if not bullet.type in exception:
                 new_effect.initial(bullet.image,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
-            else:
+            elif bullet.type==5:
                 new_effect.initial(bullet.tempImage,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
+            elif bullet.type==7:
+                if bullet.color=='red':
+                    new_effect.initial(bullet.red[0],bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
+                else:
+                    new_effect.initial(bullet.blue[0],bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
+            elif bullet.type==10 or bullet.type==11 or bullet.type==12 or bullet.type==13:
+                new_effect.initial(bullet.tempImage,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
+
             effects.add(new_effect)
             Bullet.createItem(bullet.tx,bullet.ty,items)
             bullet.kill()
