@@ -1705,7 +1705,7 @@ class star_bullet_side_selfTarget(star_Bullet):
         if self.tx<=60 or self.tx>=660 or self.ty<=30:
             bound=True
         if self.bounce>=1 and bound and self.ty<=500:
-            self.loadColor('blue')
+            self.loadColor('red')
             new_effect=Effect.bulletCreate(4)
             new_effect.initial(self.tx,self.ty,84,48,5)
             effects.add(new_effect)
@@ -1715,3 +1715,91 @@ class star_bullet_side_selfTarget(star_Bullet):
             px=global_var.get_value('player1x')
             py=global_var.get_value('player1y')
             self.selfTarget(px,py,self.speed)
+
+class big_star_Bullet_slave(big_star_Bullet):
+    def __init__(self,tAngle):
+        super(big_star_Bullet_slave,self).__init__()
+        self.tAngle=tAngle
+        self.speed=4
+        self.maxFrame=round(360/abs(tAngle))
+        self.lastFrame=0
+        self.fireCount=0
+        self.cancalable=False
+    def setSpeed(self,angle,speed):
+        s=math.sin(math.radians(angle))
+        c=math.cos(math.radians(angle))
+        self.speedy=s*speed
+        self.speedx=c*speed
+        self.speed=speed
+
+    def update(self,screen,bullets,effects):
+        for i in range(0,2):
+            self.lastFrame+=1
+            self.fire(bullets,effects)
+            self.movement()
+            self.motion_strategy(effects)
+            #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
+            #screen.blit(self.surf,self.rect)
+            self.drawBullet(screen)
+            self.checkValid()
+    
+    def motion_strategy(self,effects):
+        self.countAngle()
+        self.setSpeed(self.angle+self.tAngle,self.speed)
+
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
+        
+    def fire(self,bullets,effects):
+        if self.lastFrame%4==0:
+            self.countAngle()
+            if not global_var.get_value('enemyFiring2'):
+                global_var.get_value('enemyGun_sound2').stop()
+                global_var.get_value('enemyGun_sound2').play()
+                global_var.set_value('enemyFiring2',True)
+            
+            new_effect=Effect.bulletCreate(6)
+            new_effect.initial(self.tx,self.ty,84,32,8)
+            effects.add(new_effect)
+
+            self.fireCount+=1
+            if self.tAngle<0:
+                self.directAdj=-1
+            else:
+                self.directAdj=1
+            new_bullet=star_Bullet_delay(delay=60)
+            new_bullet.initial(self.tx,self.ty,1)
+            new_bullet.loadColor('yellow')
+            new_bullet.setSpeed(self.angle+90*self.directAdj,0.01)
+            new_bullet.speed=4-(self.fireCount-1)*0.04
+            bullets.add(new_bullet)
+
+class star_Bullet_delay(star_Bullet):
+    def __init__(self,delay=40):
+        super(star_Bullet_delay,self).__init__()
+        self.delay=delay
+        self.speed=4
+        self.angle=0
+
+    def doDelay(self,effects):
+        if self.lastFrame==self.delay:
+            if not global_var.get_value('kiraing'):
+                global_var.get_value('kira_sound').stop()
+                global_var.get_value('kira_sound').play()
+                global_var.set_value('kiraing',True)
+            new_effect=Effect.bulletCreate(6)
+            new_effect.initial(self.tx,self.ty,84,32,6)
+            effects.add(new_effect)
+            self.countAngle()
+            self.setSpeed(self.angle,self.speed)
+    
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.movement()
+        self.doDelay(effects)
+        #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
+        #screen.blit(self.surf,self.rect)
+        self.drawBullet(screen)
+        self.checkValid()
+    

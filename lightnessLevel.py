@@ -145,6 +145,8 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
     if frame==10400:
         pygame.mixer.music.stop()
         pygame.mixer.music.load('resource/bgm/lightnessBoss.mp3') 
+        #pygame.mixer.music.load('resource/bgm/上海アリス幻樂団 - 死体旅行~ Be of good cheer!.mp3') 
+        
         pygame.mixer.music.set_volume(0.6)       
         new_boss=DADcharacter.Dumbledore()
         new_boss.initial(800,-100)

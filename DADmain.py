@@ -37,8 +37,8 @@ global_var._init()
 
 #test functions 
 global_var.set_value('ifTest',True)
-global_var.set_value('spellNum',4)
-global_var.set_value('ifSpellTest',True)
+global_var.set_value('spellNum',1)
+global_var.set_value('ifSpellTest',False)
 testFire=400
  
 #screen=pygame.display.set_mode((640,480))
@@ -181,6 +181,8 @@ graze_sound.set_volume(0.3)
 global_var.set_value('graze_sound',graze_sound)
 
 pygame.mixer.music.load('resource/bgm/lightnessOnTheWay.mp3')   # 载入背景音乐文件
+#pygame.mixer.music.load('resource/bgm/上海アリス幻樂団 - 死体旅行~ Be of good cheer!.mp3')
+
 pygame.mixer.music.set_volume(0.6)                  # 设定背景音乐音量
 
 pygame.mixer.music.play(loops=-1)
@@ -442,6 +444,7 @@ while running:
         boss.drawCardBonus(screen,smallfont,player)
         boss.drawBossName(screen)
         boss.drawSpellNum(screen)
+        boss.displayPercentHealth(screen,myfont)
 
     gF.showFpsBullet(screen,bigfont,frame,bulletSum,log)
     gameRule.displayUi(screen,player,bigfont)

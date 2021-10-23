@@ -1611,6 +1611,7 @@ class Boss(pygame.sprite.Sprite):
         self.tempx=0
         self.tempy=0
         self.deadImage=pygame.image.load('resource/sprite/sprite_dead.png').convert_alpha()
+        self.percentHealth=0
     def setSpeed(self,angle,speed):
         s=math.sin(math.radians(angle))
         c=math.cos(math.radians(angle))
@@ -1679,7 +1680,7 @@ class Boss(pygame.sprite.Sprite):
     def drawSpellName(self,screen,myfont,player):
         if self.ifSpell:
             spellText=myfont.render(self.spellName, True, (255, 255, 255))
-            shadowText=myfont.render(self.spellName, True, (0, 0, 0))
+            shadowText=myfont.render(self.spellName, True, (100, 0, 0))
             w, h = spellText.get_size()
             if player.cx>=660-w and player.cy<=60+h and self.lastFrame>=70:
                 self.ifBlock=True
@@ -1702,12 +1703,17 @@ class Boss(pygame.sprite.Sprite):
                 screen.blit(spellText,(660-w,33))
                 pygame.draw.line(screen,lineColor,(660,33+h+0),(660-w,33+h+0),2)
             
-    
+    def displayPercentHealth(self,screen,myfont):
+        self.percentHealth=round(self.health/self.maxHealth*100)
+        percentText=myfont.render(str(self.percentHealth)+'%', True, (255, 255, 255))
+        w,h=percentText.get_size()
+        screen.blit(percentText,(580-w,695))
+
     def drawCardBonus(self,screen,myfont,player):
         if self.ifSpell:
             if player.spellBonus:
                 bonusText=myfont.render('Bonus: '+str(self.cardBonus), True, (255, 255, 255))
-                shadowText=myfont.render('Bonus: '+str(self.cardBonus), True, (0, 0, 0))
+                shadowText=myfont.render('Bonus: '+str(self.cardBonus), True, (100, 0, 0))
             else:
                 bonusText=myfont.render('Bonus: Failed', True, (255, 255, 255))
                 shadowText=myfont.render('Bonus: Failed', True, (0, 0, 0))
@@ -2888,10 +2894,10 @@ class Dumbledore(Boss):
             self.lastFrame=0
             self.reset=False
             player.spellBonus=True
-            self.maxHealth=50000
+            self.maxHealth=170000
             self.health=self.maxHealth
             self.gotoPosition(360,200,80)
-            self.frameLimit=3600
+            self.frameLimit=7200
             self.cardBonus=10000000
             self.framePunishment=1700
             self.spellName='Sirius [Glowing Nimbus]'
@@ -2899,25 +2905,70 @@ class Dumbledore(Boss):
             self.randomAngle=random.random()*360
             global_var.get_value('spell_sound').play()
             self.directToggle=1
-
+            self.fireCount=0
         self.cardBonus-=self.framePunishment
         if self.lastFrame>=80:
-            if (self.lastFrame-80)%100==50:
+            if (self.lastFrame-80)%250==125:
+                if self.percentHealth<=40:
+                    s_interval=2
+                    s_speed=7
+                elif self.percentHealth<=75:
+                    s_interval=4
+                    s_speed=5.0
+                else:
+                    s_interval=5
+                    s_speed=3.7
+                if not global_var.get_value('enemyFiring1'):
+                    global_var.get_value('enemyGun_sound1').stop()
+                    global_var.get_value('enemyGun_sound1').play()
+                    global_var.set_value('enemyFiring1',True)
+                new_effect=Effect.bulletCreate(1)
+                new_effect.initial(self.tx,self.ty,128,48,16)
+                effects.add(new_effect)
                 for j in range(0,2):
                     #self.randomAngle=random.random()*360
                     for i in range(0,30):
-                        if i%2==0:
+                        if i%s_interval==0:
                             new_bullet=Bullet.star_bullet_side_selfTarget()
-                            new_bullet.loadColor('purple')
+                            new_bullet.loadColor('orange')
                         else:
                             new_bullet=Bullet.star_Bullet()
-                            new_bullet.loadColor('darkBlue')
+                            new_bullet.loadColor('orange')
                         new_bullet.initial(self.tx,self.ty,1)
-                        new_bullet.setSpeed(self.randomAngle+i*(360/30),3-1*j)
-                        new_bullet.speed=7
+                        new_bullet.setSpeed(self.randomAngle+i*(360/30),4-0.5*j)
+                        new_bullet.speed=s_speed
                         
                         bullets.add(new_bullet)
                 self.randomAngle=random.random()*360
+            if (self.lastFrame-80)%250==0:
+                self.directToggle+=1
+                time=3+math.floor(self.fireCount/2)
+                if time>=9:
+                    time=9
+                elif self.directToggle%2==0:
+                        new_effect=Effect.powerUp()
+                        new_effect.initial([self.tx,self.ty],600,50,(255,255,255),2,3,10)
+                        effects.add(new_effect)
+                        global_var.get_value('ch00_sound').play()
+                if not global_var.get_value('enemyFiring1'):
+                    global_var.get_value('enemyGun_sound1').stop()
+                    global_var.get_value('enemyGun_sound1').play()
+                    global_var.set_value('enemyFiring1',True)
+                new_effect=Effect.bulletCreate(6)
+                new_effect.initial(self.tx,self.ty,192,80,24)
+                effects.add(new_effect)
+                self.randomAngle2=random.random()*360
+                for i in range(0,time):
+                    if self.directToggle%2==0:
+                        new_bullet=Bullet.big_star_Bullet_slave(2)
+                    else:
+                        new_bullet=Bullet.big_star_Bullet_slave(-2)
+                    new_bullet.doColorCode(6)
+                    new_bullet.initial(self.tx,self.ty,1)
+                    new_bullet.setSpeed(self.randomAngle2+i*(360/time),3.5)
+                    bullets.add(new_bullet)
+                self.fireCount+=1
+
         
         if self.lastFrame>=80 and (self.lastFrame-80)%200==120:
             self.gotoPosition(random.random()*30+345,random.random()*30+225,60)
