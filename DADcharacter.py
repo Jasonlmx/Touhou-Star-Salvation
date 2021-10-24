@@ -1292,6 +1292,7 @@ class  Player(pygame.sprite.Sprite):
         self.deadStatu=0
         self.boomStatu=0
         self.direction=0
+        self.holdFrame=0
         self.itemCollectDistance=0
         self.power=100
         self.powerLevel=1
@@ -1388,13 +1389,27 @@ class  Player(pygame.sprite.Sprite):
                 #self.rect.move_ip(-speed,0)
                 self.tx=self.tx-speed
                 self.direction=1
+                if not pressed_keys[K_RIGHT]:
+                    self.holdFrame+=1
+                else:
+                    self.holdFrame-=1
             if pressed_keys[K_RIGHT]:
                 #self.rect.move_ip(speed,0)
                 self.tx=self.tx+speed
+                if not pressed_keys[K_LEFT]:
+                    self.holdFrame+=1
+                else:
+                    self.holdFrame-=1
                 if self.direction!=1:
                     self.direction=2
                 else:
                     self.direction=0
+            if not (pressed_keys[K_LEFT] or pressed_keys[K_RIGHT]):
+                self.holdFrame-=1
+            if self.holdFrame<0:
+                self.holdFrame=0
+            elif self.holdFrame>=40:
+                self.holdFrame=39
         if self.tx < 60+20:
             self.tx = 60+20
         elif self.tx+5 > 660-20:
@@ -1436,6 +1451,7 @@ class Marisa(Player):
         self.image=pygame.transform.scale(self.image,(384,216))
         self.interval=5
         self.part=0
+        self.count2=0
         self.frame=0
         self.itemGetLine=300
         self.fireInterval=4
@@ -1560,8 +1576,14 @@ class Marisa(Player):
             self.part+=1
         if self.part>=8:
             self.part=0
-        if self.direction!=0 and self.part==0:
-            self.part=1
+        if self.direction!=0 or self.holdFrame>0:
+            self.part=math.floor(self.holdFrame/self.interval)
+            if self.part==7:
+                if self.frame==0:
+                    self.count2+=1
+                if self.count2%2==0:
+                    self.part=6
+
         image.blit(self.image, (0, 0), (48*self.part,72*self.direction, 48, 72))
         screen.blit(image,(self.rect.centerx-24,self.rect.centery-36))
         self.drawFloatA(screen,shift_down)
@@ -2426,13 +2448,14 @@ class Dumbledore(Boss):
                 if (self.lastFrame-300)%120==0:
                     self.bulletSpeed=3
                 for i in range(-1,2):
-                    new_bullet=Bullet.big_star_Bullet()
+                    new_bullet=Bullet.big_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.selfTarget(player.cx,player.cy,8)
                     new_bullet.countAngle()
                     angle=new_bullet.angle+i*28
                     new_bullet.setSpeed(angle,self.bulletSpeed)
-                    new_bullet.doColorCode(1)
+                    new_bullet.loadColor('red')
+                    #new_bullet.doColorCode(1)
                     bullets.add(new_bullet)
                 self.bulletSpeed+=0.7
                 '''
@@ -2899,8 +2922,8 @@ class Dumbledore(Boss):
             self.gotoPosition(360,200,80)
             self.frameLimit=7200
             self.cardBonus=10000000
-            self.framePunishment=1700
-            self.spellName='Sirius [Glowing Nimbus]'
+            self.framePunishment=300
+            self.spellName='Moonglow[the place where moon rises]'
             self.gotoPosition(360,240,50)
             self.randomAngle=random.random()*360
             global_var.get_value('spell_sound').play()
@@ -2909,7 +2932,7 @@ class Dumbledore(Boss):
         self.cardBonus-=self.framePunishment
         if self.lastFrame>=80:
             if (self.lastFrame-80)%250==125:
-                if self.percentHealth<=40:
+                if self.percentHealth<=25:
                     s_interval=2
                     s_speed=7
                 elif self.percentHealth<=75:
@@ -2930,10 +2953,10 @@ class Dumbledore(Boss):
                     for i in range(0,30):
                         if i%s_interval==0:
                             new_bullet=Bullet.star_bullet_side_selfTarget()
-                            new_bullet.loadColor('orange')
+                            new_bullet.loadColor('skyBlue')
                         else:
                             new_bullet=Bullet.star_Bullet()
-                            new_bullet.loadColor('orange')
+                            new_bullet.loadColor('skyBlue')
                         new_bullet.initial(self.tx,self.ty,1)
                         new_bullet.setSpeed(self.randomAngle+i*(360/30),4-0.5*j)
                         new_bullet.speed=s_speed
@@ -2943,8 +2966,8 @@ class Dumbledore(Boss):
             if (self.lastFrame-80)%250==0:
                 self.directToggle+=1
                 time=3+math.floor(self.fireCount/2)
-                if time>=9:
-                    time=9
+                if time>=7:
+                    time=7
                 elif self.directToggle%2==0:
                         new_effect=Effect.powerUp()
                         new_effect.initial([self.tx,self.ty],600,50,(255,255,255),2,3,10)
@@ -2954,7 +2977,7 @@ class Dumbledore(Boss):
                     global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()
                     global_var.set_value('enemyFiring1',True)
-                new_effect=Effect.bulletCreate(6)
+                new_effect=Effect.bulletCreate(4)
                 new_effect.initial(self.tx,self.ty,192,80,24)
                 effects.add(new_effect)
                 self.randomAngle2=random.random()*360
@@ -2963,7 +2986,7 @@ class Dumbledore(Boss):
                         new_bullet=Bullet.big_star_Bullet_slave(2)
                     else:
                         new_bullet=Bullet.big_star_Bullet_slave(-2)
-                    new_bullet.doColorCode(6)
+                    new_bullet.doColorCode(4)
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle2+i*(360/time),3.5)
                     bullets.add(new_bullet)

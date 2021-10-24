@@ -361,8 +361,8 @@ class big_Bullet(Bullet):
         self.rect = self.surf.get_rect()
         self.surf.fill((255,255,255))
         self.type=3
-        self.image=pygame.image.load('resource/bullet/big_bullet_red.png')
-        self.image.set_alpha(210)
+        self.image=pygame.image.load('resource/bullet/big_bullet_red.png').convert_alpha()
+        #self.image.set_alpha(210)
         self.dx=48
         self.dy=48
     def update(self,screen,bullets,effects):
@@ -372,7 +372,7 @@ class big_Bullet(Bullet):
         self.checkValid()
     def loadColor(self,color):
         self.image=pygame.image.load('resource/bullet/big_bullet_'+color+'.png').convert_alpha()
-        self.image.set_alpha(210)
+        #self.image.set_alpha(210)
 class big_Bullet_explode(Bullet):
     def __init__(self):
         super(big_Bullet_explode,self).__init__()
@@ -996,7 +996,7 @@ class butterfly_Bullet(Bullet):
         self.image.fill((0,0,0,0))
         #self.image.set_colorkey((0, 0, 0))
         self.image.blit(global_var.get_value('butterfly_bullet_image').convert_alpha(), (0, 0), (48*self.colorNum,0, 48, 48))
-    
+        self.tempImage=self.image
     def update(self,screen,bullets,effects):
         self.movement()
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
@@ -1030,7 +1030,10 @@ class rice_Bullet(Bullet):
         self.dx=12
         self.dy=12
         self.colorNum=0
+        self.lastNum=0
         self.lastAngle=-10000
+        self.tempImage=0
+        self.lastFrame=0
         self.colorDict={'grey':0,'red':1,'lightRed':2,'purple':3,'pink':4,'blue':5,'seaBlue':6,'skyBlue':7,'lightBlue':8,'lakeBlue':8,'darkGreen':9,'green':10,'lightGreen':11,'yellow':12,'lemonYellow':13,'orange':14,'white':15}
     
     def doColorCode(self,code):
@@ -1041,11 +1044,13 @@ class rice_Bullet(Bullet):
         self.image.fill((0,0,0,0))
         #self.image.set_colorkey((0, 0, 0))
         self.image.blit(global_var.get_value('rice_bullet_image').convert_alpha(), (0, 0), (24*self.colorNum,0, 24, 24))
-    
+        if self.tempImage==0:
+            self.tempImage=self.image
     def loadColor(self,color):
         self.doColorCode(self.colorDict[color])
 
     def update(self,screen,bullets,effects):
+        self.lastFrame+=1
         self.movement()
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
         screen.blit(self.surf,self.rect)
@@ -1055,8 +1060,9 @@ class rice_Bullet(Bullet):
     def drawBullet(self,screen):
         self.countAngle()
         angle=270-self.angle
-        if round(angle)!=round(self.lastAngle):
+        if round(angle)!=round(self.lastAngle) or self.lastFrame==1 or self.lastNum!=self.colorNum:
             self.tempImage=pygame.transform.rotate(self.image, angle)
+        self.lastNum=self.colorNum
         #print(str(round(angle))+':'+str(round(self.lastAngle))+'->'+str(round(angle)!=round(self.lastAngle)))
         self.lastAngle=angle
         #w=30
@@ -1084,7 +1090,7 @@ class satsu_Bullet(rice_Bullet):
         self.image.fill((0,0,0,0))
         #self.image.set_colorkey((0, 0, 0))
         self.image.blit(global_var.get_value('satsu_bullet_image').convert_alpha(), (0, 0), (24*self.colorNum,0, 24, 24))
-
+        self.tempImage=self.image
 class bact_Bullet(rice_Bullet):
     def __init__(self):
         super(bact_Bullet,self).__init__()
@@ -1101,7 +1107,7 @@ class bact_Bullet(rice_Bullet):
         self.image.fill((0,0,0,0))
         #self.image.set_colorkey((0, 0, 0))
         self.image.blit(global_var.get_value('bact_bullet_image').convert_alpha(), (0, 0), (24*self.colorNum,0, 24, 24))
-
+        self.tempImage=self.image
 #bullets modified for lightness level
 class star_Bullet_Part4_Hex(star_Bullet):
     def __init__(self):
@@ -1827,7 +1833,7 @@ class star_bullet_side_selfTarget(star_Bullet):
         if self.tx<=60 or self.tx>=660 or self.ty<=30:
             bound=True
         if self.bounce>=1 and bound and self.ty<=500:
-            self.loadColor('red')
+            self.loadColor('lakeBlue')
             new_effect=Effect.bulletCreate(4)
             new_effect.initial(self.tx,self.ty,84,48,5)
             effects.add(new_effect)
@@ -1874,14 +1880,14 @@ class big_star_Bullet_slave(big_star_Bullet):
             self.kill()
         
     def fire(self,bullets,effects):
-        if self.lastFrame%4==0:
+        if self.lastFrame%3==0:
             self.countAngle()
             if not global_var.get_value('enemyFiring2'):
                 global_var.get_value('enemyGun_sound2').stop()
                 global_var.get_value('enemyGun_sound2').play()
                 global_var.set_value('enemyFiring2',True)
             
-            new_effect=Effect.bulletCreate(6)
+            new_effect=Effect.bulletCreate(4)
             new_effect.initial(self.tx,self.ty,84,32,8)
             effects.add(new_effect)
 
@@ -1890,11 +1896,11 @@ class big_star_Bullet_slave(big_star_Bullet):
                 self.directAdj=-1
             else:
                 self.directAdj=1
-            new_bullet=star_Bullet_delay(delay=90)
+            new_bullet=rice_Bullet_delay(delay=90)
             new_bullet.initial(self.tx,self.ty,1)
-            new_bullet.loadColor('yellow')
-            new_bullet.setSpeed(self.angle+90*self.directAdj,0.01)
-            new_bullet.speed=4-(self.fireCount-1)*0.04
+            new_bullet.loadColor('blue')
+            new_bullet.setSpeed(self.angle+(100+self.fireCount*3)*self.directAdj,0.001)
+            new_bullet.speed=4-(self.fireCount-1)*0.05
             bullets.add(new_bullet)
 
 class star_Bullet_delay(star_Bullet):
@@ -1910,7 +1916,7 @@ class star_Bullet_delay(star_Bullet):
                 global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
                 global_var.set_value('kiraing',True)
-            new_effect=Effect.bulletCreate(6)
+            new_effect=Effect.bulletCreate(4)
             new_effect.initial(self.tx,self.ty,84,32,6)
             effects.add(new_effect)
             self.countAngle()
@@ -1925,3 +1931,40 @@ class star_Bullet_delay(star_Bullet):
         self.drawBullet(screen)
         self.checkValid()
     
+class rice_Bullet_delay(rice_Bullet):
+    def __init__(self,delay=40):
+        super(rice_Bullet_delay,self).__init__()
+        self.delay=delay
+        self.speed=4
+        self.n_speed=0
+        self.angle=0
+        self.lastFrame=0
+        self.accFrame=30
+    def doDelay(self,effects):
+        if self.lastFrame==self.delay:
+            if not global_var.get_value('kiraing'):
+                global_var.get_value('kira_sound').stop()
+                global_var.get_value('kira_sound').play()
+                global_var.set_value('kiraing',True)
+            new_effect=Effect.bulletCreate(4)
+            new_effect.initial(self.tx,self.ty,84,32,6)
+            effects.add(new_effect)
+            self.countAngle()
+            #self.setSpeed(self.angle,self.speed)
+            #self.loadColor('white')
+
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.movement()
+        self.doDelay(effects)
+        self.accelerate()
+        #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
+        
+        self.drawBullet(screen)
+        #screen.blit(self.surf,self.rect)
+        self.checkValid()
+    
+    def accelerate(self):
+        if self.lastFrame>=self.delay and self.lastFrame<self.delay+self.accFrame:
+            self.n_speed+=(self.speed/self.accFrame)
+            self.setSpeed(self.angle,self.n_speed)
