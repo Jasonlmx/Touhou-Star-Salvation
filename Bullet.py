@@ -1890,7 +1890,7 @@ class big_star_Bullet_slave(big_star_Bullet):
                 self.directAdj=-1
             else:
                 self.directAdj=1
-            new_bullet=star_Bullet_delay(delay=60)
+            new_bullet=star_Bullet_delay(delay=90)
             new_bullet.initial(self.tx,self.ty,1)
             new_bullet.loadColor('yellow')
             new_bullet.setSpeed(self.angle+90*self.directAdj,0.01)
