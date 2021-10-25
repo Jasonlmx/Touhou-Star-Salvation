@@ -144,8 +144,8 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
     #part Final FF10300~ Boss fight
     if frame==10400:
         pygame.mixer.music.stop()
-        pygame.mixer.music.load('resource/bgm/lightnessBoss.mp3') 
-        #pygame.mixer.music.load('resource/bgm/th11_09.mp3') 
+        #pygame.mixer.music.load('resource/bgm/lightnessBoss.mp3') 
+        pygame.mixer.music.load('resource/bgm/金卡雷 - 引燃夜空的星火.mp3') 
         
         pygame.mixer.music.set_volume(0.6)       
         new_boss=DADcharacter.Dumbledore()

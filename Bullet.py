@@ -1804,6 +1804,7 @@ class star_bullet_side_selfTarget(star_Bullet):
         super(star_bullet_side_selfTarget,self).__init__()
         self.speed=0
         self.bounce=1
+        self.toggle=0
     def setSpeed(self,angle,speed):
         s=math.sin(math.radians(angle))
         c=math.cos(math.radians(angle))
@@ -1833,7 +1834,10 @@ class star_bullet_side_selfTarget(star_Bullet):
         if self.tx<=60 or self.tx>=660 or self.ty<=30:
             bound=True
         if self.bounce>=1 and bound and self.ty<=500:
-            self.loadColor('lakeBlue')
+            if self.toggle%2==1:
+                self.loadColor('lakeBlue')
+            else:
+                self.loadColor('orange')
             new_effect=Effect.bulletCreate(4)
             new_effect.initial(self.tx,self.ty,84,48,5)
             effects.add(new_effect)
@@ -1853,6 +1857,7 @@ class big_star_Bullet_slave(big_star_Bullet):
         self.lastFrame=0
         self.fireCount=0
         self.cancalable=False
+        self.toggle=0
     def setSpeed(self,angle,speed):
         s=math.sin(math.radians(angle))
         c=math.cos(math.radians(angle))
@@ -1887,7 +1892,10 @@ class big_star_Bullet_slave(big_star_Bullet):
                 global_var.get_value('enemyGun_sound2').play()
                 global_var.set_value('enemyFiring2',True)
             
-            new_effect=Effect.bulletCreate(4)
+            if self.toggle%2==0:
+                new_effect=Effect.bulletCreate(4)
+            else:
+                new_effect=Effect.bulletCreate(6)
             new_effect.initial(self.tx,self.ty,84,32,8)
             effects.add(new_effect)
 
@@ -1898,7 +1906,11 @@ class big_star_Bullet_slave(big_star_Bullet):
                 self.directAdj=1
             new_bullet=rice_Bullet_delay(delay=90)
             new_bullet.initial(self.tx,self.ty,1)
-            new_bullet.loadColor('blue')
+            new_bullet.toggle=self.toggle
+            if self.toggle%2==0:
+                new_bullet.loadColor('blue')
+            else:
+                new_bullet.loadColor('orange')
             new_bullet.setSpeed(self.angle+(100+self.fireCount*3)*self.directAdj,0.001)
             new_bullet.speed=4-(self.fireCount-1)*0.05
             bullets.add(new_bullet)
@@ -1931,7 +1943,7 @@ class star_Bullet_delay(star_Bullet):
         self.drawBullet(screen)
         self.checkValid()
     
-class rice_Bullet_delay(rice_Bullet):
+class rice_Bullet_delay(satsu_Bullet):
     def __init__(self,delay=40):
         super(rice_Bullet_delay,self).__init__()
         self.delay=delay
@@ -1940,18 +1952,26 @@ class rice_Bullet_delay(rice_Bullet):
         self.angle=0
         self.lastFrame=0
         self.accFrame=30
+        self.toggle=0
     def doDelay(self,effects):
         if self.lastFrame==self.delay:
             if not global_var.get_value('kiraing'):
                 global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
                 global_var.set_value('kiraing',True)
-            new_effect=Effect.bulletCreate(4)
+            if self.toggle%2==0:
+                code=6
+            else:
+                code=4
+            new_effect=Effect.bulletCreate(code)
             new_effect.initial(self.tx,self.ty,84,32,6)
             effects.add(new_effect)
             self.countAngle()
             #self.setSpeed(self.angle,self.speed)
-            #self.loadColor('white')
+            if self.toggle%2==0:
+                self.loadColor('orange')
+            else:
+                self.loadColor('blue')
 
     def update(self,screen,bullets,effects):
         self.lastFrame+=1

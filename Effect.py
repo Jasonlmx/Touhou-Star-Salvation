@@ -66,13 +66,13 @@ class bulletVanish(pygame.sprite.Sprite):
         self.frame+=1
         self.part=math.floor(self.frame/self.interval)
         w,h=self.image.get_size()
-        w_now=round(w*(1-0.25*self.part))
-        h_now=round(h*(1-0.25*self.part))
-        cR=1-0.25*self.part
+        w_now=round(w*(1-0.13*self.part))
+        h_now=round(h*(1-0.13*self.part))
+        cR=1-0.13*self.part
         tempImage=pygame.transform.scale(self.image,(w_now,h_now))
-        tempImage.set_alpha(256-64*self.part)
+        tempImage.set_alpha(256-15*self.part)
         screen.blit(tempImage,(self.cx-round(self.dx*cR),self.cy-round(self.dy*cR)))
-        if self.part>=3:
+        if self.part>=6:
             self.kill()
 
 class enemyDead(pygame.sprite.Sprite):

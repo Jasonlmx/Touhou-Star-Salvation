@@ -1371,6 +1371,10 @@ class  Player(pygame.sprite.Sprite):
                 #self.rect.move_ip(-speed,0)
                 self.tx=self.tx-speed*math.sqrt(2)/2
                 self.direction=1
+                if not pressed_keys[K_RIGHT]:
+                    self.holdFrame+=1
+                else:
+                    self.holdFrame-=1
             if pressed_keys[K_RIGHT]:
                 #self.rect.move_ip(speed,0)
                 self.tx=self.tx+speed*math.sqrt(2)/2
@@ -1378,6 +1382,10 @@ class  Player(pygame.sprite.Sprite):
                     self.direction=2
                 else:
                     self.direction=0
+                if not pressed_keys[K_LEFT]:
+                    self.holdFrame+=1
+                else:
+                    self.holdFrame-=1
         else:
             if pressed_keys[K_UP]:
                 #self.rect.move_ip(0,-speed)
@@ -1404,12 +1412,12 @@ class  Player(pygame.sprite.Sprite):
                     self.direction=2
                 else:
                     self.direction=0
-            if not (pressed_keys[K_LEFT] or pressed_keys[K_RIGHT]):
-                self.holdFrame-=1
-            if self.holdFrame<0:
-                self.holdFrame=0
-            elif self.holdFrame>=40:
-                self.holdFrame=39
+        if not (pressed_keys[K_LEFT] or pressed_keys[K_RIGHT]):
+            self.holdFrame-=1
+        if self.holdFrame<0:
+            self.holdFrame=0
+        elif self.holdFrame>=40:
+            self.holdFrame=39
         if self.tx < 60+20:
             self.tx = 60+20
         elif self.tx+5 > 660-20:
@@ -2923,7 +2931,7 @@ class Dumbledore(Boss):
             self.frameLimit=7200
             self.cardBonus=10000000
             self.framePunishment=300
-            self.spellName='Moonglow[the place where moon rises]'
+            self.spellName='Crossing-over[Moon rise Sun dawn]'
             self.gotoPosition(360,240,50)
             self.randomAngle=random.random()*360
             global_var.get_value('spell_sound').play()
@@ -2945,7 +2953,10 @@ class Dumbledore(Boss):
                     global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()
                     global_var.set_value('enemyFiring1',True)
-                new_effect=Effect.bulletCreate(1)
+                if self.directToggle%2==0:
+                    new_effect=Effect.bulletCreate(6)
+                else:
+                    new_effect=Effect.bulletCreate(4)
                 new_effect.initial(self.tx,self.ty,128,48,16)
                 effects.add(new_effect)
                 for j in range(0,2):
@@ -2953,10 +2964,17 @@ class Dumbledore(Boss):
                     for i in range(0,30):
                         if i%s_interval==0:
                             new_bullet=Bullet.star_bullet_side_selfTarget()
-                            new_bullet.loadColor('skyBlue')
+                            if self.directToggle%2==1:
+                                new_bullet.loadColor('skyBlue')
+                            else:
+                                new_bullet.loadColor('orange')
                         else:
                             new_bullet=Bullet.star_Bullet()
-                            new_bullet.loadColor('skyBlue')
+                            if self.directToggle%2==1:
+                                new_bullet.loadColor('skyBlue')
+                            else:
+                                new_bullet.loadColor('orange')
+                        new_bullet.toggle=self.directToggle
                         new_bullet.initial(self.tx,self.ty,1)
                         new_bullet.setSpeed(self.randomAngle+i*(360/30),4-0.5*j)
                         new_bullet.speed=s_speed
@@ -2966,7 +2984,7 @@ class Dumbledore(Boss):
             if (self.lastFrame-80)%250==0:
                 self.directToggle+=1
                 time=3+math.floor(self.fireCount/2)
-                if time>=7:
+                if time>7:
                     time=7
                 elif self.directToggle%2==0:
                         new_effect=Effect.powerUp()
@@ -2977,7 +2995,11 @@ class Dumbledore(Boss):
                     global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()
                     global_var.set_value('enemyFiring1',True)
-                new_effect=Effect.bulletCreate(4)
+                if self.directToggle%2==0:
+                    code=4
+                else:
+                    code=6
+                new_effect=Effect.bulletCreate(code)
                 new_effect.initial(self.tx,self.ty,192,80,24)
                 effects.add(new_effect)
                 self.randomAngle2=random.random()*360
@@ -2986,7 +3008,8 @@ class Dumbledore(Boss):
                         new_bullet=Bullet.big_star_Bullet_slave(2)
                     else:
                         new_bullet=Bullet.big_star_Bullet_slave(-2)
-                    new_bullet.doColorCode(4)
+                    new_bullet.doColorCode(code)
+                    new_bullet.toggle=self.directToggle
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle2+i*(360/time),3.5)
                     bullets.add(new_bullet)
@@ -3440,11 +3463,13 @@ class Dumbledore(Boss):
                 new_effect=Effect.bulletCreate(0)
                 new_effect.initial(sx,sy,128,64,10)
                 effects.add(new_effect)
+                colorCode=random.randint(0,15)
                 for i in range(0,bulletNum):
-                    new_bullet=Bullet.scale_Bullet()
+                    new_bullet=Bullet.satsu_Bullet()
                     new_bullet.initial(sx,sy,1)
                     new_bullet.setSpeed(self.randomAngle+i*(360/bulletNum),sspeed)
-                    new_bullet.loadColor('blue')
+                    #new_bullet.loadColor('blue')
+                    new_bullet.doColorCode(colorCode)
                     bullets.add(new_bullet)
                 self.randomAngle=random.random()*360
         

@@ -30,15 +30,15 @@ pygame.mixer.init()
 pygame.mixer.set_num_channels(30)
 size = width,height = 960,720
 fullscreen = True
-#screen = pygame.display.set_mode(size,RESIZABLE|DOUBLEBUF)
+screen = pygame.display.set_mode(size,RESIZABLE|DOUBLEBUF)
 #size = width, height =  pygame.display.list_modes()[0]
 screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE| DOUBLEBUF)
 global_var._init()
 
 #test functions 
 global_var.set_value('ifTest',True)
-global_var.set_value('spellNum',4)
-global_var.set_value('ifSpellTest',True)
+global_var.set_value('spellNum',1)
+global_var.set_value('ifSpellTest',False)
 testFire=400
  
 #screen=pygame.display.set_mode((640,480))
