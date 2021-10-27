@@ -20,6 +20,7 @@ class fire_effect_player(pygame.sprite.Sprite):
         self.x=0
         self.y=0
         self.upper=False
+        self.lower=False
     def initial(self,tx,ty,color):
         self.tx=tx
         self.ty=ty
@@ -52,9 +53,10 @@ class bulletVanish(pygame.sprite.Sprite):
         self.dy=0
         self.cx=0
         self.cy=0
-        self.interval=5
+        self.interval=2
         self.part=0
         self.upper=False
+        self.lower=False
     def initial(self,image,cx,cy,dx,dy):
         self.image=image
         self.cx=cx
@@ -66,11 +68,11 @@ class bulletVanish(pygame.sprite.Sprite):
         self.frame+=1
         self.part=math.floor(self.frame/self.interval)
         w,h=self.image.get_size()
-        w_now=round(w*(1-0.13*self.part))
-        h_now=round(h*(1-0.13*self.part))
-        cR=1-0.13*self.part
+        w_now=round(w*(1+0.2*self.part))
+        h_now=round(h*(1+0.2*self.part))
+        cR=1+0.2*self.part
         tempImage=pygame.transform.scale(self.image,(w_now,h_now))
-        tempImage.set_alpha(256-15*self.part)
+        tempImage.set_alpha(256-40*self.part)
         screen.blit(tempImage,(self.cx-round(self.dx*cR),self.cy-round(self.dy*cR)))
         if self.part>=6:
             self.kill()
@@ -88,6 +90,7 @@ class enemyDead(pygame.sprite.Sprite):
         self.part=0
         self.coef=0.15
         self.upper=False
+        self.lower=False
     def initial(self,image,cx,cy):
         self.image=image
         self.cx=cx
@@ -123,6 +126,7 @@ class itemFade(pygame.sprite.Sprite):
         self.interval=4
         self.part=0
         self.upper=False
+        self.lower=False
     def initial(self,image,cx,cy):
         self.image=image
         self.cx=cx
@@ -143,6 +147,7 @@ class screenText(pygame.sprite.Sprite):
         self.maxLastFrame=180
         self.image=pygame.Surface((384,48))
         self.upper=True
+        self.lower=False
     def update(self,screen):
         self.lastFrame+=1
         self.draw(screen)
@@ -160,6 +165,7 @@ class bonusText(screenText):
         self.bonus=100000
         self.font=pygame.font.SysFont('arial', 28)
         self.transFrame=30
+        self.lower=False
     def getBonus(self,bonus):
         self.bonus=bonus
 
@@ -204,6 +210,7 @@ class failText(screenText):
         self.image.set_alpha(256)
         self.image.blit(global_var.get_value('front00'), (0, 0), (384,576,240,48))
         self.transFrame=30
+        self.lower=False
     def draw(self,screen):
         if self.lastFrame<=self.transFrame:
             height=round(48*self.lastFrame/self.transFrame)
@@ -250,6 +257,7 @@ class wave(pygame.sprite.Sprite):
         self.color=(255,255,255)
         self.width=6
         self.upper=False
+        self.lower=False
     def initial(self,pos,maxRadius,maxFrame,color,width):
         self.maxRadius=maxRadius
         self.maxFrame=maxFrame
@@ -279,6 +287,7 @@ class powerUp(pygame.sprite.Sprite):
         self.num=5
         self.interval=20
         self.upper=False
+        self.lower=False
     def initial(self,pos,maxRadius,maxFrame,color,width,num,interval):
         self.maxRadius=maxRadius
         self.maxFrame=maxFrame
@@ -310,6 +319,7 @@ class grazeEffect(pygame.sprite.Sprite):
         self.num=5
         self.interval=20
         self.upper=True
+        self.lower=False
         self.tx=0.0
         self.ty=0.0
         self.type=0
@@ -365,6 +375,7 @@ class bulletCreate(pygame.sprite.Sprite):
         self.maxFrame=10
         self.lastFrame=0
         self.upper=True
+        self.lower=False
         self.angle=random.random()*360
         self.alpha=180
         self.getImage()
@@ -396,3 +407,63 @@ class bulletCreate(pygame.sprite.Sprite):
 
     def draw(self,size,screen):
         gF.drawRotation(self.temp,(round(self.tx-size/2),round(self.ty-size/2)),self.angle,screen)
+    
+class bossFlame(pygame.sprite.Sprite):
+    def __init__(self):
+        super(bossFlame,self).__init__()
+        self.effFlameImg=global_var.get_value('effFlameImg')
+        self.maxFrame=30
+        self.max=100
+        self.min=20
+        self.lastFrame=0
+        self.upper=False
+        self.lower=True
+        self.temp=0
+        self.rand=random.randint(-5,5)
+    def initial(self,Max,Min,maxFrame):
+        self.max=Max
+        self.min=Min
+        self.maxFrame=maxFrame
+    
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
+        
+    def update(self,screen):
+        size=round(self.min+(self.lastFrame/self.maxFrame)*(self.max-self.min))
+        self.temp=pygame.transform.scale(self.effFlameImg,(72,size))
+        self.draw(size,screen)
+        self.lastFrame+=1
+        self.checkValid()
+    
+    def draw(self,size,screen):
+        tx=global_var.get_value('boss1x')
+        ty=global_var.get_value('boss1y')
+        screen.blit(self.temp,(round(tx-36+self.rand),round(ty-size)))
+
+class bossLight(pygame.sprite.Sprite):
+    def __init__(self):
+        super(bossLight,self).__init__()
+        self.effFlameImg=global_var.get_value('effLightImg')
+        self.angle=random.random()*360
+        self.lastFrame=0
+        self.upper=False
+        self.lower=True
+        self.temp=0
+    def initial(self,maxFrame):
+        self.maxFrame=maxFrame
+    
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
+        
+    def update(self,screen):
+        self.draw(screen)
+        self.lastFrame+=1
+        self.checkValid()
+    
+    def draw(self,screen):
+        tx=global_var.get_value('boss1x')
+        ty=global_var.get_value('boss1y')
+        gF.drawRotation(self.effFlameImg,(round(tx-36),round(ty-36)),self.angle,screen)
+        

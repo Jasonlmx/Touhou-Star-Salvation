@@ -46,7 +46,7 @@ pygame.display.set_caption("Touhou Star Salvation")
 back=pygame.image.load('resource/background.jpg').convert_alpha()
 point=pygame.image.load('resource/point.png').convert_alpha()
 point2=pygame.image.load('resource/point2.png').convert_alpha()
-point=pygame.transform.scale(point,(84,84))
+point=pygame.transform.scale(point,(96,96))
 point2=pygame.transform.scale(point2,(96,96))
 point2.set_alpha(128)
 myfont = pygame.font.SysFont('arial', 12)
@@ -179,6 +179,9 @@ global_var.set_value('option_sound',option_sound)
 graze_sound=pygame.mixer.Sound('resource/sound/se_graze.wav')
 graze_sound.set_volume(0.3)
 global_var.set_value('graze_sound',graze_sound)
+nep_sound=pygame.mixer.Sound('resource/sound/se_nep00.wav')
+nep_sound.set_volume(0.3)
+global_var.set_value('nep_sound',nep_sound)
 
 pygame.mixer.music.load('resource/bgm/lightnessOnTheWay.mp3')   # 载入背景音乐文件
 #pygame.mixer.music.load('resource/bgm/上海アリス幻樂団 - 死体旅行~ Be of good cheer!.mp3')
@@ -299,6 +302,10 @@ while running:
     for playerGun in playerGuns:
         playerGun.update(screen)
     
+    for effect in effects:
+        if effect.lower:
+            effect.update(screen)
+    
     for enemy in enemys:
         enemy.update(screen,frame,bullets,bullets2,effects,items)
         enemySum+=1
@@ -348,7 +355,7 @@ while running:
         effects.add(new_effect)
 
     for effect in effects:
-        if not effect.upper:
+        if not (effect.upper or effect.lower):
             effect.update(screen)
         
     for bullet in bullets:
@@ -390,6 +397,7 @@ while running:
             new_effect=Effect.wave()
             new_effect.initial([boom.tx,boom.ty],900,20,(244,213,87),6)
             effects.add(new_effect)
+            global_var.get_value('nep_sound').stop()
         elif boom.ifBoss and boom.lastFrame==399:
             gameRule.cancalAllBullet(bullets,items,effects,True)
             for enemy in enemys:
@@ -398,7 +406,7 @@ while running:
             new_effect=Effect.wave()
             new_effect.initial([boom.tx,boom.ty],900,20,(244,213,87),6)
             effects.add(new_effect)
-        
+            global_var.get_value('nep_sound').stop()
         if boom.lastFrame>=5 and pressed_keys[K_x] and not global_var.get_value('pressingX'):
             gameRule.cancalAllBullet(bullets,items,effects,True)
             for enemy in enemys:
@@ -409,10 +417,11 @@ while running:
             new_effect=Effect.wave()
             new_effect.initial([boom.tx,boom.ty],900,20,(244,213,87),6)
             effects.add(new_effect)
+            global_var.get_value('nep_sound').stop()
 
     #key
     if pressed_keys[K_LSHIFT]:
-        gF.drawRotation(point,(player.rect.left-42+5,player.rect.top-42+4),angle,screen)
+        gF.drawRotation(point,(player.rect.centerx-48,player.rect.centery-48),angle,screen)
 
 
     

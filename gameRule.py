@@ -56,7 +56,8 @@ def missDetect(player,bullets,enemys,effects,miss_sound,items):
         player.bulletSurpress=60
 
         new_effect=Effect.bulletVanish()
-        if miss.type!=5 and miss.type!=7:
+        exception=(5,7,10,11,12,13)
+        if not miss.type in exception:
             new_effect.initial(miss.image,miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
         elif miss.type==5:
             new_effect.initial(miss.tempImage,miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
@@ -65,6 +66,9 @@ def missDetect(player,bullets,enemys,effects,miss_sound,items):
                 new_effect.initial(miss.red[0],miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
             else:
                 new_effect.initial(miss.blue[0],miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
+        elif miss.type==10 or miss.type==11 or miss.type==12 or miss.type==13:
+            new_effect.initial(miss.tempImage,miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
+
         effects.add(new_effect)
         miss.kill()
 
@@ -103,6 +107,7 @@ def missDetect(player,bullets,enemys,effects,miss_sound,items):
 def doBoom(player,booms,pressed_keys,slash_sound,items):
     if pressed_keys[K_x] and player.boomStatu==0 and player.boom>0 and not global_var.get_value('pressingX'):
         player.boom-=1
+        global_var.get_value('nep_sound').play(-1)
         global_var.set_value('boomStatu',1)
         player.deadStatu=0
         player.deadFrame=10

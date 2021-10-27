@@ -37,6 +37,15 @@ def drawBackground(screen):
     screen.blit(global_var.get_value('down'),(60,690))
     screen.blit(global_var.get_value('right'),(660,30))
 
+def fill(surface, color):
+    """Fill all pixels of the surface with color, preserve transparency."""
+    w, h = surface.get_size()
+    r, g, b, _ = color
+    for x in range(w):
+        for y in range(h):
+            a = surface.get_at((x, y))[3]
+            surface.set_at((x, y), pygame.Color(r, g, b, a))
+
 def displayScene(frame,screen):
     sceneNum=(frame//2)%(1540)
     c=sceneNum
@@ -149,6 +158,25 @@ def loadImage():
     bact_bullet_image=pygame.image.load('resource/bullet/bact_bullet.png')
     bact_bullet_image=pygame.transform.scale(bact_bullet_image,(384,24))
     global_var.set_value('bact_bullet_image',bact_bullet_image)
+    effect_temp1=pygame.image.load('resource/boss/eff01.png')
+    effect_temp1=pygame.transform.scale(effect_temp1,(192,96))
+    global_var.set_value('effect_temp1',effect_temp1)
+    effFlameImg=pygame.Surface((72,72)).convert_alpha()
+    effFlameImg.fill((0,0,0,0))
+    effFlameImg.blit(global_var.get_value('effect_temp1').convert_alpha(), (0, 0), (0,0, 72, 72))
+    flameColor=(62,255,0,0)
+    fill(effFlameImg,flameColor)
+    effFlameImg.set_alpha(150)
+    global_var.set_value('effFlameImg',effFlameImg)
+
+    effLightImg=pygame.Surface((72,72)).convert_alpha()
+    effLightImg.fill((0,0,0,0))
+    effLightImg.blit(global_var.get_value('effect_temp1').convert_alpha(), (0, 0), (72,0, 72, 72))
+    flameColor=(62,255,0,0)
+    fill(effLightImg,flameColor)
+    effLightImg.set_alpha(150)
+    global_var.set_value('effLightImg',effLightImg)
+
 
     graze_text=pygame.Surface((96,24))
     graze_text=graze_text.convert_alpha()
