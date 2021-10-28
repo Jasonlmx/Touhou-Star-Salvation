@@ -1655,7 +1655,7 @@ class Reimu(Player):
         self.floatImage=pygame.Surface((23,23))
         self.floatImage=self.floatImage.convert_alpha()
         self.floatImage.fill((0,0,0,0))
-        self.floatImage.blit(global_var.get_value('reimu_fire'),(0,0),(121,1,23,23))
+        self.floatImage.blit(global_var.get_value('reimu_fire'),(0,0),(121-24,1,23,23))
         self.gunCycle=0
         self.gunAdj=[0,-60]
     
@@ -1688,46 +1688,46 @@ class Reimu(Player):
             if frame%8==0:
                 if self.powerLevel==1:
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx+0*self.distTimes,self.cy+40,self.inclineSpeed)
+                    new_fire.initial(270,self.cx+0*self.distTimes,self.cy+50+30*self.distTimes-45,self.inclineSpeed)
                     new_fire.angle=270
                     playerGuns.add(new_fire)
                 elif self.powerLevel==2:
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx+30*self.distTimes,self.cy+0,self.inclineSpeed)
+                    new_fire.initial(270,self.cx+30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
                     new_fire.angle=270
                     playerGuns.add(new_fire)
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx-30*self.distTimes,self.cy+0,self.inclineSpeed)
+                    new_fire.initial(270,self.cx-30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
                     new_fire.angle=270
                     playerGuns.add(new_fire)
                 elif self.powerLevel==3:
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx+30*self.distTimes,self.cy+0,self.inclineSpeed)
+                    new_fire.initial(270,self.cx+30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
                     new_fire.angle=270
                     playerGuns.add(new_fire)
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx-30*self.distTimes,self.cy+0,self.inclineSpeed)
+                    new_fire.initial(270,self.cx-30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
                     new_fire.angle=270
                     playerGuns.add(new_fire)
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx+0*self.distTimes,self.cy+40,self.inclineSpeed)
+                    new_fire.initial(270,self.cx+0*self.distTimes,self.cy+50+30*self.distTimes-45,self.inclineSpeed)
                     new_fire.angle=270
                     playerGuns.add(new_fire)
                 elif self.powerLevel==4:
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx+30*self.distTimes,self.cy+0,self.inclineSpeed)
+                    new_fire.initial(270,self.cx+30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
                     new_fire.angle=270
                     playerGuns.add(new_fire)
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx-30*self.distTimes,self.cy+0,self.inclineSpeed)
+                    new_fire.initial(270,self.cx-30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
                     new_fire.angle=270
                     playerGuns.add(new_fire)
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx-15*self.distTimes,self.cy+40,self.inclineSpeed)
+                    new_fire.initial(270,self.cx-15*self.distTimes,self.cy+50+30*self.distTimes-45,self.inclineSpeed)
                     new_fire.angle=270
                     playerGuns.add(new_fire)
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx+15*self.distTimes,self.cy+40,self.inclineSpeed)
+                    new_fire.initial(270,self.cx+15*self.distTimes,self.cy+50+30*self.distTimes-45,self.inclineSpeed)
                     new_fire.angle=270
                     playerGuns.add(new_fire)
             
@@ -1760,19 +1760,19 @@ class Reimu(Player):
         image.blit(self.image, (0, 0), (48*self.part,72*self.direction, 48, 72))
         screen.blit(image,(self.rect.centerx-24,self.rect.centery-36))
         if self.powerLevel==1:
-            self.drawFloatA(screen,shift_down,0*self.distTimes,40)
+            self.drawFloatA(screen,shift_down,0*self.distTimes,50+30*self.distTimes-45)
         elif self.powerLevel==2:
-            self.drawFloatA(screen,shift_down,30*self.distTimes,0)
-            self.drawFloatA(screen,shift_down,-30*self.distTimes,0)
+            self.drawFloatA(screen,shift_down,30*self.distTimes,0-30*(self.distTimes)+45)
+            self.drawFloatA(screen,shift_down,-30*self.distTimes,0-30*(self.distTimes)+45)
         elif self.powerLevel==3:
-            self.drawFloatA(screen,shift_down,30*self.distTimes,0)
-            self.drawFloatA(screen,shift_down,-30*self.distTimes,0)
-            self.drawFloatA(screen,shift_down,0*self.distTimes,40)
+            self.drawFloatA(screen,shift_down,30*self.distTimes,0-30*(self.distTimes)+45)
+            self.drawFloatA(screen,shift_down,-30*self.distTimes,0-30*(self.distTimes)+45)
+            self.drawFloatA(screen,shift_down,0*self.distTimes,50+30*self.distTimes-45)
         elif self.powerLevel==4:
-            self.drawFloatA(screen,shift_down,30*self.distTimes,0)
-            self.drawFloatA(screen,shift_down,-30*self.distTimes,0)
-            self.drawFloatA(screen,shift_down,15*self.distTimes,40)
-            self.drawFloatA(screen,shift_down,-15*self.distTimes,40)
+            self.drawFloatA(screen,shift_down,30*self.distTimes,0-30*(self.distTimes)+45)
+            self.drawFloatA(screen,shift_down,-30*self.distTimes,0-30*(self.distTimes)+45)
+            self.drawFloatA(screen,shift_down,15*self.distTimes,50+30*self.distTimes-45)
+            self.drawFloatA(screen,shift_down,-15*self.distTimes,50+30*self.distTimes-45)
         #screen.blit(self.surf,self.rect)
     def drawFloatA(self,screen,shift_down,dx,dy):
         self.gunCycle+=1
