@@ -36,7 +36,7 @@ screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE| DOUBLEBUF)
 global_var._init()
 
 #test functions 
-global_var.set_value('ifTest',False)
+global_var.set_value('ifTest',True)
 global_var.set_value('spellNum',1)
 global_var.set_value('ifSpellTest',False)
 testFire=400

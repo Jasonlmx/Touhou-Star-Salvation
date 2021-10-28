@@ -74,7 +74,10 @@ def missDetect(player,bullets,enemys,effects,miss_sound,items):
 
     if player.deadStatu==1 and player.deadFrame<=0 and player.immune!=1:
         player.life-=1
-        player.power-=100
+        if player.__class__.__name__=="Marisa":
+            player.power-=100
+        elif player.__class__.__name__=="Reimu":
+            player.power-=50
         player.immune=1
         player.deadFrame=10
         player.boom=3

@@ -129,7 +129,7 @@ class playerGun(pygame.sprite.Sprite):
         self.angle=angle
 
     def checkVaild(self):
-        if self.rect.top>=720-30:
+        if self.rect.top>=720-30+10:
             self.kill()
         if self.rect.bottom<=0+30:
             self.kill()
@@ -191,6 +191,7 @@ class straightGun(playerGun):
     def __init__(self):
         super(straightGun,self).__init__()
         self.image=global_var.get_value('playerFire_green')
+        self.hit=75
     def draw(self,screen):
         self.countAngle()
         gF.drawRotation(self.image,(self.rect.centerx-24,self.rect.centery-24),-self.angle,screen)
@@ -204,7 +205,7 @@ class inclineGun(playerGun):
         self.surf.fill((255,255,255))
         self.rect=self.surf.get_rect()
         self.image=global_var.get_value('playerFire_blue')
-        self.hit=30
+        self.hit=40
     def initial(self,angle,tx,ty,speed):
         self.tx=tx
         self.ty=ty
@@ -242,11 +243,22 @@ class reimuTargetSatsu(playerGun):
         self.image.fill((0,0,0,0))
         self.image.blit(global_var.get_value('reimu_fire'),(0,0),(0,24,24,24))
         #self.image=global_var.get_value('playerFire_blue')
-        self.hit=25
+        self.hit=50
         self.lastFrame=0
         self.maxFrame=120
         self.initAngle=0
-        self.adjAngle=10
+        self.adjAngle=3
+    
+    def checkVaild(self):
+        if self.rect.top>=720-30+10:
+            self.kill()
+        if self.rect.bottom<=0+30:
+            self.kill()
+        if self.rect.right<=0+60-40:
+            self.kill()
+        if self.rect.left>=660+40:
+            self.kill()
+
     def initial(self,angle,tx,ty,speed):
         self.tx=tx
         self.ty=ty
