@@ -29,7 +29,7 @@ class fire_effect_player(pygame.sprite.Sprite):
     def loadColor(self,color):
         self.image=[]
         for i in range(1,4):
-            effect=pygame.image.load('resource/playerFire/'+color+'_effect'+str(i)+'.png')
+            effect=pygame.image.load('resource/playerFire/'+color+'_effect'+str(i)+'.png').convert_alpha()
             effect=pygame.transform.scale(effect,(24,48))
             self.image.append(effect)
     
@@ -450,6 +450,7 @@ class bossLight(pygame.sprite.Sprite):
         self.upper=False
         self.lower=True
         self.temp=0
+        self.startSize=120
     def initial(self,maxFrame):
         self.maxFrame=maxFrame
     
@@ -458,12 +459,16 @@ class bossLight(pygame.sprite.Sprite):
             self.kill()
         
     def update(self,screen):
-        self.draw(screen)
+        size=round(self.startSize-(self.startSize-72)*(self.lastFrame/self.maxFrame))
+        self.draw(screen,size)
         self.lastFrame+=1
         self.checkValid()
     
-    def draw(self,screen):
+    def draw(self,screen,size):
+        self.temp=pygame.transform.scale(self.effFlameImg,(size,size))
+        alpha=round(156*(self.lastFrame/self.maxFrame))+100
+        self.temp.set_alpha(alpha)
         tx=global_var.get_value('boss1x')
         ty=global_var.get_value('boss1y')
-        gF.drawRotation(self.effFlameImg,(round(tx-36),round(ty-36)),self.angle,screen)
+        gF.drawRotation(self.temp,(round(tx-size/2),round(ty-size/2)),self.angle,screen)
         

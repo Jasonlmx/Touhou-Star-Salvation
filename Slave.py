@@ -250,4 +250,6 @@ class Hagrid_slave_typeLinear(slave_linear):
             new_bullet.setDelayedTarget(self.playerx,self.playery,1.5)
             new_bullet.loadColor('blue')
             bullets.add(new_bullet)
+    
+    
             

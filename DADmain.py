@@ -36,7 +36,7 @@ screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE| DOUBLEBUF)
 global_var._init()
 
 #test functions 
-global_var.set_value('ifTest',True)
+global_var.set_value('ifTest',False)
 global_var.set_value('spellNum',1)
 global_var.set_value('ifSpellTest',False)
 testFire=400
@@ -69,6 +69,7 @@ global_var.set_value('right', back_right)
 global_var.set_value('boomStatu',0)
 global_var.set_value('grazeNum',0)
 global_var.set_value('fpSec',0)
+global_var.set_value('enemyPos',(0,0,10000))
 log = open("./log.csv", 'w+')
 #main loop controller 
 running = True
@@ -78,7 +79,7 @@ running = True
 
 #init player position
 gF.loadImage()
-player = DADcharacter.Marisa()
+player = DADcharacter.Reimu()
 player.tx=357.0
 player.ty=600.0
 ###
@@ -306,6 +307,7 @@ while running:
         if effect.lower:
             effect.update(screen)
     
+    global_var.set_value('enemyPos',(0,0,10000))
     for enemy in enemys:
         enemy.update(screen,frame,bullets,bullets2,effects,items)
         enemySum+=1

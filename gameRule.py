@@ -136,9 +136,10 @@ def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses):
     
 
     for bullet in bullet_hit:
-        new_effect=Effect.fire_effect_player()
-        new_effect.initial(bullet.rect.centerx,bullet.rect.centery,bullet.color)
-        effects.add(new_effect)
+        if player.__class__.__name__=="Marisa":
+            new_effect=Effect.fire_effect_player()
+            new_effect.initial(bullet.rect.centerx,bullet.rect.centery,bullet.color)
+            effects.add(new_effect)
         player.score+=50
         bullet.kill()
 
@@ -161,9 +162,10 @@ def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses):
                 global_var.set_value('hitting',True)
     
     for bullet in bullet_hit:
-        new_effect=Effect.fire_effect_player()
-        new_effect.initial(bullet.rect.centerx,bullet.rect.centery,bullet.color)
-        effects.add(new_effect)
+        if player.__class__.__name__=="Marisa":
+            new_effect=Effect.fire_effect_player()
+            new_effect.initial(bullet.rect.centerx,bullet.rect.centery,bullet.color)
+            effects.add(new_effect)
         player.score+=100
         bullet.kill()
 

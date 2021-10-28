@@ -111,6 +111,18 @@ class enemy(pygame.sprite.Sprite):
         self.truePos()
         self.fire(frame,bullets)
         self.draw(screen,frame)
+        self.checkDistance()
+    
+    def checkDistance(self):
+        px=global_var.get_value('player1x')
+        py=global_var.get_value('player1y')
+        dx=px-self.tx
+        dy=py-self.ty
+        dist=math.sqrt(dx**2+dy**2)
+        minDist=global_var.get_value('enemyPos')[2]
+        if self.tx<660 and self.tx>60 and self.ty<690 and self.ty>30 and dist<minDist:
+            global_var.set_value('enemyPos',(self.tx,self.ty,dist))
+
     def ai_move(self):
         pass
 
@@ -1455,7 +1467,7 @@ class Marisa(Player):
         self.surf = pygame.Surface((6,6))
         self.surf.fill((255,255,255))
         self.rect = self.surf.get_rect()
-        self.image=global_var.get_value('pl01')
+        self.image=global_var.get_value('pl00')
         self.image=pygame.transform.scale(self.image,(384,216))
         self.interval=5
         self.part=0
@@ -1595,7 +1607,156 @@ class Marisa(Player):
         image.blit(self.image, (0, 0), (48*self.part,72*self.direction, 48, 72))
         screen.blit(image,(self.rect.centerx-24,self.rect.centery-36))
         self.drawFloatA(screen,shift_down)
-        screen.blit(self.surf,self.rect)
+        #screen.blit(self.surf,self.rect)
+    def drawFloatA(self,screen,shift_down):
+        self.gunCycle+=1
+        image=pygame.Surface((24,24))
+        image=image.convert_alpha()
+        image.fill((0,0,0,0))
+        if shift_down:
+            index_x=0
+        else:
+            index_x=24
+        image.blit(self.floatImage,(0,0),(index_x,0,24,24))
+        size=round(math.sin(self.gunCycle*math.pi/180*4)*4+24)
+        image=pygame.transform.scale(image,(size,size))
+        screen.blit(image,(round(self.cx-size/2+self.gunAdj[0]),round(self.cy-size/2)+self.gunAdj[1]))
+
+class Reimu(Player):
+    def __init__(self):
+        super(Reimu,self).__init__()
+        self.surf = pygame.Surface((6,6))
+        self.surf.fill((255,255,255))
+        self.rect = self.surf.get_rect()
+        self.image=global_var.get_value('pl01')
+        self.image=pygame.transform.scale(self.image,(384,216))
+        self.interval=5
+        self.part=0
+        self.count2=0
+        self.frame=0
+        self.itemGetLine=300
+        self.fireInterval=4
+        self.inclineAngle1=10
+        self.inclineAngle2=25
+        self.inclineSpeed=40
+        self.floatImage=pygame.transform.scale(pygame.image.load('./resource/player/pl00/floatGun.png'),(120,24))
+        self.gunCycle=0
+        self.gunAdj=[0,-60]
+    def fire(self,frame,screen,playerGuns):
+        if frame%4==0:
+            new_fire=Bullet.reimuMainSatsu()
+            new_fire.tx=self.cx-14
+            new_fire.ty=self.cy
+            playerGuns.add(new_fire)
+
+            new_fire=Bullet.reimuMainSatsu()
+            new_fire.tx=self.cx+14
+            new_fire.ty=self.cy
+            playerGuns.add(new_fire)
+            shift_down=global_var.get_value('shift_down')
+
+            #incline angle control:
+            if not shift_down:
+                self.inclineAngle1+=5/2
+                self.inclineAngle2+=10.625/2
+            else:
+                self.inclineAngle1-=5/2
+                self.inclineAngle2-=10.625/2
+            if self.inclineAngle1>=10:
+                self.inclineAngle1=10
+            if self.inclineAngle1<=2:
+                self.inclineAngle1=2
+            if self.inclineAngle2>=25:
+                self.inclineAngle2=25
+            if self.inclineAngle2<=8:
+                self.inclineAngle2=8
+            
+            
+            #create fire
+            if not shift_down:
+                
+                if self.powerLevel>=2 or frame%8==0:
+                    new_fire=Bullet.reimuTargetSatsu()
+                    new_fire.initial(270-self.inclineAngle1,self.cx+self.gunAdj[0],self.cy+self.gunAdj[1],self.inclineSpeed)
+                    new_fire.angle=270-self.inclineAngle1
+                    playerGuns.add(new_fire)
+                    new_fire=Bullet.reimuTargetSatsu()
+                    new_fire.initial(270+self.inclineAngle1,self.cx+self.gunAdj[0],self.cy+self.gunAdj[1],self.inclineSpeed)
+                    new_fire.angle=270+self.inclineAngle1
+                    playerGuns.add(new_fire)
+                if self.powerLevel>=3:
+                    if self.powerLevel>=4 or frame%8==0:
+                        new_fire=Bullet.reimuTargetSatsu()
+                        new_fire.initial(270-self.inclineAngle2,self.cx+self.gunAdj[0],self.cy+self.gunAdj[1],self.inclineSpeed)
+                        new_fire.angle=270-self.inclineAngle2
+                        playerGuns.add(new_fire)
+                        new_fire=Bullet.reimuTargetSatsu()
+                        new_fire.initial(270+self.inclineAngle2,self.cx+self.gunAdj[0],self.cy+self.gunAdj[1],self.inclineSpeed)
+                        new_fire.angle=270+self.inclineAngle2
+                        playerGuns.add(new_fire)
+            else:
+                hit=25
+                if self.powerLevel>=2 or frame%8==0:
+                    new_fire=Bullet.reimuTargetSatsu()
+                    new_fire.hit=hit
+                    new_fire.initial(270-self.inclineAngle1,self.cx+self.gunAdj[0],self.cy+self.gunAdj[1],self.inclineSpeed)
+                    new_fire.angle=270-self.inclineAngle1
+                    playerGuns.add(new_fire)
+                    new_fire=Bullet.reimuTargetSatsu()
+                    new_fire.hit=hit
+                    new_fire.initial(270+self.inclineAngle1,self.cx+self.gunAdj[0],self.cy+self.gunAdj[1],self.inclineSpeed)
+                    new_fire.angle=270+self.inclineAngle1
+                    playerGuns.add(new_fire)
+                if self.powerLevel>=3:
+                    if self.powerLevel>=4 or frame%8==0:
+                        new_fire=Bullet.reimuTargetSatsu()
+                        new_fire.hit=hit
+                        new_fire.initial(270-self.inclineAngle2,self.cx+self.gunAdj[0],self.cy+self.gunAdj[1],self.inclineSpeed)
+                        new_fire.angle=270-self.inclineAngle2
+                        playerGuns.add(new_fire)
+                        new_fire=Bullet.reimuTargetSatsu()
+                        new_fire.hit=hit
+                        new_fire.initial(270+self.inclineAngle2,self.cx+self.gunAdj[0],self.cy+self.gunAdj[1],self.inclineSpeed)
+                        new_fire.angle=270+self.inclineAngle2
+                        playerGuns.add(new_fire)
+
+    def draw(self,screen):
+        gunMax=50
+        gunFrame=3
+        shift_down=global_var.get_value('shift_down')
+        if shift_down:
+            self.gunAdj[1]-=gunMax/gunFrame
+        else:
+            self.gunAdj[1]+=gunMax/gunFrame
+        if self.gunAdj[1]>=gunMax:
+            self.gunAdj[1]=gunMax
+        if self.gunAdj[1]<=-gunMax:
+            self.gunAdj[1]=-gunMax
+
+        image=pygame.Surface((48, 72))
+        image=image.convert_alpha()
+        image.fill((0,0,0,0))
+        #pygame.Surface.convert_alpha(image)
+        #image.set_alpha(256)
+        #image.set_colorkey((0, 0, 0))
+        self.frame+=1
+        if self.frame>=self.interval:
+            self.frame=0
+            self.part+=1
+        if self.part>=8:
+            self.part=0
+        if self.direction!=0 or self.holdFrame>0:
+            self.part=math.floor(self.holdFrame/self.interval)
+            if self.part==7:
+                if self.frame==0:
+                    self.count2+=1
+                if self.count2%2==0:
+                    self.part=6
+
+        image.blit(self.image, (0, 0), (48*self.part,72*self.direction, 48, 72))
+        screen.blit(image,(self.rect.centerx-24,self.rect.centery-36))
+        self.drawFloatA(screen,shift_down)
+        #screen.blit(self.surf,self.rect)
     def drawFloatA(self,screen,shift_down):
         self.gunCycle+=1
         image=pygame.Surface((24,24))
@@ -1648,6 +1809,16 @@ class Boss(pygame.sprite.Sprite):
         self.speedy=s*speed
         self.speedx=c*speed
     
+    def checkDistance(self):
+        px=global_var.get_value('player1x')
+        py=global_var.get_value('player1y')
+        dx=px-self.tx
+        dy=py-self.ty
+        dist=math.sqrt(dx**2+dy**2)
+        minDist=global_var.get_value('enemyPos')[2]
+        if self.tx<660 and self.tx>60 and self.ty<690 and self.ty>30 and dist<minDist:
+            global_var.set_value('enemyPos',(self.tx,self.ty,dist))
+    
     def initial(self,x,y):
         self.tx=x
         self.ty=y
@@ -1673,9 +1844,10 @@ class Boss(pygame.sprite.Sprite):
             new_effect=Effect.bossFlame()
             new_effect.initial(100,0,20)
             effects.add(new_effect)
-        if self.lastFrame%4==0:
+        if self.lastFrame%3==0:
             new_effect=Effect.bossLight()
             new_effect.initial(10)
+            new_effect.angle=-frame*10%360
             effects.add(new_effect)
 
     def drawTracker(self,screen):
@@ -1868,6 +2040,7 @@ class Boss(pygame.sprite.Sprite):
         self.movingFrame-=1
         self.frameLimit-=1
         self.lastFrame+=1
+        self.checkDistance()
         self.movement()
         self.syncPosition()
         self.attack(frame,items,effects,bullets,backgrounds,enemys,slaves,player)

@@ -98,6 +98,18 @@ class playerGun(pygame.sprite.Sprite):
         if self.speedy<0 and deg<=180:
             deg=deg+180
         self.angle=deg
+    def speedAlter(self,speedx,speedy):
+        self.speedx=speedx
+        self.speedy=speedy
+    
+    def selfTarget(self,tx,ty,speed):
+        mycx=self.tx
+        mycy=self.ty
+        dif=math.sqrt(math.pow(tx-mycx,2)+math.pow(ty-mycy,2))
+        times=dif/speed
+        speedx=(tx-mycx)/times
+        speedy=(ty-mycy)/times
+        self.speedAlter(speedx,speedy)
 
     def truePos(self):
         self.rect.centerx=self.tx
@@ -114,6 +126,7 @@ class playerGun(pygame.sprite.Sprite):
         c=math.cos(math.radians(angle))
         self.speedy=s*speed
         self.speedx=c*speed
+        self.angle=angle
 
     def checkVaild(self):
         if self.rect.top>=720-30:
@@ -206,6 +219,81 @@ class inclineGun(playerGun):
     def draw(self,screen):
         self.countAngle()
         gF.drawRotation(self.image,(self.rect.centerx-24,self.rect.centery-24),-self.angle,screen)
+
+class reimuMainSatsu(playerGun):
+    def __init__(self):
+        super(reimuMainSatsu,self).__init__()
+        self.image=pygame.Surface((96,24)).convert_alpha()
+        self.image.fill((0,0,0,0))
+        self.image.blit(global_var.get_value('reimu_fire'),(0,0),(0,48,96,24))
+    def draw(self,screen):
+        self.countAngle()
+        gF.drawRotation(self.image,(self.rect.centerx-48,self.rect.centery-12),-self.angle,screen)
+        #screen.blit(self.surf,self.rect)
+
+class reimuTargetSatsu(playerGun):
+    def __init__(self):
+        super(reimuTargetSatsu,self).__init__()
+        self.angle=0
+        self.surf = pygame.Surface((10,10))
+        self.surf.fill((255,255,255))
+        self.rect=self.surf.get_rect()
+        self.image=pygame.Surface((24,24)).convert_alpha()
+        self.image.fill((0,0,0,0))
+        self.image.blit(global_var.get_value('reimu_fire'),(0,0),(0,24,24,24))
+        #self.image=global_var.get_value('playerFire_blue')
+        self.hit=25
+        self.lastFrame=0
+        self.maxFrame=120
+        self.initAngle=0
+        self.adjAngle=10
+    def initial(self,angle,tx,ty,speed):
+        self.tx=tx
+        self.ty=ty
+        self.angle=angle
+        self.speed=speed
+        self.setSpeed(angle,speed)
+
+    def update(self,screen):
+        self.lastFrame+=1
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
+        self.target()
+        self.movement()
+        self.checkVaild()
+        self.draw(screen)
+        #screen.blit(self.surf,self.rect)
+    
+    def target(self):
+        pos=global_var.get_value('enemyPos')
+        tx=pos[0]
+        ty=pos[1]
+        self.initAngle=self.angle
+        if tx>60 and tx<660 and ty>30 and ty<690:
+            self.selfTarget(tx,ty,self.speed)
+        self.countAngle()
+        if abs(self.initAngle-self.angle)<=self.adjAngle:
+            pass
+        else:
+            da=self.initAngle-self.angle
+            if da>0:
+                if da>=180:
+                    self.setSpeed(self.initAngle+self.adjAngle,self.speed)
+                    self.angle=self.initAngle+self.adjAngle
+                elif da<180:
+                    self.setSpeed(self.initAngle-self.adjAngle,self.speed)
+                    self.angle=self.initAngle-self.adjAngle
+            else:
+                if abs(da)>=180:
+                    self.setSpeed(self.initAngle-self.adjAngle,self.speed)
+                    self.angle=self.initAngle-self.adjAngle
+                elif abs(da)<180:
+                    self.setSpeed(self.initAngle+self.adjAngle,self.speed)
+                    self.angle=self.initAngle+self.adjAngle
+    
+    def draw(self,screen):
+        self.countAngle()
+        gF.drawRotation(self.image,(self.rect.centerx-12,self.rect.centery-12),-self.angle,screen)
 
 
 class Bullet(pygame.sprite.Sprite):
