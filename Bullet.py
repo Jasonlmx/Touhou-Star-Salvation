@@ -249,7 +249,7 @@ class reimuTargetSatsu(playerGun):
         self.lastFrame=0
         self.maxFrame=120
         self.initAngle=0
-        self.adjAngle=5
+        self.adjAngle=6
     
     def checkVaild(self):
         if self.rect.top>=720-30+10:
@@ -269,6 +269,7 @@ class reimuTargetSatsu(playerGun):
         self.setSpeed(angle,speed)
 
     def update(self,screen):
+        self.adjAngle+=0.35
         self.lastFrame+=1
         if self.lastFrame>=self.maxFrame:
             self.kill()
