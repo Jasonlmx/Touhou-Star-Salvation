@@ -131,6 +131,20 @@ def loadImage():
     front00=pygame.image.load('resource/text/front00.png')
     front00=pygame.transform.scale(front00,(768,768))
     global_var.set_value('front00',front00)
+    front01=pygame.image.load('resource/text/front00.png')
+    textArea=pygame.Surface((80,220)).convert_alpha()
+    textArea.fill((0,0,0,0))
+    #Hiscore
+    textArea.blit(front01,(0,0),(256,0,80,19))
+    #score
+    textArea.blit(front01,(0,30),(256,19,80,19))
+    #player
+    textArea.blit(front01,(0,70),(256,38,80,19))
+    #power
+    textArea.blit(front01,(0,143),(256,57,80,19))
+    #graze
+    textArea.blit(front01,(0,176),(336,0,80,19))
+    global_var.set_value('textArea',textArea)
     powerText=pygame.image.load('resource/text/powerText.png')
     powerText=pygame.transform.scale(powerText,(99,24))
     global_var.set_value('powerText',powerText)

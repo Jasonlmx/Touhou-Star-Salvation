@@ -235,8 +235,8 @@ def displayUi(screen,player,myfont):
     spellText=global_var.get_value('spellText')
     #grazeText=pygame.transform.scale(global_var.get_value('graze_text'),(64,16))
     grazeText=global_var.get_value('graze_text')
-    screen.blit(lifeText,(690,170))
-    screen.blit(spellText,(690,204))
+    #screen.blit(lifeText,(690,170))
+    #screen.blit(spellText,(690,204))
     if life>=0:
         for i in range(0,life):
             screen.blit(lifeImage,(760+i*24,170))
@@ -244,15 +244,20 @@ def displayUi(screen,player,myfont):
         for i in range(0,spell):
             screen.blit(speelImage,(760+i*24,204))
     powerText=global_var.get_value('powerText')
-    screen.blit(powerText,(690,244))
+    #screen.blit(powerText,(690,244))
     if player.power%100!=0:
         if player.power%100<10:
             powerNum=myfont.render(str(player.powerLevel)+'.0'+str(player.power%100)+'/4.00', True, (255, 255, 255))
+            powerShadow=myfont.render(str(player.powerLevel)+'.0'+str(player.power%100)+'/4.00', True, (23, 23, 23))
         else:
             powerNum=myfont.render(str(player.powerLevel)+'.'+str(player.power%100)+'/4.00', True, (255, 255, 255))
+            powerShadow=myfont.render(str(player.powerLevel)+'.'+str(player.power%100)+'/4.00', True, (23, 23, 23))
     else:
         powerNum=myfont.render(str(player.powerLevel)+'.00'+'/4.00', True, (255, 255, 255))
+        powerShadow=myfont.render(str(player.powerLevel)+'.00'+'/4.00', True, (23, 23, 23))
+    screen.blit(powerShadow,(789+3,244+2))
     screen.blit(powerNum,(789,244))
+    
 
     #score part
     scoreTemp=str(player.score)
@@ -266,15 +271,19 @@ def displayUi(screen,player,myfont):
         scoreFinal+=scoreString[i*3:i*3+3]
         if i!=2:
             scoreFinal+=','
-    scoreText=myfont.render('Score:   '+scoreFinal, True, (255, 255, 255))
-    shadowText=myfont.render('Score:   '+scoreFinal, True, (23, 23, 23))
-    screen.blit(shadowText,(673+3,100+2))
-    screen.blit(scoreText,(673,100))
+    scoreText=myfont.render('         '+scoreFinal, True, (255, 255, 255))
+    shadowText=myfont.render('         '+scoreFinal, True, (23, 23, 23))
+    screen.blit(shadowText,(673+3+20,130+2))
+    screen.blit(scoreText,(673+20,130))
 
     grazeNumText=myfont.render(str(global_var.get_value('grazeNum')), True, (255, 255, 255))
     g_w=grazeNumText.get_width()
-    screen.blit(grazeText,(682,276))
+    #screen.blit(grazeText,(682,276))
+    grazeNumShadow=myfont.render(str(global_var.get_value('grazeNum')), True, (23, 23, 23))
+    screen.blit(grazeNumShadow,(888-g_w+3,276+2))
     screen.blit(grazeNumText,(888-g_w,276))
+    
+    screen.blit(global_var.get_value('textArea'),(663,105))
     
 def itemAllGet(items,player,effects):
     if player.ty<=player.itemGetLine:

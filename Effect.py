@@ -80,7 +80,7 @@ class fire_effect_reimu_main(pygame.sprite.Sprite):
         if self.part==4:
             self.kill()
         if self.part<=3:
-            gF.drawRotation(self.temp[self.part],(round(self.tx-12),round(self.ty-12)),self.frame*-12-90,screen)
+            gF.drawRotation(self.temp[self.part],(round(self.tx-12),round(self.ty-12)),self.frame*-25-90,screen)
             #screen.blit(self.image[self.part],(self.tx-12,self.ty-24))
 
 class fire_effect_reimu_target(pygame.sprite.Sprite):
