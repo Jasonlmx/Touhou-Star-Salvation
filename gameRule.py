@@ -143,8 +143,19 @@ def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses):
             new_effect=Effect.fire_effect_player()
             new_effect.initial(bullet.rect.centerx,bullet.rect.centery,bullet.color)
             effects.add(new_effect)
+        elif player.__class__.__name__=="Reimu":
+            if bullet.__class__.__name__=="reimuMainSatsu":
+                new_effect=Effect.fire_effect_reimu_main()
+                new_effect.initial(bullet.tx,bullet.ty)
+                effects.add(new_effect)
+            elif bullet.__class__.__name__=="reimuTargetSatsu":
+                new_effect=Effect.fire_effect_reimu_target()
+                new_effect.initial(bullet.tx,bullet.ty)
+                effects.add(new_effect)
+
         player.score+=50
         bullet.kill()
+
 
     boss_hit=pygame.sprite.groupcollide(bosses,playerGuns,0,0)
     bullet_hit=pygame.sprite.groupcollide(playerGuns,bosses,0,0)
@@ -169,6 +180,15 @@ def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses):
             new_effect=Effect.fire_effect_player()
             new_effect.initial(bullet.rect.centerx,bullet.rect.centery,bullet.color)
             effects.add(new_effect)
+        elif player.__class__.__name__=="Reimu":
+            if bullet.__class__.__name__=="reimuMainSatsu":
+                new_effect=Effect.fire_effect_reimu_main()
+                new_effect.initial(bullet.tx,bullet.ty)
+                effects.add(new_effect)
+            elif bullet.__class__.__name__=="reimuTargetSatsu":
+                new_effect=Effect.fire_effect_reimu_target()
+                new_effect.initial(bullet.tx,bullet.ty)
+                effects.add(new_effect)
         player.score+=100
         bullet.kill()
 

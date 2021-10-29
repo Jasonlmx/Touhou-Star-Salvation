@@ -43,6 +43,85 @@ class fire_effect_player(pygame.sprite.Sprite):
         if self.part<=2:
             screen.blit(self.image[self.part],(self.tx-12,self.ty-24))
 
+class fire_effect_reimu_main(pygame.sprite.Sprite):
+    def __init__(self):
+        super(fire_effect_reimu_main,self).__init__()
+        self.image=pygame.Surface((96,24)).convert_alpha()
+        self.image.fill((0,0,0,0))
+        self.image.blit(global_var.get_value('reimu_fire'),(0,0),(0,0,96,24))
+        self.image.set_alpha(180)
+        self.frame=0
+        self.part=0
+        self.interval=5
+        self.speed=3
+        self.temp=[]
+        for i in range(0,4):
+            temp=pygame.Surface((24,24)).convert_alpha()
+            temp.fill((0,0,0,0))
+            temp.blit(self.image,(0,0),(0+24*i,0,24,24))
+            self.temp.append(temp)
+        self.tx=0
+        self.ty=0
+        self.x=0
+        self.y=0
+        self.upper=False
+        self.lower=False
+
+    def initial(self,tx,ty):
+        self.tx=tx
+        self.ty=ty
+
+    def update(self,screen):
+        self.frame+=1
+        self.ty-=self.speed
+        if self.frame==self.interval:
+            self.part+=1
+            self.frame=0
+        if self.part==4:
+            self.kill()
+        if self.part<=3:
+            gF.drawRotation(self.temp[self.part],(round(self.tx-12),round(self.ty-12)),self.frame*-12-90,screen)
+            #screen.blit(self.image[self.part],(self.tx-12,self.ty-24))
+
+class fire_effect_reimu_target(pygame.sprite.Sprite):
+    def __init__(self):
+        super(fire_effect_reimu_target,self).__init__()
+        self.image=pygame.Surface((96,24)).convert_alpha()
+        self.image.fill((0,0,0,0))
+        self.image.blit(global_var.get_value('reimu_fire'),(0,0),(0,24,96,24))
+        self.image.set_alpha(180)
+        self.frame=0
+        self.part=0
+        self.interval=5
+        self.speed=3
+        self.temp=[]
+        for i in range(0,4):
+            temp=pygame.Surface((24,24)).convert_alpha()
+            temp.fill((0,0,0,0))
+            temp.blit(self.image,(0,0),(0+24*i,0,24,24))
+            self.temp.append(temp)
+        self.tx=0
+        self.ty=0
+        self.x=0
+        self.y=0
+        self.upper=False
+        self.lower=False
+
+    def initial(self,tx,ty):
+        self.tx=tx
+        self.ty=ty
+
+    def update(self,screen):
+        self.frame+=1
+        self.ty-=self.speed
+        if self.frame==self.interval:
+            self.part+=1
+            self.frame=0
+        if self.part==4:
+            self.kill()
+        if self.part<=3:
+            gF.drawRotation(self.temp[self.part],(round(self.tx-12),round(self.ty-12)),self.frame*-12-90,screen)
+            #screen.blit(self.image[self.part],(self.tx-12,self.ty-24))
 
 class bulletVanish(pygame.sprite.Sprite):
     def __init__(self):

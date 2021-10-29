@@ -227,6 +227,7 @@ class reimuMainSatsu(playerGun):
         self.image=pygame.Surface((96,24)).convert_alpha()
         self.image.fill((0,0,0,0))
         self.image.blit(global_var.get_value('reimu_fire'),(0,0),(0,48,96,24))
+        self.image.set_alpha(180)
     def draw(self,screen):
         self.countAngle()
         gF.drawRotation(self.image,(self.rect.centerx-48,self.rect.centery-12),-self.angle,screen)
@@ -242,12 +243,13 @@ class reimuTargetSatsu(playerGun):
         self.image=pygame.Surface((24,24)).convert_alpha()
         self.image.fill((0,0,0,0))
         self.image.blit(global_var.get_value('reimu_fire'),(0,0),(0,24,24,24))
+        self.image.set_alpha(180)
         #self.image=global_var.get_value('playerFire_blue')
         self.hit=50
         self.lastFrame=0
         self.maxFrame=120
         self.initAngle=0
-        self.adjAngle=3
+        self.adjAngle=5
     
     def checkVaild(self):
         if self.rect.top>=720-30+10:

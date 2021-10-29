@@ -36,9 +36,9 @@ screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE| DOUBLEBUF)
 global_var._init()
 
 #test functions 
-global_var.set_value('ifTest',False)
-global_var.set_value('spellNum',1)
-global_var.set_value('ifSpellTest',False)
+global_var.set_value('ifTest',True)
+global_var.set_value('spellNum',2)
+global_var.set_value('ifSpellTest',True)
 testFire=400
  
 #screen=pygame.display.set_mode((640,480))
@@ -70,6 +70,7 @@ global_var.set_value('boomStatu',0)
 global_var.set_value('grazeNum',0)
 global_var.set_value('fpSec',0)
 global_var.set_value('enemyPos',(0,0,10000))
+global_var.set_value('shift_down',False)
 log = open("./log.csv", 'w+')
 #main loop controller 
 running = True
@@ -109,9 +110,6 @@ bosses=pygame.sprite.Group()
 gameRule.addStars(screen,stars)
 gF.doBackground(screen,backgrounds)
 
-#addBullet = USEREVENT + 1
-# 设置定时器每250ms生成一次自定义事件
-#pygame.time.set_timer(addBullet, 250)
 
 #loadSoundEffects
 miss_sound=pygame.mixer.Sound('resource/sound/se_pldead00.wav')
@@ -243,28 +241,6 @@ while running:
 
     #create enemy
     #Enemy generator now disabled and substituted by stage controller
-    '''
-    if frame%500<=100:
-        if frame%20==0:
-            new_enemy=DADcharacter.ghost()
-            new_enemy.initialize(690,300,1,0)
-            enemys.add(new_enemy)
-    if frame%500>=400:
-        if frame%20==0:
-            new_enemy=DADcharacter.ghost()
-            new_enemy.initialize(60,0,1,2)
-            enemys.add(new_enemy)
-    if frame%500>=200 and frame%500<=400:
-        if frame%40==0:
-            new_enemy=DADcharacter.spirit_test()
-            new_enemy.initialize(20,340,1,3)
-            enemys.add(new_enemy)
-    if frame%500>=300 and frame%500<=400:
-        if frame%20==0:
-            new_enemy=DADcharacter.butterfly()
-            new_enemy.initialize(20,200,1,1)
-            enemys.add(new_enemy)
-    '''
 
     lightnessLevel.stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player)
 
