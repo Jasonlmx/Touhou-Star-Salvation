@@ -425,6 +425,7 @@ class grazeEffect(pygame.sprite.Sprite):
 
     def initial(self,pos,maxRadius,maxFrame,color,width,num,interval):
         self.maxRadius=maxRadius
+        self.minRadius=2
         self.maxFrame=maxFrame
         self.pos=pos
         self.tx=pos[0]
@@ -440,7 +441,8 @@ class grazeEffect(pygame.sprite.Sprite):
             self.kill()
 
     def draw(self,screen):
-        pygame.draw.circle(screen,self.color,(round(self.tx),round(self.ty)),self.maxRadius,self.width)
+        radius=round(self.maxRadius-(self.maxRadius-self.minRadius)*(self.lastFrame/self.maxFrame))
+        pygame.draw.circle(screen,self.color,(round(self.tx),round(self.ty)),radius,self.width)
 
 class bulletCreate(pygame.sprite.Sprite):
     def __init__(self,code):

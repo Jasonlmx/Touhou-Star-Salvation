@@ -4,6 +4,7 @@ import math
 import gF
 from pygame.sprite import Sprite
 import Bullet
+import Effect
 
 class slave_circle(pygame.sprite.Sprite):
     def __init__(self):
@@ -252,4 +253,56 @@ class Hagrid_slave_typeLinear(slave_linear):
             bullets.add(new_bullet)
     
     
-            
+class bulletCancelLasting(pygame.sprite.Sprite):
+    def __init__ (self):
+        super(bulletCancelLasting,self).__init__()
+        self.tx=0
+        self.ty=0
+        self.maxFrame=12
+        self.maxRadius=900
+        self.lastFrame=0
+        self.doBonus=False
+    def initial(self,tx,ty,maxFrame=12,maxRadius=900,doBonus=False):
+        self.tx=tx
+        self.ty=ty
+        self.maxFrame=maxFrame
+        self.maxRadius=maxRadius
+        self.doBonus=doBonus
+    
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
+    def getDistance(self,bx,by):
+        dx=self.tx-bx
+        dy=self.ty-by
+        dist=math.sqrt(dx**2+dy**2)
+        return dist
+
+    def cancelBullet(self,bullets,effects,items,radius):
+        for bullet in bullets:
+            if self.getDistance(bullet.tx,bullet.ty)<radius:
+                if bullet.cancalable:
+                    new_effect=Effect.bulletVanish()
+                    exception=(5,7,10,11,12,13)
+                    if not bullet.type in exception:
+                        new_effect.initial(bullet.image,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
+                    elif bullet.type==5:
+                        new_effect.initial(bullet.tempImage,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
+                    elif bullet.type==7:
+                        if bullet.color=='red':
+                            new_effect.initial(bullet.red[0],bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
+                        else:
+                            new_effect.initial(bullet.blue[0],bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
+                    elif bullet.type==10 or bullet.type==11 or bullet.type==12 or bullet.type==13:
+                        new_effect.initial(bullet.tempImage,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
+
+                    effects.add(new_effect)
+                    if self.doBonus:
+                        Bullet.createItem(bullet.tx,bullet.ty,items)
+                    bullet.kill()
+
+    def update(self,screen,frame,bullets,effects,items):
+        self.lastFrame+=1
+        radius=self.maxRadius*(self.lastFrame/self.maxFrame)
+        self.cancelBullet(bullets,effects,items,radius)
+        self.checkValid()

@@ -2019,7 +2019,10 @@ class Boss(pygame.sprite.Sprite):
             deg=180
         self.angle=deg
         return deg 
-    
+    def addLastingCancel(self,tx,ty,slaves,maxFrame,doBonus):
+        new_slave=Slave.bulletCancelLasting()
+        new_slave.initial(tx,ty,maxFrame,900,doBonus)
+        slaves.add(new_slave)
     def movement(self):
         if self.maxMovingFrame!=0:
             if self.movingFrame<self.maxMovingFrame/2:
@@ -2425,6 +2428,7 @@ class Dumbledore(Boss):
         self.actionFrame=0
         self.spell10_int=[[0,0,0],[0,0,0],[0,0,750],[500,0,1000],[500,0,1000]]
         self.alpha=0
+        self.deadFrame=0
     def drawBossName(self,screen):
         screen.blit(self.bossName,(60,692))
     def draw(self,screen):
@@ -2509,26 +2513,27 @@ class Dumbledore(Boss):
             else:
                 self.spell_10(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
         if self.cardNum==11:
-            global_var.get_value('bossDead_sound').play()
-            for background in backgrounds:
-                background.surf=global_var.get_value('lake_bg')
-                background.surf.convert()
-                background.surf.set_alpha(200)
-            width=60
-            maxFrame=150
-            new_effect=Effect.wave()
-            new_effect.initial([self.tx+width*1,self.ty],900,maxFrame,(160,160,160),10)
-            effects.add(new_effect)
-            new_effect=Effect.wave()
-            new_effect.initial([self.tx+width*-1,self.ty],900,maxFrame,(160,160,160),10)
-            effects.add(new_effect)
-            new_effect=Effect.wave()
-            new_effect.initial([self.tx,self.ty+width*1],900,maxFrame,(160,160,160),10)
-            effects.add(new_effect)
-            new_effect=Effect.wave()
-            new_effect.initial([self.tx,self.ty+width*-1],900,maxFrame,(160,160,160),10)
-            effects.add(new_effect)
-            self.kill()
+            #global_var.get_value('bossDead_sound').play()
+            self.deadFrame+=1
+            if self.deadFrame==1:
+                global_var.get_value('spell_end').play()
+            if self.deadFrame>=60:
+                global_var.get_value('bossDead_sound').play()
+                width=60
+                maxFrame=150
+                new_effect=Effect.wave()
+                new_effect.initial([self.tx+width*1,self.ty],900,maxFrame,(160,160,160),10)
+                effects.add(new_effect)
+                new_effect=Effect.wave()
+                new_effect.initial([self.tx+width*-1,self.ty],900,maxFrame,(160,160,160),10)
+                effects.add(new_effect)
+                new_effect=Effect.wave()
+                new_effect.initial([self.tx,self.ty+width*1],900,maxFrame,(160,160,160),10)
+                effects.add(new_effect)
+                new_effect=Effect.wave()
+                new_effect.initial([self.tx,self.ty+width*-1],900,maxFrame,(160,160,160),10)
+                effects.add(new_effect)
+                self.kill()
 
     def noneSpell_0(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
         self.maxHealth=20000
@@ -2604,7 +2609,8 @@ class Dumbledore(Boss):
         
 
         if self.health<=0 or self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,40,True)
             self.reset=True
             self.ifSpell=True
             self.health=20000
@@ -2715,7 +2721,7 @@ class Dumbledore(Boss):
             if player.spellBonus:
                 player.score+=self.cardBonus
                 global_var.get_value('bonus_sound').play()
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
         
         if self.frameLimit<=0:
             self.cancalAllBullet(bullets,items,effects,True)
@@ -2725,7 +2731,7 @@ class Dumbledore(Boss):
             self.health=20000
             self.lastFrame=0
             self.drawResult(effects,self.cardBonus,False)
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
         
     def noneSpell_2(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
         if self.reset:
@@ -2738,8 +2744,8 @@ class Dumbledore(Boss):
             self.randomAngle2=self.randomAngle
             self.frameLimit=1800
             self.effectSign=0
-        if self.lastFrame>=40:
-            if (self.lastFrame-40)%4==0:
+        if self.lastFrame>=80:
+            if (self.lastFrame-80)%4==0:
                 self.effectSign+=1
                 if self.effectSign%2==0:
                     new_effect=Effect.bulletCreate(3)
@@ -2765,12 +2771,13 @@ class Dumbledore(Boss):
                     bullets.add(new_bullet)
                 self.randomAngle+=6
                 self.randomAngle2-=6
-            if (self.lastFrame-40)%100==0:
+            if (self.lastFrame-80)%100==0:
                 self.gotoPosition(random.random()*60+330,random.random()*20+170,40)
 
         
         if self.health<=0 or self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
             self.reset=True
             self.ifSpell=True
             self.health=20000
@@ -2793,73 +2800,75 @@ class Dumbledore(Boss):
             global_var.get_value('spell_sound').play()
 
         self.cardBonus-=self.framePunishment
-        if self.lastFrame%10==0:
-            global_var.get_value('kira_sound').stop()
-            global_var.get_value('kira_sound').play()
+        if self.lastFrame>=80:
+            if self.lastFrame%10==0:
+                global_var.get_value('kira_sound').stop()
+                global_var.get_value('kira_sound').play()
 
-        if self.lastFrame%600<=360:
-            if self.lastFrame%8==0:
-                angleInc=15*math.sin(frame/180*math.pi)
-                new_bullet=Bullet.laser_Bullet_immune(60)
-                area=random.randint(0,1)
-                if area==1:
-                    rx=660+random.random()*10
-                    ry=random.random()*680
+            if self.lastFrame%600<=360:
+                if self.lastFrame%8==0:
+                    angleInc=15*math.sin(frame/180*math.pi)
+                    new_bullet=Bullet.laser_Bullet_immune(60)
+                    area=random.randint(0,1)
+                    if area==1:
+                        rx=660+random.random()*10
+                        ry=random.random()*680
+                        new_bullet.initial(rx,ry,1)
+                    else:
+                        rx=random.random()*660
+                        ry=random.random()*3+27
+                        new_bullet.initial(rx,ry,1)
+                    ra=90+43+angleInc+random.random()*4
+                    rs=7+random.random()*1.5
+                    new_bullet.setSpeed(ra,rs)
+                    #new_bullet.loadColor('purple')
+                    new_bullet.doColorCode(0)
+                    bullets.add(new_bullet)
+                    new_bullet=Bullet.star_Bullet_immune(60)
                     new_bullet.initial(rx,ry,1)
-                else:
-                    rx=random.random()*660
-                    ry=random.random()*3+27
-                    new_bullet.initial(rx,ry,1)
-                ra=90+43+angleInc+random.random()*4
-                rs=7+random.random()*1.5
-                new_bullet.setSpeed(ra,rs)
-                #new_bullet.loadColor('purple')
-                new_bullet.doColorCode(0)
-                bullets.add(new_bullet)
-                new_bullet=Bullet.star_Bullet_immune(60)
-                new_bullet.initial(rx,ry,1)
-                new_bullet.setSpeed(ra,rs)
-                new_bullet.loadColor('blue')
-                bullets.add(new_bullet)
+                    new_bullet.setSpeed(ra,rs)
+                    new_bullet.loadColor('blue')
+                    bullets.add(new_bullet)
 
-        if self.lastFrame%600>=300:
-            if self.lastFrame%2==0:
-                angleInc=10*math.sin(frame/180*math.pi*2)
-                new_bullet=Bullet.star_Bullet_immune(60)
-                new_bullet.length=15
-                area=random.randint(0,1)
-                if area==1:
-                    new_bullet.initial(random.random()*20,random.random()*680,1)
-                else:
-                    new_bullet.initial(random.random()*680,random.random()*20,1)
+            if self.lastFrame%600>=300:
+                if self.lastFrame%2==0:
+                    angleInc=10*math.sin(frame/180*math.pi*2)
+                    new_bullet=Bullet.star_Bullet_immune(60)
+                    new_bullet.length=15
+                    area=random.randint(0,1)
+                    if area==1:
+                        new_bullet.initial(random.random()*20,random.random()*680,1)
+                    else:
+                        new_bullet.initial(random.random()*680,random.random()*20,1)
 
-                new_bullet.setSpeed(angleInc+43+random.random()*5,5+random.random()*2.5)
-                new_bullet.loadColor('purple')
-                bullets.add(new_bullet)
+                    new_bullet.setSpeed(angleInc+43+random.random()*5,5+random.random()*2.5)
+                    new_bullet.loadColor('purple')
+                    bullets.add(new_bullet)
 
-        if self.lastFrame%300==0:
-            self.gotoPosition(player.cx+random.random()*60-30,random.random()*40+80,50)
-        
-        if self.lastFrame%150==140:
-            new_effect=Effect.bulletCreate(4)
-            new_effect.initial(self.tx,self.ty,256,48,10)
-            effects.add(new_effect)
+            if self.lastFrame%300==0:
+                self.gotoPosition(player.cx+random.random()*60-30,random.random()*40+80,50)
+            
+            if self.lastFrame%150==140:
+                new_effect=Effect.bulletCreate(4)
+                new_effect.initial(self.tx,self.ty,256,48,10)
+                effects.add(new_effect)
 
-        if self.lastFrame>=100 and self.lastFrame%150==0:
-            fireAngle=random.random()*360
-            if not global_var.get_value('enemyFiring1'):
-                global_var.get_value('enemyGun_sound1').stop()
-                global_var.get_value('enemyGun_sound1').play()
-                global_var.set_value('enemyFiring1',True)
-            for i in range(0,40):
-                new_bullet=Bullet.big_star_Bullet()
-                new_bullet.initial(self.tx,self.ty,1)
-                new_bullet.setSpeed(fireAngle+i*(360/40),3)
-                new_bullet.doColorCode(3)
-                bullets.add(new_bullet)
+            if self.lastFrame>=100 and self.lastFrame%150==0:
+                fireAngle=random.random()*360
+                if not global_var.get_value('enemyFiring1'):
+                    global_var.get_value('enemyGun_sound1').stop()
+                    global_var.get_value('enemyGun_sound1').play()
+                    global_var.set_value('enemyFiring1',True)
+                for i in range(0,40):
+                    new_bullet=Bullet.big_star_Bullet()
+                    new_bullet.initial(self.tx,self.ty,1)
+                    new_bullet.setSpeed(fireAngle+i*(360/40),3)
+                    new_bullet.doColorCode(3)
+                    bullets.add(new_bullet)
 
         if self.health<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -2873,17 +2882,18 @@ class Dumbledore(Boss):
             if player.spellBonus:
                 player.score+=self.cardBonus
                 global_var.get_value('bonus_sound').play()
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
         
         if self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
             self.health=20000
             self.lastFrame=0
             self.drawResult(effects,self.cardBonus,False)
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
     
     def noneSpell_3(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
         if self.reset:
@@ -2943,7 +2953,8 @@ class Dumbledore(Boss):
                     self.gotoPosition(random.random()*60+330,random.random()*20+160,40)
                 
         if self.health<=0 or self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
             self.reset=True
             self.ifSpell=True
             self.health=20000
@@ -2966,7 +2977,7 @@ class Dumbledore(Boss):
             global_var.get_value('spell_sound').play()
         
         self.cardBonus-=self.framePunishment
-        if self.lastFrame%10==0:
+        if self.lastFrame%10==0 and self.lastFrame>=80:
                 global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
 
@@ -2995,7 +3006,7 @@ class Dumbledore(Boss):
                         new_effect.initial(rx,30,128,64,3)
                     bullets.add(new_bullet)
                     effects.add(new_effect)
-        if (self.lastFrame-40)%60==50:
+        if (self.lastFrame-40)%60==50 and self.lastFrame>=80:
             new_effect=Effect.bulletCreate(1)
             new_effect.initial(self.tx,self.ty,192,48,10)
             effects.add(new_effect)
@@ -3031,7 +3042,8 @@ class Dumbledore(Boss):
 
 
         if self.health<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,40,True)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3045,18 +3057,19 @@ class Dumbledore(Boss):
             if player.spellBonus:
                 player.score+=self.cardBonus
                 global_var.get_value('bonus_sound').play()
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
         
         
         if self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,40,True)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
             self.health=20000
             self.lastFrame=0
             self.drawResult(effects,self.cardBonus,False)
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
         
     def noneSpell_4(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
         if self.reset:
@@ -3112,7 +3125,8 @@ class Dumbledore(Boss):
 
 
         if self.health<=0 or self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
             self.reset=True
             self.ifSpell=True
             self.health=20000
@@ -3220,7 +3234,8 @@ class Dumbledore(Boss):
 
 
         if self.health<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3234,18 +3249,19 @@ class Dumbledore(Boss):
             if player.spellBonus:
                 player.score+=self.cardBonus
                 global_var.get_value('bonus_sound').play()
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
         
         
         if self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
             self.health=20000
             self.lastFrame=0
             self.drawResult(effects,self.cardBonus,False)
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
 
     def noneSpell_5(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
         if self.reset:
@@ -3271,8 +3287,8 @@ class Dumbledore(Boss):
                     bullets.add(new_bullet)
                 self.randomAngle+=5+self.randomAngle2
         '''
-        if self.lastFrame>=50:
-            if (self.lastFrame-50)%4==0:
+        if self.lastFrame>=60:
+            if (self.lastFrame-60)%4==0:
                 if not global_var.get_value('kiraing'):
                     global_var.get_value('kira_sound').stop()
                     global_var.get_value('kira_sound').play()
@@ -3290,7 +3306,8 @@ class Dumbledore(Boss):
                 self.randomAngle+=6+self.randomAngle2
 
         if self.health<=0 or self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
             self.reset=True
             self.ifSpell=True
             self.health=20000
@@ -3358,7 +3375,8 @@ class Dumbledore(Boss):
             self.gotoPosition(random.random()*380+170,random.random()*180+100,50)
 
         if self.health<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3372,18 +3390,19 @@ class Dumbledore(Boss):
             if player.spellBonus:
                 player.score+=self.cardBonus
                 global_var.get_value('bonus_sound').play()
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
         
         
         if self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
             self.health=20000
             self.lastFrame=0
             self.drawResult(effects,self.cardBonus,False)
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
     
     def noneSpell_6(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
         if self.reset:
@@ -3425,7 +3444,8 @@ class Dumbledore(Boss):
                     
         
         if self.health<=0 or self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
             self.reset=True
             self.ifSpell=True
             self.health=20000
@@ -3479,7 +3499,8 @@ class Dumbledore(Boss):
                 self.randomAngle2=random.random()*360
 
         if self.health<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3493,20 +3514,21 @@ class Dumbledore(Boss):
             if player.spellBonus:
                 player.score+=self.cardBonus
                 global_var.get_value('bonus_sound').play()
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
         
         if (self.lastFrame-80)%100==0:
                 self.gotoPosition(random.random()*60+330,random.random()*20+170,40)
         
         if self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
             self.health=20000
             self.lastFrame=0
             self.drawResult(effects,self.cardBonus,False)
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
     
     def noneSpell_7(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
         if self.reset:
@@ -3519,7 +3541,7 @@ class Dumbledore(Boss):
             #self.randomAngle2=random.random()*360
             self.frameLimit=2100
         
-        if self.lastFrame>=60 and (self.lastFrame-60)%7==0:
+        if self.lastFrame>=80 and (self.lastFrame-80)%7==0:
             if not global_var.get_value('enemyFiring2'):
                 global_var.get_value('enemyGun_sound2').stop()
                 global_var.get_value('enemyGun_sound2').play()
@@ -3543,11 +3565,12 @@ class Dumbledore(Boss):
                         bullets.add(new_bullet)
             self.randomAngle-=13
 
-        if (self.lastFrame-60)%180==90:
+        if (self.lastFrame-80)%180==90:
             self.gotoPosition(random.random()*120+300,random.random()*50+150,80)
 
         if self.health<=0 or self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
             self.reset=True
             self.ifSpell=True
             self.health=20000
@@ -3610,7 +3633,8 @@ class Dumbledore(Boss):
             global_var.get_value('kira_sound').play()
 
         if self.health<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,90,True)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3624,18 +3648,19 @@ class Dumbledore(Boss):
             if player.spellBonus:
                 player.score+=self.cardBonus
                 global_var.get_value('bonus_sound').play()
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
         
         
         if self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,90,True)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
             self.health=20000
             self.lastFrame=0
             self.drawResult(effects,self.cardBonus,False)
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
 
     def noneSpell_8(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
         if self.reset:
@@ -3648,8 +3673,8 @@ class Dumbledore(Boss):
             #self.randomAngle2=random.random()*360
             self.frameLimit=2100
         
-        if self.lastFrame>=80:
-            if (self.lastFrame-80)%30<=2:
+        if self.lastFrame>=90:
+            if (self.lastFrame-90)%30<=2:
 
                 if not global_var.get_value('enemyFiring1'):
                     global_var.get_value('enemyGun_sound1').stop()
@@ -3672,12 +3697,13 @@ class Dumbledore(Boss):
                     bullets.add(new_bullet)
                 self.randomAngle=random.random()*360
         
-            if (self.lastFrame-80)%200==0:
+            if (self.lastFrame-8900)%200==0:
                 self.gotoPosition(280+160*random.random(),200+60*random.random(),60)
                 
                  
         if self.health<=0 or self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
             self.reset=True
             self.ifSpell=True
             self.health=20000
@@ -3742,7 +3768,8 @@ class Dumbledore(Boss):
 
 
         if self.health<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3756,18 +3783,19 @@ class Dumbledore(Boss):
             if player.spellBonus:
                 player.score+=self.cardBonus
                 global_var.get_value('bonus_sound').play()
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
         
         
         if self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
             self.health=20000
             self.lastFrame=0
             self.drawResult(effects,self.cardBonus,False)
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
     
     def noneSpell_9(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
         if self.reset:
@@ -3866,7 +3894,8 @@ class Dumbledore(Boss):
 
                     self.randomAngle+=inc
         if self.health<=0 or self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
             self.reset=True
             self.ifSpell=True
             self.health=20000
@@ -3916,7 +3945,8 @@ class Dumbledore(Boss):
 
         #spell end
         if self.health<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
             self.reset=True
             self.ifSpell=True
             self.cardNum+=1
@@ -3930,18 +3960,19 @@ class Dumbledore(Boss):
             if player.spellBonus:
                 player.score+=self.cardBonus
                 global_var.get_value('bonus_sound').play()
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
         
         
         if self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
             self.reset=True
             self.ifSpell=True
             self.cardNum+=1
             self.health=20000
             self.lastFrame=0
             self.drawResult(effects,self.cardBonus,False)
-            global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
         
 
     def spell_10(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
@@ -3961,6 +3992,7 @@ class Dumbledore(Boss):
             
 
         if self.lastFrame==1 or self.lastFrame==40 or self.lastFrame==80:
+            global_var.get_value('ch00_sound').stop()
             global_var.get_value('ch00_sound').play()
         
         if self.lastFrame==120:
@@ -4081,7 +4113,8 @@ class Dumbledore(Boss):
         
         
         if self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            #self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,120,True)
             self.reset=True
             self.ifSpell=True
             self.health=20000

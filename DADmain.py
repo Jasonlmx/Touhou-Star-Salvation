@@ -37,8 +37,8 @@ global_var._init()
 
 #test functions 
 global_var.set_value('ifTest',False)
-global_var.set_value('spellNum',2)
-global_var.set_value('ifSpellTest',True)
+global_var.set_value('spellNum',1)
+global_var.set_value('ifSpellTest',False)
 testFire=400
  
 #screen=pygame.display.set_mode((640,480))
@@ -100,7 +100,6 @@ bullets2=pygame.sprite.Group()
 playerGuns=pygame.sprite.Group()
 enemys=pygame.sprite.Group()
 slaves=pygame.sprite.Group()
-slaves2=pygame.sprite.Group()
 booms=pygame.sprite.Group()
 effects=pygame.sprite.Group()
 stars=pygame.sprite.Group()
@@ -181,6 +180,9 @@ global_var.set_value('graze_sound',graze_sound)
 nep_sound=pygame.mixer.Sound('resource/sound/se_nep00.wav')
 nep_sound.set_volume(0.3)
 global_var.set_value('nep_sound',nep_sound)
+spell_end=pygame.mixer.Sound('resource/sound/se_enep02.wav')
+spell_end.set_volume(0.35)
+global_var.set_value('spell_end',spell_end)
 
 pygame.mixer.music.load('resource/bgm/lightnessOnTheWay.mp3')   # 载入背景音乐文件
 #pygame.mixer.music.load('resource/bgm/上海アリス幻樂団 - 死体旅行~ Be of good cheer!.mp3')
@@ -329,7 +331,7 @@ while running:
     
     if player.lastGraze<player.graze:
         new_effect=Effect.grazeEffect()
-        new_effect.initial((player.tx,player.ty),4,random.randint(15,20),(255,255,255),4,1,20)
+        new_effect.initial((player.tx,player.ty),4,random.randint(15,20),(255,255,255),5,1,20)
         effects.add(new_effect)
 
     for effect in effects:
@@ -344,10 +346,10 @@ while running:
         if effect.upper:
             effect.update(screen)
 
-    '''
+    
     for slave in slaves:
-        slave.update(screen,frame,bullets,boss1.tx,boss1.ty)
-    '''
+        slave.update(screen,frame,bullets,effects,items)
+
     
     
     
