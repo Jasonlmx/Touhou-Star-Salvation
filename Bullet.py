@@ -1593,13 +1593,13 @@ class orb_Bullet_star_pattern_main(orb_Bullet):
         self.trackColor='blue'
         self.cancalable=False
     def update(self,screen,bullets,effects):
-        for i in range(2):
+        for i in range(3):
             self.lastFrame+=1
             self.moveStratege()
             self.movement()
             self.fire(bullets,effects)
             self.sound()
-            self.drawBullet(screen)
+            #self.drawBullet(screen)
             #screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
             #screen.blit(self.surf,self.rect)
             self.checkValid()
@@ -1635,14 +1635,14 @@ class orb_Bullet_star_pattern_main(orb_Bullet):
 
             new_bullet=orb_Bullet_split_5(self.splitAngle,self.eventNum,self.moveAngle)
             new_bullet.initial(self.tx,self.ty,1)
-            new_bullet.setSpeed(0,0)
+            new_bullet.setSpeed(self.moveAngle,0.001)
             new_bullet.loadColor(self.trackColor)
             new_bullet.transColor=self.transColor
             bullets.add(new_bullet)
             self.moveAngle-=17
         
         
-class orb_Bullet_split_5(orb_Bullet):
+class orb_Bullet_split_5(bact_Bullet):
     def __init__(self,splitAngle,eventNum,moveAngle):
         super(orb_Bullet_split_5,self).__init__()
         self.splitAngle=splitAngle
@@ -1672,7 +1672,7 @@ class orb_Bullet_split_5(orb_Bullet):
             #global_var.set_value('bossEvent_'+str(self.eventNum),False)
             self.kill()
 
-class orb_Bullet_split_sub(orb_Bullet):
+class orb_Bullet_split_sub(bact_Bullet):
     def __init__(self,moveFrame,stayFrame,moveAngle):
         super(orb_Bullet_split_sub,self).__init__()
         self.moveFrame=moveFrame
@@ -1692,11 +1692,11 @@ class orb_Bullet_split_sub(orb_Bullet):
     
     def checkFrame(self):
         if self.lastFrame==self.moveFrame:
-            self.setSpeed(0,0)
+            self.setSpeed(self.moveAngle,0.001)
         if self.lastFrame==(self.stayFrame+self.moveFrame):
             self.setSpeed(self.moveAngle,self.speed)
         
-class orb_Bullet_bouncing_5(orb_Bullet):
+class orb_Bullet_bouncing_5(rice_Bullet):
     def __init__(self):
         super(orb_Bullet_bouncing_5,self).__init__()
         self.bounceMax=1

@@ -12,6 +12,11 @@ import Effect
 import Item
 import gameRule
 
+def addLastingCancel(tx,ty,slaves,maxFrame,doBonus):
+        new_slave=Slave.bulletCancelLasting()
+        new_slave.initial(tx,ty,maxFrame,900,doBonus)
+        slaves.add(new_slave)
+
 def cancalAllBullet(bullets,items,effects,doBonus):
     for bullet in bullets:
         if bullet.cancalable:
@@ -47,7 +52,7 @@ def addStars(screen,stars):
     new_star.initial(820,660)
     stars.add(new_star)
 
-def missDetect(player,bullets,enemys,effects,miss_sound,items):
+def missDetect(player,bullets,enemys,effects,miss_sound,items,slaves):
     miss=pygame.sprite.spritecollideany(player,bullets)
     if miss!=None and player.immune!=1:
         if player.deadStatu!=1:
@@ -99,9 +104,13 @@ def missDetect(player,bullets,enemys,effects,miss_sound,items):
         new_effect=Effect.wave()
         new_effect.initial([player.cx,player.cy+width*-1],900,maxFrame,(160,160,160),10)
         effects.add(new_effect)
+        addLastingCancel(player.cx+width*1,player.cy,slaves,90,False)
+        addLastingCancel(player.cx+width*-1,player.cy,slaves,90,False)
+        addLastingCancel(player.cx,player.cy+width*1,slaves,90,False)
+        addLastingCancel(player.cx,player.cy+width*-1,slaves,90,False)
             
     if player.immune==1 and player.bulletSurpress>0:
-        gameRule.cancalAllBullet(bullets,items,effects,False)
+        #gameRule.cancalAllBullet(bullets,items,effects,False)
         for enemy in enemys:
             enemy.health-=4
         player.bulletSurpress-=1

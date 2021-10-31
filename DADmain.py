@@ -36,9 +36,9 @@ screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE| DOUBLEBUF)
 global_var._init()
 
 #test functions 
-global_var.set_value('ifTest',False)
-global_var.set_value('spellNum',1)
-global_var.set_value('ifSpellTest',False)
+global_var.set_value('ifTest',True)
+global_var.set_value('spellNum',7)
+global_var.set_value('ifSpellTest',True)
 testFire=400
  
 #screen=pygame.display.set_mode((640,480))
@@ -358,7 +358,7 @@ while running:
         #star.update(screen)
 
     #collide detectž
-    gameRule.missDetect(player,bullets,enemys,effects,miss_sound,items)
+    gameRule.missDetect(player,bullets,enemys,effects,miss_sound,items,slaves)
     
 
 
@@ -370,7 +370,8 @@ while running:
         #if boom.lastFrame==598:
             #slash_sound.play()
         if boom.lastFrame==599 and boom.ifBoss==False:
-            gameRule.cancalAllBullet(bullets,items,effects,True)
+            #gameRule.cancalAllBullet(bullets,items,effects,True)
+            gameRule.addLastingCancel(boom.tx,boom.ty,slaves,20,True)
             for enemy in enemys:
                 enemy.health-=2000
             slash_sound.play()
@@ -379,7 +380,8 @@ while running:
             effects.add(new_effect)
             global_var.get_value('nep_sound').stop()
         elif boom.ifBoss and boom.lastFrame==399:
-            gameRule.cancalAllBullet(bullets,items,effects,True)
+            #gameRule.cancalAllBullet(bullets,items,effects,True)
+            gameRule.addLastingCancel(boom.tx,boom.ty,slaves,20,True)
             for enemy in enemys:
                 enemy.health-=2000
             slash_sound.play()
@@ -388,7 +390,8 @@ while running:
             effects.add(new_effect)
             global_var.get_value('nep_sound').stop()
         if boom.lastFrame>=5 and pressed_keys[K_x] and not global_var.get_value('pressingX'):
-            gameRule.cancalAllBullet(bullets,items,effects,True)
+            #gameRule.cancalAllBullet(bullets,items,effects,True)
+            gameRule.addLastingCancel(boom.tx,boom.ty,slaves,20,True)
             for enemy in enemys:
                 enemy.health-=2000
             slash_sound.play()

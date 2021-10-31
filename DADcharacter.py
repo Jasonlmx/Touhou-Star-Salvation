@@ -3598,7 +3598,7 @@ class Dumbledore(Boss):
         if (self.lastFrame-60)%300==0:
             self.eventNum+=1
             global_var.set_value('bossEvent_'+str(self.eventNum),False)
-            new_bullet=Bullet.orb_Bullet_star_pattern_main(40,6,self.eventNum)
+            new_bullet=Bullet.orb_Bullet_star_pattern_main(50,4,self.eventNum)
             new_bullet.initial(self.tx,self.ty,1)
             new_bullet.selfTarget(player.cx,player.cy,new_bullet.n)
             new_bullet.countAngle()
@@ -3610,7 +3610,7 @@ class Dumbledore(Boss):
             new_bullet.transColor='lakeBlue'
             bullets.add(new_bullet)
 
-            new_bullet=Bullet.orb_Bullet_star_pattern_main(35,8,self.eventNum)
+            new_bullet=Bullet.orb_Bullet_star_pattern_main(80,4,self.eventNum)
             new_bullet.initial(self.tx,self.ty,1)
             new_bullet.selfTarget(player.cx,player.cy,new_bullet.n)
             new_bullet.countAngle()
