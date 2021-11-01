@@ -1811,6 +1811,9 @@ class Boss(pygame.sprite.Sprite):
         self.tempy=0
         self.deadImage=pygame.image.load('resource/sprite/sprite_dead.png').convert_alpha()
         self.percentHealth=0
+    
+    def doShaking(self,num):
+        global_var.set_value('shakeFrame',num)
     def setSpeed(self,angle,speed):
         s=math.sin(math.radians(angle))
         c=math.cos(math.radians(angle))
@@ -2188,6 +2191,7 @@ class satori(Boss):
             new_effect=Effect.wave()
             new_effect.initial([self.tx,self.ty+width*-1],900,maxFrame,(160,160,160),10)
             effects.add(new_effect)
+            self.doShaking(64)
             self.kill()
     
     def noneSpell_0(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
@@ -2517,8 +2521,10 @@ class Dumbledore(Boss):
             self.deadFrame+=1
             if self.deadFrame==1:
                 global_var.get_value('spell_end').play()
+                
             if self.deadFrame>=60:
                 global_var.get_value('bossDead_sound').play()
+                self.doShaking(60)
                 width=60
                 maxFrame=150
                 new_effect=Effect.wave()
@@ -3980,7 +3986,7 @@ class Dumbledore(Boss):
             self.lastFrame=0
             self.reset=False
             player.spellBonus=True
-            self.maxHealth=200000
+            self.maxHealth=10000
             self.health=self.maxHealth
             #self.gotoPosition(360,160,80)
             self.frameLimit=12000

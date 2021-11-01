@@ -155,7 +155,7 @@ class boomSquare(playerGun):
         self.surf.set_alpha(186)
         self.rect=self.surf.get_rect()
         self.lastFrame=0
-        self.image=pygame.image.load('resource/boomEffect.png')
+        self.image=pygame.image.load('resource/boomEffect.png').convert_alpha()
         self.image.set_alpha(180)
         self.ifBoss=global_var.get_value('ifBoss')
     def checkValid(self):

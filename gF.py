@@ -5,6 +5,15 @@ from pygame.sprite import Group
 import global_var
 import background
 
+def shakeScreen():
+    shakeFrame=global_var.get_value('shakeFrame')
+    if shakeFrame>0:
+        global_var.set_value('ifShaking',True)
+        global_var.set_value('shakeFrame',shakeFrame-1)
+    else:
+        global_var.set_value('ifShaking',False)
+        
+    
 def drawRotation(image,pos,angle,screen):
     w, h = image.get_size()
     pivot = pygame.math.Vector2(w/2, -h/2)

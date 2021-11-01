@@ -33,12 +33,13 @@ fullscreen = True
 screen = pygame.display.set_mode(size,RESIZABLE|DOUBLEBUF)
 #size = width, height =  pygame.display.list_modes()[0]
 screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE| DOUBLEBUF)
+stage=pygame.Surface((960,720),SRCALPHA)
 global_var._init()
 
 #test functions 
 global_var.set_value('ifTest',True)
-global_var.set_value('spellNum',7)
-global_var.set_value('ifSpellTest',True)
+global_var.set_value('spellNum',1)
+global_var.set_value('ifSpellTest',False)
 testFire=400
  
 #screen=pygame.display.set_mode((640,480))
@@ -195,10 +196,15 @@ global_var.set_value('pressingX',False)
 global_var.set_value('DELTA_T',17)
 if global_var.get_value('ifTest'):
     frame=10020#for test
+global_var.set_value('ifShaking',False)
+global_var.set_value('shakeFrame',0)
+d_x=random.randint(-2,2)
+d_y=random.randint(-8,8)
 pygame.mouse.set_visible(False)
 
 # Main loop
 while running:
+    stage.fill((0,0,0))
     DELTA_T=fpsClock.tick(FPS)
     global_var.set_value('DELTA_T',DELTA_T)
 
@@ -244,23 +250,23 @@ while running:
     #create enemy
     #Enemy generator now disabled and substituted by stage controller
 
-    lightnessLevel.stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player)
+    lightnessLevel.stageController(stage,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player)
 
     #draw objects
     if not global_var.get_value('ifBoss') and frame<=10600:
-        screen.fill((0,0,0)) #remeber to fill the screen background first
+        stage.fill((0,0,0)) #remeber to fill the screen background first
 
     #player fire
     if pressed_keys[K_z]:
-        player.fire(frame,screen,playerGuns)
+        player.fire(frame,stage,playerGuns)
         if frame%5==0:
             shoot_sound.stop()
             shoot_sound.play()
     
     for background in backgrounds:
-        background.update(screen)
+        background.update(stage)
     
-    gF.drawBlinder(screen,blinder)
+    
 
     #lowspeed mode display and effect
     if pressed_keys[K_LSHIFT]:
@@ -269,7 +275,7 @@ while running:
         player.itemCollectDistance=100
         if angle<=0:
             angle=360
-        gF.drawRotation(point2,(player.rect.centerx-48,player.rect.centery-48),-angle,screen)
+        gF.drawRotation(point2,(player.rect.centerx-48,player.rect.centery-48),-angle,stage)
     else:
         global_var.set_value('shift_down', False)
         player.itemCollectDistance=50
@@ -279,30 +285,30 @@ while running:
 
     #group update
     for playerGun in playerGuns:
-        playerGun.update(screen)
+        playerGun.update(stage)
     
     for effect in effects:
         if effect.lower:
-            effect.update(screen)
+            effect.update(stage)
     
     global_var.set_value('enemyPos',(0,0,10000))
     for enemy in enemys:
-        enemy.update(screen,frame,bullets,bullets2,effects,items)
+        enemy.update(stage,frame,bullets,bullets2,effects,items)
         enemySum+=1
 
 
     for boss in bosses:
-        boss.update(screen,frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+        boss.update(stage,frame,items,effects,bullets,backgrounds,enemys,slaves,player)
 
     #player miss & display effect
-    gameRule.drawPlayer(screen,player,frame)
+    gameRule.drawPlayer(stage,player,frame)
 
     gameRule.itemAllGet(items,player,effects)
 
     
 
     for item in items:
-        item.update(screen,player)
+        item.update(stage,player)
         if item.distance<=player.itemCollectDistance:
             item.followPlayer=1
         if item.type==0 and player.power==400:
@@ -336,19 +342,19 @@ while running:
 
     for effect in effects:
         if not (effect.upper or effect.lower):
-            effect.update(screen)
+            effect.update(stage)
         
     for bullet in bullets:
         bulletSum+=1
-        bullet.update(screen,bullets,effects)
+        bullet.update(stage,bullets,effects)
 
     for effect in effects:
         if effect.upper:
-            effect.update(screen)
+            effect.update(stage)
 
     
     for slave in slaves:
-        slave.update(screen,frame,bullets,effects,items)
+        slave.update(stage,frame,bullets,effects,items)
 
     
     
@@ -366,7 +372,7 @@ while running:
     gameRule.doBoom(player,booms,pressed_keys,slash_sound,items)
 
     for boom in booms:
-        boom.update(screen)
+        boom.update(stage)
         #if boom.lastFrame==598:
             #slash_sound.play()
         if boom.lastFrame==599 and boom.ifBoss==False:
@@ -404,7 +410,7 @@ while running:
 
     #key
     if pressed_keys[K_LSHIFT]:
-        gF.drawRotation(point,(player.rect.centerx-48,player.rect.centery-48),angle,screen)
+        gF.drawRotation(point,(player.rect.centerx-48,player.rect.centery-48),angle,stage)
 
 
     
@@ -422,8 +428,20 @@ while running:
 
     #life number displayment
     missText=myfont.render('Life: '+str(player.life), True, (255, 255, 255))
-    screen.blit(missText,(200,0))
 
+    stage.blit(missText,(200,0))
+
+    gF.shakeScreen()
+    #drawStage
+    if global_var.get_value('ifShaking'):
+        if frame%4==0:
+            d_x=random.randint(-4,4)
+            d_y=random.randint(-4,4)
+        screen.blit(stage,(0+d_x,0+d_y))
+    else:
+        screen.blit(stage,(0,0))
+    
+    #drawCover
     gF.drawBackground(screen)
     pygame.draw.rect(screen,(255,255,255),(58,28,603,663),2)
     missFrame=myfont.render('miss: '+str(player.deadFrame), True, (255, 255, 255))
@@ -441,6 +459,7 @@ while running:
     gF.showFpsBullet(screen,bigfont,frame,bulletSum,log)
     gameRule.displayUi(screen,player,bigfont)
     screen.blit(frameText,(0,0))
+    gF.drawBlinder(screen,blinder)
 
     global_var.set_value('enemySum',enemySum)
     global_var.set_value('bulletSum',bulletSum)
