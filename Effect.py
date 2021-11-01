@@ -552,4 +552,30 @@ class bossLight(pygame.sprite.Sprite):
         tx=global_var.get_value('boss1x')
         ty=global_var.get_value('boss1y')
         gF.drawRotation(self.temp,(round(tx-size/2),round(ty-size/2)),self.angle,screen)
-        
+
+class bossFaceSpell(pygame.sprite.Sprite):
+    def __init__(self):
+        super(bossFaceSpell,self).__init__()
+        self.image=global_var.get_value('satoriImg')
+        self.image.set_alpha(200)
+        self.lx=660
+        self.ly=-20
+        self.lastFrame=0
+        self.upper=False
+        self.lower=False
+    def update(self,screen):
+        self.lastFrame+=1
+        self.movement()
+        screen.blit(self.image,(self.lx,self.ly))
+        if self.lastFrame>=100:
+            self.kill()
+    def movement(self):
+        if self.lastFrame<=20:
+            self.lx-=23
+            self.ly+=1.3
+        elif self.lastFrame<=70:
+            self.lx-=0.2
+            self.ly-=0
+        else:
+            self.lx-=20
+            self.ly+=15

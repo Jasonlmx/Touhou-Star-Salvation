@@ -38,8 +38,8 @@ global_var._init()
 
 #test functions 
 global_var.set_value('ifTest',True)
-global_var.set_value('spellNum',1)
-global_var.set_value('ifSpellTest',False)
+global_var.set_value('spellNum',7)
+global_var.set_value('ifSpellTest',True)
 testFire=400
  
 #screen=pygame.display.set_mode((640,480))
@@ -167,7 +167,7 @@ bonus_sound=pygame.mixer.Sound('resource/sound/se_bonus.wav')
 bonus_sound.set_volume(0.25)
 global_var.set_value('bonus_sound',bonus_sound)
 spell_sound=pygame.mixer.Sound('resource/sound/se_cat00.wav')
-spell_sound.set_volume(0.30)
+spell_sound.set_volume(0.50)
 global_var.set_value('spell_sound',spell_sound)
 laser_sound=pygame.mixer.Sound('resource/sound/se_lazer00.wav')
 laser_sound.set_volume(0.18)

@@ -2638,6 +2638,8 @@ class Dumbledore(Boss):
             self.framePunishment=1700
             self.bulletSpeed=3
             global_var.get_value('spell_sound').play()
+            new_effect=Effect.bossFaceSpell()
+            effects.add(new_effect)
         
         self.cardBonus-=self.framePunishment
         if  (self.lastFrame-50)%40==25:
@@ -2804,6 +2806,8 @@ class Dumbledore(Boss):
             self.gotoPosition(360,120,50)
             self.framePunishment=1700
             global_var.get_value('spell_sound').play()
+            new_effect=Effect.bossFaceSpell()
+            effects.add(new_effect)
 
         self.cardBonus-=self.framePunishment
         if self.lastFrame>=80:
@@ -2981,7 +2985,9 @@ class Dumbledore(Boss):
             self.spellName='Milky Way[Path of magic stardust]'
             self.gotoPosition(360,120,50)
             global_var.get_value('spell_sound').play()
-        
+            new_effect=Effect.bossFaceSpell()
+            effects.add(new_effect)
+
         self.cardBonus-=self.framePunishment
         if self.lastFrame%10==0 and self.lastFrame>=80:
                 global_var.get_value('kira_sound').stop()
@@ -3016,7 +3022,7 @@ class Dumbledore(Boss):
             new_effect=Effect.bulletCreate(1)
             new_effect.initial(self.tx,self.ty,192,48,10)
             effects.add(new_effect)
-        if (self.lastFrame-100)%60==0:
+        if (self.lastFrame-100)%60==0 and self.lastFrame>=80:
             if not global_var.get_value('enemyFiring1'):
                 global_var.get_value('enemyGun_sound1').stop()
                 global_var.get_value('enemyGun_sound1').play()
@@ -3156,6 +3162,8 @@ class Dumbledore(Boss):
             global_var.get_value('spell_sound').play()
             self.directToggle=1
             self.fireCount=0
+            new_effect=Effect.bossFaceSpell()
+            effects.add(new_effect)
         self.cardBonus-=self.framePunishment
         if self.lastFrame>=80:
             if (self.lastFrame-80)%250==125:
@@ -3335,7 +3343,8 @@ class Dumbledore(Boss):
             self.gotoPosition(360,240,50)
             self.randomAngle=random.random()*360
             global_var.get_value('spell_sound').play()
-
+            new_effect=Effect.bossFaceSpell()
+            effects.add(new_effect)
         self.cardBonus-=self.framePunishment
         if self.lastFrame>=70:
             if (self.lastFrame-70)%700<=400 or (self.lastFrame-70)%700==690:
@@ -3474,7 +3483,8 @@ class Dumbledore(Boss):
             self.randomAngle=random.random()*360
             self.randomAngle2=random.random()*360
             global_var.get_value('spell_sound').play()
-
+            new_effect=Effect.bossFaceSpell()
+            effects.add(new_effect)
         self.cardBonus-=self.framePunishment
 
         if self.lastFrame>=80:
@@ -3599,7 +3609,8 @@ class Dumbledore(Boss):
             self.randomAngle=random.random()*360
             self.randomAngle2=random.random()*360
             global_var.get_value('spell_sound').play()
-
+            new_effect=Effect.bossFaceSpell()
+            effects.add(new_effect)
         self.cardBonus-=self.framePunishment
         if (self.lastFrame-60)%300==0:
             self.eventNum+=1
@@ -3731,6 +3742,8 @@ class Dumbledore(Boss):
             self.gotoPosition(360,250,50)
             self.randomAngle=random.random()*360
             global_var.get_value('spell_sound').play()
+            new_effect=Effect.bossFaceSpell()
+            effects.add(new_effect)
         self.cardBonus-=self.framePunishment
 
         if not self.powerUp:
@@ -3924,6 +3937,8 @@ class Dumbledore(Boss):
             self.gotoPosition(360,250,50)
             self.randomAngle=random.random()*360
             global_var.get_value('spell_sound').play()
+            new_effect=Effect.bossFaceSpell()
+            effects.add(new_effect)
         self.cardBonus-=self.framePunishment
 
         intervalAngle=50
@@ -3995,7 +4010,8 @@ class Dumbledore(Boss):
             self.spellName="[Hogwarts Four Spirits]" 
             self.gotoPosition(360,250,50)
             self.randomAngle=random.random()*360
-            
+            new_effect=Effect.bossFaceSpell()
+            effects.add(new_effect)
 
         if self.lastFrame==1 or self.lastFrame==40 or self.lastFrame==80:
             global_var.get_value('ch00_sound').stop()
