@@ -33,13 +33,14 @@ fullscreen = True
 screen = pygame.display.set_mode(size,RESIZABLE|DOUBLEBUF)
 #size = width, height =  pygame.display.list_modes()[0]
 screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE| DOUBLEBUF)
-stage=pygame.Surface((960,720),SRCALPHA)
+stage=pygame.Surface((960,720)).convert_alpha()
+stage.set_clip(Rect(60,30,600,660))
 global_var._init()
 
 #test functions 
 global_var.set_value('ifTest',True)
-global_var.set_value('spellNum',7)
-global_var.set_value('ifSpellTest',True)
+global_var.set_value('spellNum',3)
+global_var.set_value('ifSpellTest',False)
 testFire=400
  
 #screen=pygame.display.set_mode((640,480))
@@ -47,8 +48,8 @@ pygame.display.set_caption("Touhou Star Salvation")
 back=pygame.image.load('resource/background.jpg').convert_alpha()
 point=pygame.image.load('resource/point.png').convert_alpha()
 point2=pygame.image.load('resource/point2.png').convert_alpha()
-point=pygame.transform.scale(point,(96,96))
-point2=pygame.transform.scale(point2,(96,96))
+point=pygame.transform.smoothscale(point,(96,96))
+point2=pygame.transform.smoothscale(point2,(96,96))
 point2.set_alpha(128)
 myfont = pygame.font.SysFont('arial', 12)
 bigfont= pygame.font.SysFont('arial', 24)
@@ -205,6 +206,7 @@ pygame.mouse.set_visible(False)
 # Main loop
 while running:
     stage.fill((0,0,0))
+    screen.fill((0,0,0))
     DELTA_T=fpsClock.tick(FPS)
     global_var.set_value('DELTA_T',DELTA_T)
 
@@ -439,7 +441,7 @@ while running:
             d_y=random.randint(-4,4)
         screen.blit(stage,(0+d_x,0+d_y))
     else:
-        screen.blit(stage,(0,0))
+        screen.blit(stage,(60,30),(60,30,600,660))
     
     #drawCover
     gF.drawBackground(screen)

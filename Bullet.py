@@ -473,6 +473,7 @@ class big_Bullet(Bullet):
         screen.blit(self.image,(self.rect.centerx-48,self.rect.centery-48))
         #screen.blit(self.surf,self.rect)
         self.checkValid()
+        
     def loadColor(self,color):
         self.image=pygame.image.load('resource/bullet/big_bullet_'+color+'.png').convert_alpha()
         #self.image.set_alpha(210)
@@ -528,21 +529,31 @@ class star_Bullet(Bullet):
         self.rect = self.surf.get_rect()
         self.surf.fill((255,255,255))
         self.type=4
-        self.image=pygame.image.load('resource/bullet/star_bullet_grey.png').convert_alpha()
-        self.dAngle=random.randint(0,60)
+        #self.image=pygame.image.load('resource/bullet/star_bullet_grey.png').convert_alpha()
+        self.dAngle=20
         self.dx=12
         self.dy=12
         self.lastFrame=0
+        self.startY=240
+        self.colorDict={'grey':0,'red':1,'lightRed':2,'purple':3,'pink':4,'blue':5,'seaBlue':6,'skyBlue':7,'lightBlue':8,'lakeBlue':8,'darkGreen':9,'green':10,'lightGreen':11,'yellow':12,'lemonYellow':13,'orange':14,'white':15}
         #self.cvImage=pygame.image.load('resource/bullet/star_bullet_grey.png')
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
-        #screen.blit(self.surf,self.rect)
+        
         self.drawBullet(screen)
+        #screen.blit(self.surf,self.rect)
         self.checkValid()
+    def doColorCode(self,code):
+        self.colorNum=code
+        self.image=pygame.Surface((24,24))
+        self.image=self.image.convert_alpha()
+        self.image.fill((0,0,0,0))
+        self.image.blit(global_var.get_value('star_bullet_image'), (0, 0), (24*self.colorNum,0, 24, 24))
     def loadColor(self,color):
-        self.image=pygame.image.load('resource/bullet/star_bullet_'+color+'.png').convert_alpha()
+        self.doColorCode(self.colorDict[color])
+    
     def drawBullet(self,screen):
         self.dAngle+=3
         gF.drawRotation(self.image,(self.rect.centerx-12,self.rect.centery-12),self.dAngle,screen)
@@ -1156,7 +1167,7 @@ class rice_Bullet(Bullet):
         self.lastFrame+=1
         self.movement()
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
-        screen.blit(self.surf,self.rect)
+        #screen.blit(self.surf,self.rect)
         self.drawBullet(screen)
         self.checkValid()
 

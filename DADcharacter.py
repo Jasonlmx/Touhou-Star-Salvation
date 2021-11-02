@@ -1475,7 +1475,7 @@ class Marisa(Player):
         self.surf.fill((255,255,255))
         self.rect = self.surf.get_rect()
         self.image=global_var.get_value('pl00')
-        self.image=pygame.transform.scale(self.image,(384,216))
+        self.image=pygame.transform.smoothscale(self.image,(384,216))
         self.interval=5
         self.part=0
         self.count2=0
@@ -1638,7 +1638,7 @@ class Reimu(Player):
         self.surf.fill((255,255,255))
         self.rect = self.surf.get_rect()
         self.image=global_var.get_value('pl01')
-        self.image=pygame.transform.scale(self.image,(384,216))
+        self.image=pygame.transform.smoothscale(self.image,(384,216))
         self.interval=5
         self.part=0
         self.count2=0
@@ -1843,10 +1843,10 @@ class Boss(pygame.sprite.Sprite):
         temp.fill((0,0,0,0))
         temp=temp.convert_alpha()
         innerPeriod=480
-        gF.drawRotation(pygame.transform.scale(self.magicImage,(size,size)),(0,0),frame%innerPeriod*(360/innerPeriod),temp)
+        gF.drawRotation(pygame.transform.smoothscale(self.magicImage,(size,size)),(0,0),frame%innerPeriod*(360/innerPeriod),temp)
         rotatePeriod=840
         height=round((math.sin((frame+90)*math.pi/180*0.8)*0.25+0.75)*size)
-        tempImage=pygame.transform.scale(temp,(size,height))
+        tempImage=pygame.transform.smoothscale(temp,(size,height))
         #screen.blit(temp,(self.rect.centerx-round(size/2),self.rect.centery-round(size/2)))
         gF.drawRotation(tempImage,(self.rect.centerx-round(size/2),self.rect.centery-round(height/2)),frame%rotatePeriod*(360/rotatePeriod),screen)
 
@@ -2521,7 +2521,7 @@ class Dumbledore(Boss):
             self.deadFrame+=1
             if self.deadFrame==1:
                 global_var.get_value('spell_end').play()
-                
+                self.gotoPosition(self.tx+random.random()*100-50,self.ty+random.random()*100-50,59)
             if self.deadFrame>=60:
                 global_var.get_value('bossDead_sound').play()
                 self.doShaking(60)
