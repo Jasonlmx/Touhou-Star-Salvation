@@ -958,41 +958,46 @@ class star_Bullet_delaySelfTarget(star_Bullet):
             self.motion=1
 
 class laser_Bullet_main(Bullet):
-    def __init__(self):
+    def __init__(self,ratio=8):
         super(laser_Bullet_main,self).__init__()
-        self.ratio=8
+        self.ratio=ratio
         self.surf = pygame.Surface((self.ratio,self.ratio))
         self.surf.fill((255,255,255))
         self.rect = self.surf.get_rect()
-        self.image=pygame.image.load('resource/bullet/small_bullet_grey.png').convert_alpha()
+        #self.image=pygame.image.load('resource/bullet/small_bullet_grey.png').convert_alpha()
         self.dx=4
         self.dy=4
+        self.speed=0
         self.lastFrame=0
         self.length=20
         self.colorNum=0
+        self.angle=0
     def doColorCode(self,code):
         self.colorNum=code
-        self.image=pygame.Surface((16,15))
+        self.image=pygame.Surface((16,16))
         self.image=self.image.convert_alpha()
         self.image.fill((0,0,0,0))
         #self.image.set_alpha(256)
-        self.image.blit(global_var.get_value('laser_bullet_image'), (0, 0), (64*self.colorNum,0, 16, 15))
-
+        self.image.blit(global_var.get_value('laser_image'), (0, 0), (16*self.colorNum,0, 16, 16))
+        self.image=pygame.transform.smoothscale(self.image,(self.ratio+2,round(self.speed+4)))
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
+        self.countAngle()
         new_sub=laser_Bullet_sub(self.length,self.ratio)
+        new_sub.angle=self.angle
+        new_sub.speed=self.speed
         new_sub.initial(self.tx,self.ty,self.fro)
         new_sub.doColorCode(self.colorNum)
         bullets.add(new_sub)
         #screen.blit(self.image,(self.rect.centerx-6,self.rect.centery-6))
         
         #screen.blit(self.surf,self.rect)
-        self.draw(screen)
+        #self.draw(screen)
         self.checkValid()
     
     def draw(self,screen):
-        screen.blit(self.image,(self.rect.centerx-8,self.rect.centery-8))
+        screen.blit(self.image,(self.rect.centerx-round((self.ratio+2)/2),self.rect.centery-round((self.speed+4)/2)))
     
 
 class laser_Bullet_sub(Bullet):
@@ -1002,33 +1007,50 @@ class laser_Bullet_sub(Bullet):
         self.surf = pygame.Surface((self.ratio,self.ratio))
         self.surf.fill((255,255,255))
         self.rect = self.surf.get_rect()
-        self.image=pygame.image.load('resource/bullet/small_bullet_grey.png').convert_alpha()
+        #self.image=pygame.image.load('resource/bullet/small_bullet_grey.png').convert_alpha()
         self.dx=6
         self.dy=6
         self.length=length
+        self.speed=0
         self.frame=0
         self.speedx=0
         self.speedy=0
         self.colorNum=0
+        self.numInf=5
+        self.widthAdj=0
+        self.angle=0
     def doColorCode(self,code):
         self.colorNum=code
-        self.image=pygame.Surface((16,15))
+        self.image=pygame.Surface((16,16))
         self.image=self.image.convert_alpha()
         self.image.fill((0,0,0,0))
         #self.image.set_alpha(256)
-        self.image.blit(global_var.get_value('laser_bullet_image'), (0, 0), (64*self.colorNum,0, 16, 15)) 
+        self.image.blit(global_var.get_value('laser_image'), (0, 0), (16*self.colorNum,0, 16, 16)) 
+        self.image=pygame.transform.smoothscale(self.image,(self.ratio+2,round(self.speed+2)))
 
     def update(self,screen,bullets,effects):
         self.frame+=1
         self.movement()
-        #screen.blit(self.surf,self.rect)
-        self.draw(screen)
+        
+        
         self.checkValid()
         if self.frame>=self.length:
             self.kill()
+        if self.frame<=self.numInf:
+            self.widthAdj=round(self.ratio*(self.frame/self.numInf))
+            self.tempImage=pygame.transform.smoothscale(self.image,(self.widthAdj+2,round(self.speed+2)))
+        elif self.frame>=(self.length-self.numInf):
+            self.widthAdj=round(self.ratio*(((self.length-self.frame)/self.numInf)))
+            self.tempImage=pygame.transform.smoothscale(self.image,(self.widthAdj+2,round(self.speed+2)))
+        else:
+            self.widthAdj=self.ratio
+            self.tempImage=self.image
+        self.draw(screen)
+        #screen.blit(self.surf,self.rect)
     
     def draw(self,screen):
-        screen.blit(self.image,(self.rect.centerx-8,self.rect.centery-8))
+        gF.drawRotation(self.tempImage,(self.rect.centerx-round((self.widthAdj+2)/2),self.rect.centery-round((self.speed+2)/2)),270-self.angle,screen)
+        #screen.blit(self.tempImage,(self.rect.centerx-round((self.widthAdj+2)/2),self.rect.centery-round((self.speed+4)/2)))
 
 class big_star_Bullet(Bullet):
     def __init__(self):
@@ -1375,8 +1397,9 @@ class big_star_Bullet_comet(big_star_Bullet):
                 self.bounceMax-=1
 
 class laser_Bullet_immune(laser_Bullet_main):
-    def __init__(self,immuneFrame):
+    def __init__(self,immuneFrame,ratio=8):
         super(laser_Bullet_immune,self).__init__()
+        self.ratio=ratio
         self.immuneFrame=immuneFrame
         self.length=14
 
@@ -1438,6 +1461,7 @@ class star_Bullet_fountain(big_star_Bullet):
             new_laser.initial(self.tx,self.ty,1)
             new_laser.doColorCode(0)
             laserSpeed=12
+            new_laser.speed=laserSpeed
             if self.touch_direction==1:
                 new_laser.setSpeed(180,laserSpeed)
             elif self.touch_direction==2:

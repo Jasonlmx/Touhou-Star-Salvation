@@ -187,6 +187,15 @@ def loadImage():
     #pygame.image.load('resource/bullet/big_star_bullet.png')
     orb_bullet_image=pygame.transform.scale(orb_bullet_image,(384,24))
     global_var.set_value('orb_bullet_image',orb_bullet_image)
+    
+    laser_image=pygame.Surface((256,16))
+    laser_image=laser_image.convert_alpha()
+    laser_image.fill((0,0,0,0))
+    laser_image.blit(etama, (0, 0), (0,0, 256, 16))
+    #pygame.image.load('resource/bullet/big_star_bullet.png')
+    global_var.set_value('laser_image',laser_image)
+
+
 
     big_star_bullet_image=pygame.image.load('resource/bullet/big_star_bullet.png')
     big_star_bullet_image=pygame.transform.smoothscale(big_star_bullet_image,(384,48))

@@ -2848,7 +2848,7 @@ class Dumbledore(Boss):
             if self.lastFrame%600<=360:
                 if self.lastFrame%8==0:
                     angleInc=15*math.sin(frame/180*math.pi)
-                    new_bullet=Bullet.laser_Bullet_immune(60)
+                    new_bullet=Bullet.laser_Bullet_immune(60,ratio=4)
                     area=random.randint(0,1)
                     if area==1:
                         rx=660+random.random()*10
@@ -2860,9 +2860,10 @@ class Dumbledore(Boss):
                         new_bullet.initial(rx,ry,1)
                     ra=90+43+angleInc+random.random()*4
                     rs=7+random.random()*1.5
+                    new_bullet.speed=rs
                     new_bullet.setSpeed(ra,rs)
                     #new_bullet.loadColor('purple')
-                    new_bullet.doColorCode(0)
+                    new_bullet.doColorCode(8)
                     bullets.add(new_bullet)
                     new_bullet=Bullet.star_Bullet_immune(60)
                     new_bullet.initial(rx,ry,1)
