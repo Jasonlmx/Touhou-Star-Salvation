@@ -943,7 +943,10 @@ class ghost_slytherin_spirit(ghost):
                 global_var.get_value('enemyGun_sound2').play()
                 global_var.set_value('enemyFiring2',True)
             new_bullet=Bullet.laser_bullet_decline(300,7)
-            new_bullet.doColorCode(2)
+            new_bullet.speed=4
+            self.countAngle()
+            new_bullet.angle=self.angle
+            new_bullet.doColorCode(10)
             new_bullet.initial(self.tx,self.ty,1)
             bullets.add(new_bullet)
         
@@ -2848,7 +2851,9 @@ class Dumbledore(Boss):
             if self.lastFrame%600<=360:
                 if self.lastFrame%8==0:
                     angleInc=15*math.sin(frame/180*math.pi)
-                    new_bullet=Bullet.laser_Bullet_immune(60,ratio=4)
+                    new_bullet=Bullet.laser_Bullet_immune(60,ratio=5)
+                    new_bullet.length=28
+                    new_bullet.ratio=8
                     area=random.randint(0,1)
                     if area==1:
                         rx=660+random.random()*10
@@ -2865,11 +2870,7 @@ class Dumbledore(Boss):
                     #new_bullet.loadColor('purple')
                     new_bullet.doColorCode(8)
                     bullets.add(new_bullet)
-                    new_bullet=Bullet.star_Bullet_immune(60)
-                    new_bullet.initial(rx,ry,1)
-                    new_bullet.setSpeed(ra,rs)
-                    new_bullet.loadColor('blue')
-                    bullets.add(new_bullet)
+
 
             if self.lastFrame%600>=300:
                 if self.lastFrame%2==0:
@@ -4034,7 +4035,7 @@ class Dumbledore(Boss):
             self.lastFrame=0
             self.reset=False
             player.spellBonus=True
-            self.maxHealth=10000
+            self.maxHealth=70000
             self.health=self.maxHealth
             #self.gotoPosition(360,160,80)
             self.frameLimit=12000

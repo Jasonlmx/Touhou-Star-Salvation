@@ -1459,9 +1459,9 @@ class star_Bullet_fountain(big_star_Bullet):
             new_laser=laser_Bullet_main()
             new_laser.length=60
             new_laser.initial(self.tx,self.ty,1)
-            new_laser.doColorCode(0)
+            new_laser.doColorCode(8)
             laserSpeed=12
-            new_laser.speed=laserSpeed
+            new_laser.speed=laserSpeed+2
             if self.touch_direction==1:
                 new_laser.setSpeed(180,laserSpeed)
             elif self.touch_direction==2:
@@ -1905,11 +1905,14 @@ class laser_bullet_decline(laser_Bullet_sub):
         super(laser_bullet_decline,self).__init__(length,ratio)
         self.length=length
         self.ratio=ratio
+        self.numInf=10
+    '''
     def draw(self,screen):
         width=round((1-self.frame/self.length)*13)+3
         image=pygame.transform.scale(self.image,(width,width))
         screen.blit(image,(self.rect.centerx-round(width/2),self.rect.centery-round(width/2)))
         #screen.blit(self.surf,self.rect)
+    '''
     
 class mid_bullet_delay(mid_Bullet):
     def __init__(self):
