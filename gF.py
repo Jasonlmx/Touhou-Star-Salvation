@@ -138,7 +138,7 @@ def loadImage():
     global_var.set_value('lifeText',pygame.image.load('resource/text/lifeText.png'))
     global_var.set_value('spellText',pygame.image.load('resource/text/spellText.png'))
     front00=pygame.image.load('resource/text/front00.png')
-    front00=pygame.transform.scale(front00,(768,768))
+    front00=pygame.transform.smoothscale(front00,(768,768))
     global_var.set_value('front00',front00)
     front01=pygame.image.load('resource/text/front00.png')
     textArea=pygame.Surface((80,220)).convert_alpha()

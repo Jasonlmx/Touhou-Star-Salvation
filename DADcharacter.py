@@ -1804,7 +1804,7 @@ class Boss(pygame.sprite.Sprite):
         self.magicImage=pygame.transform.scale(pygame.image.load('resource/bossMagic.png'),(252,252)).convert_alpha()
         self.magicImage.set_alpha(230)
         self.tracker=global_var.get_value('bossTracker')
-        self.bossSpell=pygame.transform.scale(pygame.image.load('resource/text/bossSpell.png'),(16,16)).convert_alpha()
+        self.bossSpell=pygame.transform.smoothscale(pygame.image.load('resource/text/bossSpell.png'),(16,16)).convert_alpha()
         self.ifBlock=False
         self.maxMovingFrame=0
         self.tempx=0
@@ -1853,7 +1853,7 @@ class Boss(pygame.sprite.Sprite):
         #draw flame effect
         if self.lastFrame%7==0:
             new_effect=Effect.bossFlame()
-            new_effect.initial(100,0,20)
+            new_effect.initial(150,0,20)
             effects.add(new_effect)
         if self.lastFrame%3==0:
             new_effect=Effect.bossLight()
@@ -2211,6 +2211,9 @@ class satori(Boss):
             self.frameLimit=1200
         if self.lastFrame%240>=0:
             if self.lastFrame%9==0:
+                new_effect=Effect.bulletCreate(4)
+                new_effect.initial(self.tx,self.ty,100,48,9)
+                effects.add(new_effect)
                 for i in range(0,8):
                     if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').play()
@@ -2251,10 +2254,15 @@ class satori(Boss):
                 background.surf.convert()
                 background.surf.set_alpha(180)
                 background.cardBg=True
+            new_effect=Effect.bossFaceSpell()
+            effects.add(new_effect)
         self.cardBonus-=self.framePunishment
 
         if self.lastFrame%240>=120:
             if self.lastFrame%6==0:
+                new_effect=Effect.bulletCreate(5)
+                new_effect.initial(self.tx,self.ty,96,48,6)
+                effects.add(new_effect)
                 for i in range(0,9):
                     if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').play()
@@ -2268,6 +2276,9 @@ class satori(Boss):
         else:
             self.randomAngle=random.random()*360
         if self.lastFrame%9==0:
+            new_effect=Effect.bulletCreate(2)
+            new_effect.initial(self.tx,self.ty,64,24,9)
+            effects.add(new_effect)
             for i in range(0,12):
                 if not global_var.get_value('enemyFiring2'):
                     global_var.get_value('enemyGun_sound2').play()
@@ -2292,7 +2303,8 @@ class satori(Boss):
             if player.spellBonus:
                 player.score+=self.cardBonus
                 global_var.get_value('bonus_sound').play()
-            global_var.get_value('enemyDead_sound').play()
+            #global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
         
         if self.frameLimit<=0:
             self.cancalAllBullet(bullets,items,effects,True)
@@ -2301,7 +2313,8 @@ class satori(Boss):
             self.cardNum+=1
             self.health=20000
             self.drawResult(effects,self.cardBonus,False)
-            global_var.get_value('enemyDead_sound').play()
+            #global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
 
     def spell_2(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
         if self.reset:
@@ -2317,6 +2330,8 @@ class satori(Boss):
             self.powerUp=False
             global_var.get_value('spell_sound').play()
             self.spellName='Star light[Milky Star Shower]'
+            new_effect=Effect.bossFaceSpell()
+            effects.add(new_effect)
         self.cardBonus-=self.framePunishment
         if not self.powerUp:
             randomBulletInterval=5
@@ -2334,21 +2349,34 @@ class satori(Boss):
                 global_var.get_value('kira_sound').play()
 
             if self.lastFrame%randomBulletInterval==0:
+                new_effect=Effect.bulletCreate(4)
+                rx=random.random()*600+60
+                ry=random.random()*20+30
+                new_effect.initial(rx,ry,82,48,randomBulletInterval)
+                effects.add(new_effect)
                 new_bullet=Bullet.rice_Bullet()
-                new_bullet.initial(random.random()*600+60,random.random()*20+30,1)
+                new_bullet.initial(rx,ry,1)
                 new_bullet.setSpeed(random.random()*20+80,randomBulletISpeed)
                 new_bullet.loadColor('blue')
                 bullets.add(new_bullet)
             
             if self.lastFrame%targetBulletInterval==0:
+                new_effect=Effect.bulletCreate(2)
+                rx=random.random()*600+60
+                ry=random.random()*20+30
+                new_effect.initial(rx,ry,82,48,targetBulletInterval)
+                effects.add(new_effect)
                 new_bullet=Bullet.rice_Bullet()
-                new_bullet.initial(random.random()*600+60,random.random()*20+30,1)
+                new_bullet.initial(rx,ry,1)
                 new_bullet.selfTarget(player.cx,player.cy,targetBulletISpeed)
                 new_bullet.loadColor('purple')
                 bullets.add(new_bullet)
             
             if self.lastFrame%180>=160:
                 if self.lastFrame%2==0:
+                    new_effect=Effect.bulletCreate(4)
+                    new_effect.initial(self.tx,self.ty,82,48,2)
+                    effects.add(new_effect)
                     if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').stop()
                         global_var.get_value('enemyGun_sound2').play()
@@ -2363,7 +2391,7 @@ class satori(Boss):
                     if self.health<=15000 or self.frameLimit<=600:
                         for i in range(-1,2):
                             if i!=0:
-                                new_bullet=Bullet.star_Bullet()
+                                new_bullet=Bullet.satsu_Bullet()
                                 new_bullet.initial(self.tx,self.ty,1)
                                 new_bullet.setSpeed(angle+i*30,2.5+0.4*(self.lastFrame%180-160))
                                 new_bullet.loadColor('blue')
@@ -2396,7 +2424,8 @@ class satori(Boss):
             if player.spellBonus:
                 player.score+=self.cardBonus
                 global_var.get_value('bonus_sound').play()
-            global_var.get_value('enemyDead_sound').play()
+            #global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
         
         if self.frameLimit<=0:
             self.cancalAllBullet(bullets,items,effects,True)
@@ -2405,7 +2434,8 @@ class satori(Boss):
             self.cardNum+=1
             self.health=20000
             self.drawResult(effects,self.cardBonus,False)
-            global_var.get_value('enemyDead_sound').play()
+            #global_var.get_value('enemyDead_sound').play()
+            global_var.get_value('spell_end').play()
 
 class Dumbledore(Boss):
     def __init__(self):
@@ -2922,8 +2952,10 @@ class Dumbledore(Boss):
                 self.colorNow+=1
                 if self.colorNow%4>=2:
                     color="purple"
+                    speed=3.6
                 else:
                     color="seaBlue"
+                    speed=4.5
                 new_effect=Effect.bulletCreate(4)
                 new_effect.initial(self.tx,self.ty,96,32,10)
                 effects.add(new_effect)
@@ -2934,7 +2966,7 @@ class Dumbledore(Boss):
                         global_var.set_value('enemyFiring2',True)
                     new_bullet=Bullet.mid_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.setSpeed(self.randomAngle+i*(360/15),3.6)
+                    new_bullet.setSpeed(self.randomAngle+i*(360/15),speed)
                     new_bullet.loadColor(color)
                     bullets.add(new_bullet)
                 if self.lastFrame%80>=40:
@@ -2949,7 +2981,7 @@ class Dumbledore(Boss):
                         global_var.set_value('enemyFiring2',True)
                     new_bullet=Bullet.mid_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.setSpeed(self.randomAngle2+i*(360/15),3.6)
+                    new_bullet.setSpeed(self.randomAngle2+i*(360/15),speed)
                     new_bullet.loadColor(color)
                     bullets.add(new_bullet)
                 if self.lastFrame%80>=40:
