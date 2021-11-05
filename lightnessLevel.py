@@ -176,7 +176,9 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
     
     if frame>=10800:
         screen.fill((0,0,0))
-        back_image=global_var.get_value('stars_background')
+        back_image=global_var.get_value('spell_background')
+        #temp_image=pygame.Surface((900,900))
+        #temp_image.fill((0,0,0,0))
         #back_image.set_alpha(round(math.sin(((frame-300)/3)/180*math.pi)*128+128))
 
         lastFrame=0
@@ -207,8 +209,17 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
 
 
 
-        screen.blit(back_image,(60,30))
-        #gF.drawRotation(global_var.get_value('stars_background'),(-90,-90),round((frame%10800)/10800*360),screen)
+        #screen.blit(back_image,(60,30))
+        #gF.drawRotation(global_var.get_value('spell_background'),(360-425,300-425),(frame%10800)/10800*360*5,screen)
+        '''
+        if frame%3==0:
+            gF.drawRotation(back_image,(360-425,300-425),-(frame%10800)/10800*360*5,temp_image)
+            global_var.set_value('temp_image',temp_image)
+        else:
+            temp_image=global_var.get_value('temp_image')
+        '''
+        #temp_image=pygame.transform.smoothscale(temp_image,(900,900))
+        screen.blit(back_image,(0,-120))
         screen.blit(global_var.get_value('hogwarts_background'),(30,184))
         
     if frame==10900:

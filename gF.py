@@ -161,6 +161,9 @@ def loadImage():
     global_var.set_value('hogwarts_background',hogwarts_background)
     stars_background=pygame.image.load('resource/background/stars.jpg').convert_alpha()
     global_var.set_value('stars_background',stars_background)
+    spell_background=pygame.image.load('resource/background/spellBack.jpg')
+    spell_background=pygame.transform.smoothscale(spell_background,(850,850)).convert()
+    global_var.set_value('spell_background',spell_background)
 
 
     etama=pygame.image.load('resource/bullet/etama.png')
