@@ -161,9 +161,11 @@ def loadImage():
     global_var.set_value('hogwarts_background',hogwarts_background)
     stars_background=pygame.image.load('resource/background/stars.jpg').convert_alpha()
     global_var.set_value('stars_background',stars_background)
-    spell_background=pygame.image.load('resource/background/spellBack.jpg')
-    spell_background=pygame.transform.smoothscale(spell_background,(850,850)).convert()
+    spell_background=pygame.image.load('resource/background/spellBack.jpg').convert()
+    #spell_background=pygame.transform.smoothscale(spell_background,(850,850)).convert()
     global_var.set_value('spell_background',spell_background)
+    moon=pygame.image.load('resource/background/moon.png').convert()
+    global_var.set_value('moon',moon)
 
 
     etama=pygame.image.load('resource/bullet/etama.png')
@@ -231,7 +233,7 @@ def loadImage():
     effFlameImg=pygame.Surface((72,72)).convert_alpha()
     effFlameImg.fill((0,0,0,0))
     effFlameImg.blit(global_var.get_value('effect_temp1').convert_alpha(), (0, 0), (0,0, 72, 72))
-    flameColor=(255,62,0,0)
+    flameColor=(0,62,255,0)
     fill(effFlameImg,flameColor)
     effFlameImg.set_alpha(150)
     global_var.set_value('effFlameImg',effFlameImg)

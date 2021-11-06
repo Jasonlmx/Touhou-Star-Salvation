@@ -1677,7 +1677,7 @@ class orb_Bullet_star_pattern_main(orb_Bullet):
             self.moveAngle-=17
         
         
-class orb_Bullet_split_5(bact_Bullet):
+class orb_Bullet_split_5(rice_Bullet):
     def __init__(self,splitAngle,eventNum,moveAngle):
         super(orb_Bullet_split_5,self).__init__()
         self.splitAngle=splitAngle
@@ -1707,7 +1707,7 @@ class orb_Bullet_split_5(bact_Bullet):
             #global_var.set_value('bossEvent_'+str(self.eventNum),False)
             self.kill()
 
-class orb_Bullet_split_sub(bact_Bullet):
+class orb_Bullet_split_sub(rice_Bullet):
     def __init__(self,moveFrame,stayFrame,moveAngle):
         super(orb_Bullet_split_sub,self).__init__()
         self.moveFrame=moveFrame

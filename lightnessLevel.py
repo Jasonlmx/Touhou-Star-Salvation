@@ -205,9 +205,11 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
                     alpha=0
         
         back_image.set_alpha(alpha)
-
-
-
+        moon=global_var.get_value('moon')
+        rev_alpha=256-alpha
+        moon.set_alpha(rev_alpha)
+        hog=global_var.get_value('hogwarts_background')
+        hog.set_alpha(rev_alpha)
 
         #screen.blit(back_image,(60,30))
         #gF.drawRotation(global_var.get_value('spell_background'),(360-425,300-425),(frame%10800)/10800*360*5,screen)
@@ -219,8 +221,15 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
             temp_image=global_var.get_value('temp_image')
         '''
         #temp_image=pygame.transform.smoothscale(temp_image,(900,900))
-        screen.blit(back_image,(0,-120))
-        screen.blit(global_var.get_value('hogwarts_background'),(30,184))
+        angle=frame*1.5
+        dx=round(math.cos(angle*math.pi/180)*10)
+        dy=round(math.sin(angle*math.pi/180)*10)
+        dx2=round(math.cos(angle*math.pi/180)*25)
+        dy2=round(math.sin(angle*math.pi/180)*25)
+        #print(dx,'',dy)
+        screen.blit(back_image,(360-345+dx,360-345+dy))
+        screen.blit(moon,(dx2+70,dy2-10))
+        screen.blit(hog,(30,184))
         
     if frame==10900:
         for boss in bosses:
