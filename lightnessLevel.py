@@ -221,15 +221,17 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
             temp_image=global_var.get_value('temp_image')
         '''
         #temp_image=pygame.transform.smoothscale(temp_image,(900,900))
-        angle=frame*1.5
-        dx=round(math.cos(angle*math.pi/180)*10)
-        dy=round(math.sin(angle*math.pi/180)*10)
+        angle=frame
+        dx=round(math.cos(angle*math.pi/180)*15)
+        dy=round(math.sin(angle*math.pi/180)*30)
         dx2=round(math.cos(angle*math.pi/180)*25)
         dy2=round(math.sin(angle*math.pi/180)*25)
         #print(dx,'',dy)
-        screen.blit(back_image,(360-345+dx,360-345+dy))
-        screen.blit(moon,(dx2+70,dy2-10))
-        screen.blit(hog,(30,184))
+        if alpha>0:
+            screen.blit(back_image,(360-320+dx,360-370+dy))
+        if rev_alpha>0:
+            screen.blit(moon,(dx2+70,dy2-10))
+            screen.blit(hog,(30,184))
         
     if frame==10900:
         for boss in bosses:

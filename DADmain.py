@@ -32,15 +32,15 @@ size = width,height = 960,720
 fullscreen = True
 screen = pygame.display.set_mode(size,RESIZABLE|DOUBLEBUF)
 #size = width, height =  pygame.display.list_modes()[0]
-screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE| DOUBLEBUF)
+#screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE| DOUBLEBUF)
 stage=pygame.Surface((960,720)).convert_alpha()
 stage.set_clip(Rect(60,30,600,660))
 global_var._init()
 
 #test functions 
 global_var.set_value('ifTest',True)
-global_var.set_value('spellNum',3)
-global_var.set_value('ifSpellTest',True)
+global_var.set_value('spellNum',2)
+global_var.set_value('ifSpellTest',False)
 testFire=400
  
 #screen=pygame.display.set_mode((640,480))
