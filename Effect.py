@@ -240,7 +240,7 @@ class bonusText(screenText):
         super(bonusText,self).__init__()
         self.image=pygame.Surface((384,48))
         self.image.set_alpha(256)
-        self.image.blit(global_var.get_value('front00'), (0, 0), (384,144,384,48))
+        self.image.blit(global_var.get_value('front00'), (0, 0), (386,144,382,48))
         self.bonus=100000
         self.font=pygame.font.SysFont('arial', 28)
         self.transFrame=30
@@ -287,7 +287,7 @@ class failText(screenText):
         super(failText,self).__init__()
         self.image=pygame.Surface((240,48))
         self.image.set_alpha(256)
-        self.image.blit(global_var.get_value('front00'), (0, 0), (384,576,240,48))
+        self.image.blit(global_var.get_value('front00'), (0, 0), (386,576,238,48))
         self.transFrame=30
         self.lower=False
     def draw(self,screen):
@@ -310,7 +310,7 @@ class powerMaxText(screenText):
         super(powerMaxText,self).__init__()
         self.image=pygame.Surface((234,48))
         self.image.set_alpha(256)
-        self.image.blit(global_var.get_value('front00'), (0, 0), (384,240,234,48))
+        self.image.blit(global_var.get_value('front00'), (0, 0), (386,240,232,48))
     
     def draw(self,screen):
         screen.blit(self.image,(243,52))
@@ -320,7 +320,7 @@ class extendText(screenText):
         super(extendText,self).__init__()
         self.image=pygame.Surface((234,48))
         self.image.set_alpha(256)
-        self.image.blit(global_var.get_value('front00'), (0, 0), (384,333,150,48))
+        self.image.blit(global_var.get_value('front00'), (0, 0), (386,333,148,48))
     
     def draw(self,screen):
         screen.blit(self.image,(285,160))
