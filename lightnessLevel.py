@@ -224,8 +224,8 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         angle=frame/3
         dx=round(math.cos(angle*math.pi/180)*60)
         dy=round(math.sin(angle*math.pi/180)*180)
-        dx2=round(math.cos(angle*math.pi/180)*25)
-        dy2=round(math.sin(angle*math.pi/180)*25)
+        dx2=round(math.cos(angle*3*math.pi/180)*25)
+        dy2=round(math.sin(angle*3*math.pi/180)*25)
         #print(dx,'',dy)
         if alpha>0:
             screen.blit(back_image,(360-365+dx,360-540+dy))

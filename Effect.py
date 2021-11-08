@@ -512,7 +512,9 @@ class bossFlame(pygame.sprite.Sprite):
         
     def update(self,screen):
         size=round(self.min+(self.lastFrame/self.maxFrame)*(self.max-self.min))
+        alpha=round(256-(self.lastFrame/self.maxFrame)*180)
         self.temp=pygame.transform.scale(self.effFlameImg,(72,size))
+        self.temp.set_alpha(alpha)
         self.draw(size,screen)
         self.lastFrame+=1
         self.checkValid()

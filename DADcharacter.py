@@ -110,7 +110,7 @@ class enemy(pygame.sprite.Sprite):
         self.tx+=self.speedx
         self.ty+=self.speedy
         self.truePos()
-        self.fire(frame,bullets)
+        self.fire(frame,bullets,effects)
         self.draw(screen,frame)
         self.checkDistance()
     
@@ -145,7 +145,7 @@ class enemy(pygame.sprite.Sprite):
             self.speedy+=0.1
         else:
             self.speedy=2
-    def fire(self,frame,bullets):
+    def fire(self,frame,bullets,effects):
         pass
 
     def draw(self,screen,frame):
@@ -230,7 +230,7 @@ class butterfly(enemy):
         else:
             screen.blit(self.down[self.action%5],(self.rect.centerx-49,self.rect.centery-49))
 
-    def fire(self,frame,bullets):
+    def fire(self,frame,bullets,effects):
         if frame%5==0:
             if not global_var.get_value('enemyFiring3'):
                 global_var.get_value('enemyGun_sound3').play()
@@ -367,7 +367,7 @@ class spirit_test(spirit):
     def __init__(self):
         super(spirit_test,self).__init__()
     
-    def fire(self,frame,bullets):
+    def fire(self,frame,bullets,effects):
         if frame%200==0:
             if not global_var.get_value('enemyFiring2'):
                 global_var.get_value('enemyGun_sound2').play()
@@ -400,7 +400,7 @@ class spirit_part1_1(spirit):
                 self.speedy=-3.1
         self.countAngle()
 
-    def fire(self,frame,bullets):
+    def fire(self,frame,bullets,effects):
         if self.lastFrame%40==0:
             if not global_var.get_value('enemyFiring2'):
                 global_var.get_value('enemyGun_sound2').play()
@@ -414,6 +414,9 @@ class spirit_part1_1(spirit):
             angle=new_bullet.angle
             new_bullet.loadColor('green')
             bullets.add(new_bullet)
+            new_effect=Effect.bulletCreate(5)
+            new_effect.initial(self.tx,self.ty,64,32,15)
+            effects.add(new_effect)
             for i in range(1,3):
                 new_bullet=Bullet.mid_Bullet()
                 new_bullet.initial(self.rect.centerx,self.rect.centery,self.occupy)
@@ -421,6 +424,9 @@ class spirit_part1_1(spirit):
                 new_bullet.loadColor('green')
                 bullets.add(new_bullet)
         if self.lastFrame==60:
+            new_effect=Effect.bulletCreate(3)
+            new_effect.initial(self.tx,self.ty,84,48,20)
+            effects.add(new_effect)
             if not global_var.get_value('enemyFiring2'):
                 global_var.get_value('enemyGun_sound2').play()
                 global_var.set_value('enemyFiring2',True)
@@ -464,12 +470,15 @@ class ghost_part2_1(ghost):
         self.health=500
         self.colorNum=2
     
-    def fire(self,frame,bullets):
+    def fire(self,frame,bullets,effects):
         if self.lastFrame%20==0:
             if not global_var.get_value('kiraing'):
                 global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
                 global_var.set_value('kiraing',True)
+            new_effect=Effect.bulletCreate(3)
+            new_effect.initial(self.tx,self.ty,84,64,4)
+            effects.add(new_effect)
             new_bullet=Bullet.scale_Bullet()
             new_bullet.initial(self.rect.centerx,self.rect.centery,self.occupy)
             new_bullet.setSpeed(90+random.random()*50-25,4)
@@ -483,6 +492,9 @@ class ghost_part2_1(ghost):
         global_var.get_value('enemyDead_sound').play()
         new_effect=Effect.enemyDead()
         new_effect.initial(self.deadImage,self.rect.centerx,self.rect.centery)
+        effects.add(new_effect)
+        new_effect=Effect.bulletCreate(3)
+        new_effect.initial(self.tx,self.ty,144,64,5)
         effects.add(new_effect)
         self.dropItem(items)
         basicSpeed=3
@@ -512,6 +524,9 @@ class ghost_part3_1(ghost_part2_1):
         new_effect=Effect.enemyDead()
         new_effect.initial(self.deadImage,self.rect.centerx,self.rect.centery)
         effects.add(new_effect)
+        new_effect=Effect.bulletCreate(1)
+        new_effect.initial(self.tx,self.ty,144,64,5)
+        effects.add(new_effect)
         self.dropItem(items)
         basicSpeed=3
         basicAngle=random.random()*360
@@ -529,8 +544,11 @@ class ghost_part3_1(ghost_part2_1):
                 bullets.add(new_bullet)
         self.kill()
 
-    def fire(self,frame,bullets):
+    def fire(self,frame,bullets,effects):
         if self.lastFrame%12==0:
+            new_effect=Effect.bulletCreate(1)
+            new_effect.initial(self.tx,self.ty,84,64,4)
+            effects.add(new_effect)
             if not global_var.get_value('kiraing'):
                 global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
@@ -556,9 +574,12 @@ class butterfly_part4_1(butterfly):
         else:
             self.speedy=-3
     
-    def fire(self,frame,bullets):
+    def fire(self,frame,bullets,effects):
         if self.lastFrame>=80 and self.lastFrame%8==0:
             self.fireAngle-=6
+            new_effect=Effect.bulletCreate(3)
+            new_effect.initial(self.tx,self.ty,256,128,8)
+            effects.add(new_effect)
             if not global_var.get_value('kiraing'):
                 global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
@@ -587,8 +608,11 @@ class spirit_part4_1(spirit):
         self.speedy=0
         self.speedx=4
     
-    def fire(self,frame,bullets):
+    def fire(self,frame,bullets,effects):
         if self.lastFrame%30==0:
+            new_effect=Effect.bulletCreate(0)
+            new_effect.initial(self.tx,self.ty,84,32,4)
+            effects.add(new_effect)
             if not global_var.get_value('enemyFiring2'):
                 global_var.get_value('enemyGun_sound2').play()
                 global_var.set_value('enemyFiring2',True)
@@ -619,9 +643,12 @@ class butterfly_part5_1(butterfly):
         else:
             self.speedy=-3
     
-    def fire(self,frame,bullets):
+    def fire(self,frame,bullets,effects):
         if self.lastFrame>=80 and self.lastFrame%8==0:
             self.fireAngle+=6
+            new_effect=Effect.bulletCreate(1)
+            new_effect.initial(self.tx,self.ty,256,128,8)
+            effects.add(new_effect)
             if not global_var.get_value('kiraing'):
                 global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
@@ -650,8 +677,11 @@ class spirit_part5_1(spirit):
         self.speedy=0
         self.speedx=-4
     
-    def fire(self,frame,bullets):
+    def fire(self,frame,bullets,effects):
         if self.lastFrame%15==0:
+            new_effect=Effect.bulletCreate(3)
+            new_effect.initial(self.tx,self.ty,84,64,4)
+            effects.add(new_effect)
             if not global_var.get_value('enemyFiring2'):
                 global_var.get_value('enemyGun_sound2').play()
                 global_var.set_value('enemyFiring2',True)
@@ -697,7 +727,7 @@ class spirit_part6_1(spirit):
         elif self.lastFrame==121:
             self.setSpeed(random.random()*180,4)
     
-    def fire(self,frame,bullets):
+    def fire(self,frame,bullets,effects):
         if frame>=3000:
             interval=18
             code=0
@@ -713,6 +743,14 @@ class spirit_part6_1(spirit):
             if not global_var.get_value('enemyFiring2'):
                 global_var.get_value('enemyGun_sound2').play()
                 global_var.set_value('enemyFiring2',True)
+            if code==2:
+                new_effect=Effect.bulletCreate(5)
+            else:
+                new_effect=Effect.bulletCreate(1)
+            new_effect.initial(self.tx,self.ty,128,64,6)
+            effects.add(new_effect)
+            new_effect.initial(self.tx,self.ty,128,64,6)
+            effects.add(new_effect)
             for i in range(0,intense):
                 new_bullet=Bullet.orb_Bullet_Part6_delay()
                 new_bullet.initial(self.rect.centerx,self.rect.centery,self.occupy)
@@ -745,7 +783,7 @@ class spirit_part7_1(spirit):
                 self.speedy=-3.1
         self.countAngle()
 
-    def fire(self,frame,bullets):
+    def fire(self,frame,bullets,effects):
         if self.lastFrame%25==self.fireFrame:
             angle=random.random()*360
             intense=3
@@ -816,7 +854,7 @@ class butterfly_part8_1(butterfly):
         else:
             self.speedy=-3
     
-    def fire(self,frame,bullets):
+    def fire(self,frame,bullets,effects):
         if self.lastFrame>=80 and self.lastFrame%8==0:
             self.fireAngle+=10
             if not global_var.get_value('kiraing'):
@@ -849,7 +887,7 @@ class butterfly_part9_1(butterfly):
         else:
             self.speedy=-3
     
-    def fire(self,frame,bullets):
+    def fire(self,frame,bullets,effects):
         if self.lastFrame>=80 and self.lastFrame%10==0:
             self.fireAngle+=6
             if not global_var.get_value('kiraing'):
@@ -872,7 +910,7 @@ class butterfly_part9_2(butterfly_part9_1):
     def __init__(self):
         super(butterfly_part9_2,self).__init__()
 
-    def fire(self,frame,bullets):
+    def fire(self,frame,bullets,effects):
         if self.lastFrame>=80 and self.lastFrame%10==0:
             self.fireAngle-=6
             if not global_var.get_value('kiraing'):
@@ -1488,7 +1526,7 @@ class Marisa(Player):
         self.inclineAngle1=10
         self.inclineAngle2=25
         self.inclineSpeed=40
-        self.floatImage=pygame.transform.scale(pygame.image.load('./resource/player/pl00/floatGun.png'),(120,24))
+        self.floatImage=pygame.transform.smoothscale(pygame.image.load('./resource/player/pl00/floatGun.png'),(120,24))
         self.gunCycle=0
         self.gunAdj=[0,-60]
         self.highSpeed=7.5

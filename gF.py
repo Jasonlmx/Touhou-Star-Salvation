@@ -103,7 +103,7 @@ def loadImage():
     orange.set_alpha(gunAlpha)
     global_var.set_value('playerFire_orange',orange)
     reimu_fire=pygame.image.load('resource/playerFire/reimu_fire.png').convert_alpha()
-    reimu_fire=pygame.transform.scale(reimu_fire,(384,168))
+    reimu_fire=pygame.transform.smoothscale(reimu_fire,(384,168))
     global_var.set_value('reimu_fire',reimu_fire)
 
     global_var.set_value('levelText01',pygame.image.load('resource/text/levelText01.png').convert_alpha())
@@ -233,7 +233,7 @@ def loadImage():
     effFlameImg=pygame.Surface((72,72)).convert_alpha()
     effFlameImg.fill((0,0,0,0))
     effFlameImg.blit(global_var.get_value('effect_temp1').convert_alpha(), (0, 0), (0,0, 72, 72))
-    flameColor=(0,62,255,0)
+    flameColor=(255,62,255,0)
     fill(effFlameImg,flameColor)
     effFlameImg.set_alpha(150)
     global_var.set_value('effFlameImg',effFlameImg)
