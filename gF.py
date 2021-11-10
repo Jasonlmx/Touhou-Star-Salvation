@@ -291,7 +291,8 @@ def showFpsBullet(screen,myfont,frame,bulletSum,log):
     global_var.set_value('getTicksLastFrame',t)    
     fp=round(1/deltaTime,1)
     temp=global_var.get_value('fpSec')
-    temp=temp+fp
+    if not global_var.get_value('pause'):
+        temp=temp+fp
     global_var.set_value('fpSec',temp)
     if frame%60==1:
         avgFp=round(global_var.get_value('fpSec')/60.0,1)
@@ -315,7 +316,7 @@ def doBackground(screen,backgrounds):
 def drawBlinder(screen,surf):
     screen.blit(surf,(0,720))
 
-def doPause(pressed_keys):
+def doPause(pressed_keys,screen):
     if pressed_keys[K_ESCAPE]!=global_var.get_value('escPressing') and not pressed_keys[K_ESCAPE]:
         if global_var.get_value('pause'):
             global_var.set_value('pause',False)
@@ -326,10 +327,18 @@ def doPause(pressed_keys):
             global_var.get_value('pause_sound').stop()
             global_var.get_value('pause_sound').play()
             global_var.get_value('nep_sound').stop()
+            new_image=pygame.Surface((960,720)).convert_alpha()
+            new_image.fill((0,0,0))
+            new_image.blit(screen,(0,0))
+            new_image=pygame.transform.smoothscale(new_image,(480,360))
+            new_image=pygame.transform.smoothscale(new_image,(960,720))
+            global_var.set_value('pauseScreen',new_image)
+            print(global_var.get_value('pauseScreen').get_size())
 
 def pauseScreen(pressed_keys,screen):
     pause=global_var.get_value('pause')
     if pause:
+        screen.blit(global_var.get_value('pauseScreen'),(0,0))
         screen.blit(global_var.get_value('pauseImg'),(60,300))
         if pressed_keys[K_z]:
             global_var.get_value('ok_sound').play()

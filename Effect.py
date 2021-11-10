@@ -423,7 +423,7 @@ class grazeEffect(pygame.sprite.Sprite):
         self.checkValid()
 
 
-    def initial(self,pos,maxRadius,maxFrame,color,width,num,interval):
+    def initial(self,pos,maxRadius,maxFrame,color,width,num,interval,speedMin=3,speedFluc=2):
         self.maxRadius=maxRadius
         self.minRadius=2
         self.maxFrame=maxFrame
@@ -434,7 +434,7 @@ class grazeEffect(pygame.sprite.Sprite):
         self.width=width
         self.num=num
         self.interval=interval
-        self.setSpeed(self.direction,random.random()*2+3)
+        self.setSpeed(self.direction,random.random()*speedFluc+speedMin)
     
     def checkValid(self):
         if self.lastFrame>=self.maxFrame:

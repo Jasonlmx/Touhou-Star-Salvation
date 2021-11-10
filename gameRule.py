@@ -57,6 +57,7 @@ def missDetect(player,bullets,enemys,effects,miss_sound,items,slaves):
     if miss!=None and player.immune!=1:
         if player.deadStatu!=1:
             miss_sound.play()
+            playerDeathEffect(player,effects)
         player.deadStatu=1
         player.bulletSurpress=60
 
@@ -108,6 +109,7 @@ def missDetect(player,bullets,enemys,effects,miss_sound,items,slaves):
         addLastingCancel(player.cx+width*-1,player.cy,slaves,90,False)
         addLastingCancel(player.cx,player.cy+width*1,slaves,90,False)
         addLastingCancel(player.cx,player.cy+width*-1,slaves,90,False)
+       
             
     if player.immune==1 and player.bulletSurpress>0:
         #gameRule.cancalAllBullet(bullets,items,effects,False)
@@ -115,6 +117,12 @@ def missDetect(player,bullets,enemys,effects,miss_sound,items,slaves):
             enemy.health-=4
         player.bulletSurpress-=1
 
+
+def playerDeathEffect(player,effects):
+    for i in range(0,20):
+        new_effect=Effect.grazeEffect()
+        new_effect.initial([player.cx,player.cy],6,25,(255,255,255),6,1,20,4,2)
+        effects.add(new_effect)
 
 def doBoom(player,booms,pressed_keys,slash_sound,items):
     if pressed_keys[K_x] and player.boomStatu==0 and player.boom>0 and not global_var.get_value('pressingX'):

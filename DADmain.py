@@ -38,7 +38,7 @@ stage.set_clip(Rect(60,30,600,660))
 global_var._init()
 
 #test functions 
-global_var.set_value('ifTest',True)
+global_var.set_value('ifTest',False)
 global_var.set_value('spellNum',1)
 global_var.set_value('ifSpellTest',False)
 testFire=400
@@ -75,6 +75,7 @@ global_var.set_value('enemyPos',(0,0,10000))
 global_var.set_value('shift_down',False)
 global_var.set_value('pause',False)
 global_var.set_value('escPressing',False)
+global_var.set_value('pauseScreen',0)
 log = open("./log.csv", 'w+')
 #main loop controller 
 running = True
@@ -217,6 +218,10 @@ pygame.mouse.set_visible(False)
 
 # Main loop
 while running:
+    #check keys
+    pressed_keys = pygame.key.get_pressed()
+    gF.doPause(pressed_keys,stage)
+
     stage.fill((0,0,0))
     screen.fill((0,0,0))
     DELTA_T=fpsClock.tick(FPS)
@@ -252,10 +257,7 @@ while running:
         diffLevel=2
     
 
-    #check keys
-    pressed_keys = pygame.key.get_pressed()
     
-    gF.doPause(pressed_keys)
     global_var.set_value('escPressing',pressed_keys[K_ESCAPE])
     if not global_var.get_value('pause'):
         player.update(pressed_keys,frame) 
