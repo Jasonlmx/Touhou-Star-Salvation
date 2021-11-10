@@ -73,6 +73,8 @@ global_var.set_value('grazeNum',0)
 global_var.set_value('fpSec',0)
 global_var.set_value('enemyPos',(0,0,10000))
 global_var.set_value('shift_down',False)
+global_var.set_value('pause',False)
+global_var.set_value('escPressing',False)
 log = open("./log.csv", 'w+')
 #main loop controller 
 running = True
@@ -185,6 +187,16 @@ global_var.set_value('nep_sound',nep_sound)
 spell_end=pygame.mixer.Sound('resource/sound/se_enep02.wav')
 spell_end.set_volume(0.35)
 global_var.set_value('spell_end',spell_end)
+pause_sound=pygame.mixer.Sound('resource/sound/se_pause.wav')
+pause_sound.set_volume(0.35)
+global_var.set_value('pause_sound',pause_sound)
+select_sound=pygame.mixer.Sound('resource/sound/se_select00.wav')
+select_sound.set_volume(0.35)
+global_var.set_value('select_sound',select_sound)
+ok_sound=pygame.mixer.Sound('resource/sound/se_ok00.wav')
+ok_sound.set_volume(0.35)
+global_var.set_value('ok_sound',ok_sound)
+
 
 pygame.mixer.music.load('resource/bgm/lightnessOnTheWay.mp3')   # 载入背景音乐文件
 #pygame.mixer.music.load('resource/bgm/上海アリス幻樂団 - 死体旅行~ Be of good cheer!.mp3')
@@ -221,7 +233,8 @@ while running:
 
     bulletSum=0
     enemySum=0
-    frame+=1
+    if not global_var.get_value('pause'):
+        frame+=1
     frameText = myfont.render('F: '+str(frame), True, (255, 255, 255))
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -241,7 +254,11 @@ while running:
 
     #check keys
     pressed_keys = pygame.key.get_pressed()
-    player.update(pressed_keys,frame) 
+    
+    gF.doPause(pressed_keys)
+    global_var.set_value('escPressing',pressed_keys[K_ESCAPE])
+    if not global_var.get_value('pause'):
+        player.update(pressed_keys,frame) 
     global_var.set_value('player1x', player.cx)
     global_var.set_value('player1y', player.cy)
     
@@ -251,199 +268,204 @@ while running:
 
     #create enemy
     #Enemy generator now disabled and substituted by stage controller
-
-    lightnessLevel.stageController(stage,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player)
+    if not global_var.get_value('pause'):
+        lightnessLevel.stageController(stage,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player)
 
     #draw objects
     if not global_var.get_value('ifBoss') and frame<=10600:
         stage.fill((0,0,0)) #remeber to fill the screen background first
 
-    #player fire
-    if pressed_keys[K_z]:
-        player.fire(frame,stage,playerGuns)
-        if frame%5==0:
-            shoot_sound.stop()
-            shoot_sound.play()
-    
-    for background in backgrounds:
-        background.update(stage)
-    
-    
-
-    #lowspeed mode display and effect
-    if pressed_keys[K_LSHIFT]:
-        angle=angle-2
-        global_var.set_value('shift_down', True)
-        player.itemCollectDistance=100
-        if angle<=0:
-            angle=360
-        gF.drawRotation(point2,(player.rect.centerx-48,player.rect.centery-48),-angle,stage)
-    else:
-        global_var.set_value('shift_down', False)
-        player.itemCollectDistance=50
-
-
-    #boss magic and effect
-
-    #group update
-    for playerGun in playerGuns:
-        playerGun.update(stage)
-    
-    for effect in effects:
-        if effect.lower:
-            effect.update(stage)
-    
-    global_var.set_value('enemyPos',(0,0,10000))
-    for enemy in enemys:
-        enemy.update(stage,frame,bullets,bullets2,effects,items)
-        enemySum+=1
-
-
-    for boss in bosses:
-        boss.update(stage,frame,items,effects,bullets,backgrounds,enemys,slaves,player)
-
-    #player miss & display effect
-    gameRule.drawPlayer(stage,player,frame)
-
-    gameRule.itemAllGet(items,player,effects)
-
-    
-
-    for item in items:
-        item.update(stage,player)
-        if item.distance<=player.itemCollectDistance:
-            item.followPlayer=1
-        if item.type==0 and player.power==400:
-            item.type=4
-            item.initial(item.tx,item.ty)
-            if player.lastLevel==3:
-                new_effect=Effect.wave()
-                new_effect.initial((item.tx,item.ty),25,8,(67,247,17),5)
-                effects.add(new_effect)
-        if item.type==3 and player.power==400:
-            item.type=2
-            item.initial(item.tx,item.ty)
-            if player.lastLevel==3:
-                new_effect=Effect.wave()
-                new_effect.initial((item.tx,item.ty),25,8,(67,247,17),5)
-                effects.add(new_effect)
-    
-    #watchers & effect generator
-    if player.lastLevel<=3 and player.power>=400:
-        new_effect=Effect.powerMaxText()
-        effects.add(new_effect)
-
-    if player.lastLife<player.life:
-        new_effect=Effect.extendText()
-        effects.add(new_effect)
-    
-    if player.lastGraze<player.graze:
-        new_effect=Effect.grazeEffect()
-        new_effect.initial((player.tx,player.ty),4,random.randint(15,20),(255,255,255),5,1,20)
-        effects.add(new_effect)
-
-    for effect in effects:
-        if not (effect.upper or effect.lower):
-            effect.update(stage)
+    if not global_var.get_value('pause'):
+        #player fire
+        if pressed_keys[K_z]:
+            player.fire(frame,stage,playerGuns)
+            if frame%5==0:
+                shoot_sound.stop()
+                shoot_sound.play()
         
-    for bullet in bullets:
-        bulletSum+=1
-        bullet.update(stage,bullets,effects)
+        for background in backgrounds:
+            background.update(stage)
+        
+        
 
-    for effect in effects:
-        if effect.upper:
-            effect.update(stage)
-
-    
-    for slave in slaves:
-        slave.update(stage,frame,bullets,effects,items)
-
-    
-    
-    
-    for star in stars:
-        pass
-        #star.update(screen)
-
-    #collide detectž
-    gameRule.missDetect(player,bullets,enemys,effects,miss_sound,items,slaves)
-    
+        #lowspeed mode display and effect
+        if pressed_keys[K_LSHIFT]:
+            angle=angle-2
+            global_var.set_value('shift_down', True)
+            player.itemCollectDistance=100
+            if angle<=0:
+                angle=360
+            gF.drawRotation(point2,(player.rect.centerx-48,player.rect.centery-48),-angle,stage)
+        else:
+            global_var.set_value('shift_down', False)
+            player.itemCollectDistance=50
 
 
-    #boom key
-    gameRule.doBoom(player,booms,pressed_keys,slash_sound,items)
+        #boss magic and effect
 
-    for boom in booms:
-        boom.update(stage)
-        #if boom.lastFrame==598:
-            #slash_sound.play()
-        if boom.lastFrame==599 and boom.ifBoss==False:
-            #gameRule.cancalAllBullet(bullets,items,effects,True)
-            gameRule.addLastingCancel(boom.tx,boom.ty,slaves,20,True)
-            for enemy in enemys:
-                enemy.health-=2000
-            slash_sound.play()
-            new_effect=Effect.wave()
-            new_effect.initial([boom.tx,boom.ty],900,20,(244,213,87),6)
+        #group update
+        for playerGun in playerGuns:
+            playerGun.update(stage)
+        
+        for effect in effects:
+            if effect.lower:
+                effect.update(stage)
+        
+        global_var.set_value('enemyPos',(0,0,10000))
+        for enemy in enemys:
+            enemy.update(stage,frame,bullets,bullets2,effects,items)
+            enemySum+=1
+
+
+        for boss in bosses:
+            boss.update(stage,frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+
+        #player miss & display effect
+        gameRule.drawPlayer(stage,player,frame)
+
+        gameRule.itemAllGet(items,player,effects)
+
+        
+
+        for item in items:
+            item.update(stage,player)
+            if item.distance<=player.itemCollectDistance:
+                item.followPlayer=1
+            if item.type==0 and player.power==400:
+                item.type=4
+                item.initial(item.tx,item.ty)
+                if player.lastLevel==3:
+                    new_effect=Effect.wave()
+                    new_effect.initial((item.tx,item.ty),25,8,(67,247,17),5)
+                    effects.add(new_effect)
+            if item.type==3 and player.power==400:
+                item.type=2
+                item.initial(item.tx,item.ty)
+                if player.lastLevel==3:
+                    new_effect=Effect.wave()
+                    new_effect.initial((item.tx,item.ty),25,8,(67,247,17),5)
+                    effects.add(new_effect)
+        
+        #watchers & effect generator
+        if player.lastLevel<=3 and player.power>=400:
+            new_effect=Effect.powerMaxText()
             effects.add(new_effect)
-            global_var.get_value('nep_sound').stop()
-        elif boom.ifBoss and boom.lastFrame==399:
-            #gameRule.cancalAllBullet(bullets,items,effects,True)
-            gameRule.addLastingCancel(boom.tx,boom.ty,slaves,20,True)
-            for enemy in enemys:
-                enemy.health-=2000
-            slash_sound.play()
-            new_effect=Effect.wave()
-            new_effect.initial([boom.tx,boom.ty],900,20,(244,213,87),6)
+
+        if player.lastLife<player.life:
+            new_effect=Effect.extendText()
             effects.add(new_effect)
-            global_var.get_value('nep_sound').stop()
-        if boom.lastFrame>=5 and pressed_keys[K_x] and not global_var.get_value('pressingX'):
-            #gameRule.cancalAllBullet(bullets,items,effects,True)
-            gameRule.addLastingCancel(boom.tx,boom.ty,slaves,20,True)
-            for enemy in enemys:
-                enemy.health-=2000
-            slash_sound.play()
-            global_var.set_value('boomStatu',0)
-            boom.kill()
-            new_effect=Effect.wave()
-            new_effect.initial([boom.tx,boom.ty],900,20,(244,213,87),6)
+        
+        if player.lastGraze<player.graze:
+            new_effect=Effect.grazeEffect()
+            new_effect.initial((player.tx,player.ty),4,random.randint(15,20),(255,255,255),5,1,20)
             effects.add(new_effect)
-            global_var.get_value('nep_sound').stop()
 
-    #key
-    if pressed_keys[K_LSHIFT]:
-        gF.drawRotation(point,(player.rect.centerx-48,player.rect.centery-48),angle,stage)
+        for effect in effects:
+            if not (effect.upper or effect.lower):
+                effect.update(stage)
+            
+        for bullet in bullets:
+            bulletSum+=1
+            bullet.update(stage,bullets,effects)
+
+        for effect in effects:
+            if effect.upper:
+                effect.update(stage)
+
+        
+        for slave in slaves:
+            slave.update(stage,frame,bullets,effects,items)
+
+        
+        
+        
+        for star in stars:
+            pass
+            #star.update(screen)
+
+        #collide detectž
+        gameRule.missDetect(player,bullets,enemys,effects,miss_sound,items,slaves)
+        
 
 
+        #boom key
+        gameRule.doBoom(player,booms,pressed_keys,slash_sound,items)
+
+        for boom in booms:
+            boom.update(stage)
+            #if boom.lastFrame==598:
+                #slash_sound.play()
+            if boom.lastFrame==599 and boom.ifBoss==False:
+                #gameRule.cancalAllBullet(bullets,items,effects,True)
+                gameRule.addLastingCancel(boom.tx,boom.ty,slaves,20,True)
+                for enemy in enemys:
+                    enemy.health-=2000
+                slash_sound.play()
+                new_effect=Effect.wave()
+                new_effect.initial([boom.tx,boom.ty],900,20,(244,213,87),6)
+                effects.add(new_effect)
+                global_var.get_value('nep_sound').stop()
+            elif boom.ifBoss and boom.lastFrame==399:
+                #gameRule.cancalAllBullet(bullets,items,effects,True)
+                gameRule.addLastingCancel(boom.tx,boom.ty,slaves,20,True)
+                for enemy in enemys:
+                    enemy.health-=2000
+                slash_sound.play()
+                new_effect=Effect.wave()
+                new_effect.initial([boom.tx,boom.ty],900,20,(244,213,87),6)
+                effects.add(new_effect)
+                global_var.get_value('nep_sound').stop()
+            if boom.lastFrame>=5 and pressed_keys[K_x] and not global_var.get_value('pressingX'):
+                #gameRule.cancalAllBullet(bullets,items,effects,True)
+                gameRule.addLastingCancel(boom.tx,boom.ty,slaves,20,True)
+                for enemy in enemys:
+                    enemy.health-=2000
+                slash_sound.play()
+                global_var.set_value('boomStatu',0)
+                boom.kill()
+                new_effect=Effect.wave()
+                new_effect.initial([boom.tx,boom.ty],900,20,(244,213,87),6)
+                effects.add(new_effect)
+                global_var.get_value('nep_sound').stop()
+
+        #key
+        if pressed_keys[K_LSHIFT]:
+            gF.drawRotation(point,(player.rect.centerx-48,player.rect.centery-48),angle,stage)
+
+
+        
+
+        
+
+        #detect enemy hitten
+        gameRule.hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses)
+        
+        #avoid continues boom key
+        if pressed_keys[K_x]:
+            global_var.set_value('pressingX',True)
+        else:
+            global_var.set_value('pressingX',False)
+
+        #life number displayment
+        missText=myfont.render('Life: '+str(player.life), True, (255, 255, 255))
+
+        stage.blit(missText,(200,0))
+
+        gF.shakeScreen()
+        #drawStage
+        if global_var.get_value('ifShaking'):
+            if frame%4==0:
+                d_x=random.randint(-4,4)
+                d_y=random.randint(-4,4)
+            screen.blit(stage,(0+d_x,0+d_y))
+        else:
+            screen.blit(stage,(60,30),(60,30,600,660))
     
 
-    
 
-    #detect enemy hitten
-    gameRule.hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses)
-    
-    #avoid continues boom key
-    if pressed_keys[K_x]:
-        global_var.set_value('pressingX',True)
-    else:
-        global_var.set_value('pressingX',False)
 
-    #life number displayment
-    missText=myfont.render('Life: '+str(player.life), True, (255, 255, 255))
-
-    stage.blit(missText,(200,0))
-
-    gF.shakeScreen()
-    #drawStage
-    if global_var.get_value('ifShaking'):
-        if frame%4==0:
-            d_x=random.randint(-4,4)
-            d_y=random.randint(-4,4)
-        screen.blit(stage,(0+d_x,0+d_y))
-    else:
-        screen.blit(stage,(60,30),(60,30,600,660))
-    
     #drawCover
+    gF.pauseScreen(pressed_keys,screen)
     gF.drawBackground(screen)
     pygame.draw.rect(screen,(255,255,255),(58,28,603,663),2)
     missFrame=myfont.render('miss: '+str(player.deadFrame), True, (255, 255, 255))

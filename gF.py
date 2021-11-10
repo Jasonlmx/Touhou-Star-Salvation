@@ -230,6 +230,9 @@ def loadImage():
     satoriImg=pygame.image.load('resource/boss/face04ct.png')
     satoriImg=pygame.transform.smoothscale(satoriImg,(384,768)).convert_alpha()
     global_var.set_value('satoriImg',satoriImg)
+    pauseImg=pygame.image.load('resource/text/pause.png')
+    pauseImg=pygame.transform.smoothscale(pauseImg,(384,384)).convert_alpha()
+    global_var.set_value('pauseImg',pauseImg)
     effFlameImg=pygame.Surface((72,72)).convert_alpha()
     effFlameImg.fill((0,0,0,0))
     effFlameImg.blit(global_var.get_value('effect_temp1').convert_alpha(), (0, 0), (0,0, 72, 72))
@@ -311,3 +314,24 @@ def doBackground(screen,backgrounds):
     
 def drawBlinder(screen,surf):
     screen.blit(surf,(0,720))
+
+def doPause(pressed_keys):
+    if pressed_keys[K_ESCAPE]!=global_var.get_value('escPressing') and not pressed_keys[K_ESCAPE]:
+        if global_var.get_value('pause'):
+            global_var.set_value('pause',False)
+            pygame.mixer.music.unpause()
+        else:
+            global_var.set_value('pause',True)
+            pygame.mixer.music.pause()
+            global_var.get_value('pause_sound').stop()
+            global_var.get_value('pause_sound').play()
+            global_var.get_value('nep_sound').stop()
+
+def pauseScreen(pressed_keys,screen):
+    pause=global_var.get_value('pause')
+    if pause:
+        screen.blit(global_var.get_value('pauseImg'),(60,300))
+        if pressed_keys[K_z]:
+            global_var.get_value('ok_sound').play()
+            global_var.set_value('pause',False)
+            pygame.mixer.music.unpause()

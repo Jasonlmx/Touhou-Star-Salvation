@@ -1773,6 +1773,7 @@ class Reimu(Player):
                     playerGuns.add(new_fire)
             
     def draw(self,screen):
+        self.gunCycle+=1
         gunMax=50
         gunFrame=3
         shift_down=global_var.get_value('shift_down')
@@ -1816,8 +1817,7 @@ class Reimu(Player):
             self.drawFloatA(screen,shift_down,-15*self.distTimes,50+30*self.distTimes-45)
         #screen.blit(self.surf,self.rect)
     def drawFloatA(self,screen,shift_down,dx,dy):
-        self.gunCycle+=1
-        gF.drawRotation(self.floatImage,((round(self.cx-22/2+dx),round(self.cy-22/2)+dy)),-self.gunCycle*4,screen)
+        gF.drawRotation(self.floatImage,((round(self.cx-22/2+dx),round(self.cy-22/2)+dy)),-self.gunCycle*9,screen)
         #screen.blit(image,(round(self.cx-22/2+self.gunAdj[0]),round(self.cy-22/2)+self.gunAdj[1]))
 
 #class for the boss in the scene
@@ -3763,26 +3763,26 @@ class Dumbledore(Boss):
             self.frameLimit=2100
         
         if self.lastFrame>=90:
-            if (self.lastFrame-90)%30<=2:
+            if (self.lastFrame-90)%15==0:
 
                 if not global_var.get_value('enemyFiring1'):
                     global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()
                     global_var.set_value('enemyFiring1',True)
-                bulletNum=random.randint(17,28)
+                bulletNum=random.randint(30,46)
                 sx=self.tx-100+random.random()*200
                 sy=self.ty-100+random.random()*200
-                sspeed=3+1*random.random()
+                sspeed=3+2*random.random()
                 new_effect=Effect.bulletCreate(0)
                 new_effect.initial(sx,sy,128,64,10)
                 effects.add(new_effect)
-                colorCode=random.randint(0,15)
+                #colorCode=random.randint(0,15)
                 for i in range(0,bulletNum):
                     new_bullet=Bullet.satsu_Bullet()
                     new_bullet.initial(sx,sy,1)
                     new_bullet.setSpeed(self.randomAngle+i*(360/bulletNum),sspeed)
-                    #new_bullet.loadColor('blue')
-                    new_bullet.doColorCode(colorCode)
+                    new_bullet.loadColor('purple')
+                    #new_bullet.doColorCode(colorCode)
                     bullets.add(new_bullet)
                 self.randomAngle=random.random()*360
         

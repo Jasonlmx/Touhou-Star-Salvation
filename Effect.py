@@ -564,7 +564,7 @@ class bossFaceSpell(pygame.sprite.Sprite):
         self.ly=-20
         self.lastFrame=0
         self.upper=False
-        self.lower=False
+        self.lower=True
     def update(self,screen):
         self.lastFrame+=1
         self.movement()
