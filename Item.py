@@ -23,7 +23,7 @@ class item(pygame.sprite.Sprite):
         self.image=0
         self.alias=0
         self.followPlayer=0
-        self.followSpeed=6
+        self.followSpeed=7
         self.direction=4
         self.rotatedImage=0
     def initial(self,posx,posy):
@@ -96,10 +96,12 @@ class item(pygame.sprite.Sprite):
                 px=global_var.get_value('player1x')
                 py=global_var.get_value('player1y')
                 self.selfTarget(px,py,self.followSpeed)
+                self.followSpeed+=0.1
         elif self.followPlayer==1 and self.lastFrame>=20:
             px=global_var.get_value('player1x')
             py=global_var.get_value('player1y')
-            self.selfTarget(px,py,self.followSpeed+1)
+            self.selfTarget(px,py,self.followSpeed)
+            self.followSpeed+=0.12
         #screen.blit(self.image,(self.rect.centerx-6,self.rect.centery-6))
         #screen.blit(self.surf,self.rect)
         self.draw(screen)

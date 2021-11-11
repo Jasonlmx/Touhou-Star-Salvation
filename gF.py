@@ -333,7 +333,7 @@ def doPause(pressed_keys,screen):
             new_image=pygame.transform.smoothscale(new_image,(480,360))
             new_image=pygame.transform.smoothscale(new_image,(960,720))
             global_var.set_value('pauseScreen',new_image)
-            print(global_var.get_value('pauseScreen').get_size())
+            #print(global_var.get_value('pauseScreen').get_size())
 
 def pauseScreen(pressed_keys,screen):
     pause=global_var.get_value('pause')
