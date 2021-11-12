@@ -314,4 +314,4 @@ def itemAllGet(items,player,effects):
                 #new_effect.initial(item.image,item.rect.centerx,item.rect.centery)
                 #effects.add(new_effect)
                 #item.kill()
-                
+

@@ -233,6 +233,43 @@ def loadImage():
     pauseImg=pygame.image.load('resource/text/pause.png')
     pauseImg=pygame.transform.smoothscale(pauseImg,(384,384)).convert_alpha()
     global_var.set_value('pauseImg',pauseImg)
+    pauseRound=pygame.Surface((72,312)).convert_alpha()
+    pauseRound.blit(pauseImg,(0,0),(0,0,72,312))
+    global_var.set_value('pauseRound',pauseRound)
+    pauseSign=[]
+    for i in range(0,6):
+        new_image=pygame.Surface((312,48)).convert_alpha()
+        new_image.blit(pauseImg,(0,0),(72,i*48,312,48))
+        pauseSign.append(new_image)
+    global_var.set_value('pauseSign',pauseSign)
+    selectSurf=pygame.Surface((312,48)).convert_alpha()
+    selectSurf.fill((200,200,200,100))
+    global_var.set_value('selectSurf',selectSurf)
+    global_var.set_value('pauseSelectNum',0)
+    menuImg=pygame.image.load('resource/title/title01.png')
+    menuImg=pygame.transform.smoothscale(menuImg,(768,768))
+    menuSign=[]
+    menuShadow=[]
+    for i in range(0,8):
+        for j in range(0,2):
+            new_image=pygame.Surface((192,48)).convert_alpha()
+            new_image.blit(menuImg,(0,0),(j*192,i*48,192,48))
+            if j==0:
+                menuSign.append(new_image)
+            else:
+                menuShadow.append(new_image)
+    global_var.set_value('menuSign',menuSign)
+    global_var.set_value('menuShadow',menuShadow)
+    playerTitle=pygame.image.load('resource/title/sl_pl00.png')
+    playerTitle=pygame.transform.smoothscale(playerTitle,(768,768))
+    playerTitleImg=[]
+    new_image=pygame.Surface((450,768)).convert_alpha()
+    new_image.blit(playerTitle,(0,0),(0,0,450,768))
+    playerTitleImg.append(new_image)
+    new_image=pygame.Surface((318,768)).convert_alpha()
+    new_image.blit(playerTitle,(0,0),(450,0,318,768))
+    playerTitleImg.append(new_image)
+    global_var.set_value('playerTitleImg',playerTitleImg)
     effFlameImg=pygame.Surface((72,72)).convert_alpha()
     effFlameImg.fill((0,0,0,0))
     effFlameImg.blit(global_var.get_value('effect_temp1').convert_alpha(), (0, 0), (0,0, 72, 72))
@@ -317,7 +354,7 @@ def drawBlinder(screen,surf):
     screen.blit(surf,(0,720))
 
 def doPause(pressed_keys,screen):
-    if pressed_keys[K_ESCAPE]!=global_var.get_value('escPressing') and not pressed_keys[K_ESCAPE]:
+    if pressed_keys[K_ESCAPE]!=global_var.get_value('escPressing') and pressed_keys[K_ESCAPE]:
         if global_var.get_value('pause'):
             global_var.set_value('pause',False)
             pygame.mixer.music.unpause()
@@ -335,12 +372,99 @@ def doPause(pressed_keys,screen):
             global_var.set_value('pauseScreen',new_image)
             #print(global_var.get_value('pauseScreen').get_size())
 
-def pauseScreen(pressed_keys,screen):
+def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,booms,playerGuns):
     pause=global_var.get_value('pause')
     if pause:
+        ifStopPressing=global_var.get_value('ifStopPressing')
         screen.blit(global_var.get_value('pauseScreen'),(0,0))
-        screen.blit(global_var.get_value('pauseImg'),(60,300))
-        if pressed_keys[K_z]:
+        #screen.blit(global_var.get_value('pauseImg'),(60,300))
+        screen.blit(global_var.get_value('pauseRound'),(60,300))
+        selectNum=global_var.get_value('pauseSelectNum')
+        if not (pressed_keys[K_UP] and pressed_keys_last[K_UP]):
+            if pressed_keys[K_UP]:
+                selectNum-=1
+                global_var.get_value('select_sound').stop()
+                global_var.get_value('select_sound').play()
+        if not (pressed_keys[K_DOWN] and pressed_keys_last[K_DOWN]):
+            if pressed_keys[K_DOWN]:
+                selectNum+=1
+                global_var.get_value('select_sound').stop()
+                global_var.get_value('select_sound').play()
+        if selectNum>4:
+            selectNum=0
+        elif selectNum<0:
+            selectNum=4
+        global_var.set_value('pauseSelectNum',selectNum)
+        screen.blit(global_var.get_value('selectSurf'),(72,348+48*selectNum))
+        for i in range(0,6):
+            screen.blit(global_var.get_value('pauseSign')[i],(72,300+48*i))
+        if pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z] and ifStopPressing and selectNum==0:
             global_var.get_value('ok_sound').play()
             global_var.set_value('pause',False)
             pygame.mixer.music.unpause()
+            global_var.set_value('pauseSelectNum',0)
+        elif (pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z] and ifStopPressing and selectNum==1):
+            global_var.set_value('restarting',True)
+            global_var.get_value('ok_sound').play()
+            global_var.set_value('pause',False)
+            restart(frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,screen,booms,playerGuns)
+            pygame.mixer.music.stop()
+            global_var.set_value('pauseSelectNum',0)
+            global_var.set_value('menu',True)
+        elif (pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z] and ifStopPressing and selectNum==2) or (pressed_keys[K_r]!=pressed_keys_last[K_r] and pressed_keys[K_r]):
+            #print('do')
+            global_var.set_value('restarting',True)
+            global_var.get_value('ok_sound').play()
+            global_var.set_value('pause',False)
+            pygame.mixer.music.stop()
+            restart(frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,screen,booms,playerGuns)
+            global_var.set_value('pauseSelectNum',0)
+        if not pressed_keys[K_z]:
+            ifStopPressing=True
+            global_var.set_value('ifStopPressing',True)
+
+
+def restart(frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,screen,booms,playerGuns):
+    #frame=0
+    for enemy in enemys:
+        enemy.kill()
+    for bullet in bullets:
+        bullet.kill()
+    for slave in slaves:
+        slave.kill()
+    for item in items:
+        item.kill()
+    for effect in effects:
+        effect.kill()
+    for background in backgrounds:
+        background.kill()
+    for boss in bosses:
+        boss.kill()
+    for boom in booms:
+        boom.kill()
+    for playerGun in playerGuns:
+        playerGun.kill()
+    player.__init__()
+    player.tx=357.0
+    player.ty=600.0
+    player.power=100    
+    if global_var.get_value('ifTest'):
+        player.power=400
+    global_var.set_value('getTicksLastFrame',0)
+    pygame.mixer.music.load('resource/bgm/lightnessOnTheWay.mp3') 
+    pygame.mixer.music.play(loops=-1)
+    global_var.set_value('ifBoss',False)
+    global_var.set_value('pressingX',False)
+    global_var.set_value('DELTA_T',17)
+    global_var.set_value('ifShaking',False)
+    global_var.set_value('shakeFrame',0)
+    global_var.set_value('boomStatu',0)
+    global_var.set_value('grazeNum',0)
+    global_var.set_value('fpSec',0)
+    global_var.set_value('enemyPos',(0,0,10000))
+    global_var.set_value('shift_down',False)
+    global_var.set_value('pause',False)
+    global_var.set_value('escPressing',False)
+    global_var.set_value('pauseScreen',0)
+    global_var.set_value('ifStopPressing',False)
+    doBackground(screen,backgrounds)
