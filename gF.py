@@ -411,6 +411,9 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
             pygame.mixer.music.stop()
             global_var.set_value('pauseSelectNum',0)
             global_var.set_value('menu',True)
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load('resource/bgm/mainTitle.mp3')
+            pygame.mixer.music.play(loops=-1)
         elif (pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z] and ifStopPressing and selectNum==2) or (pressed_keys[K_r]!=pressed_keys_last[K_r] and pressed_keys[K_r]):
             #print('do')
             global_var.set_value('restarting',True)

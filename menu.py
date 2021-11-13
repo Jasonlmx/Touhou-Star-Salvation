@@ -29,20 +29,43 @@ class Menu():
         self.drawSign(screen)
         self.doSelection(pressed_keys,pressed_keys_last,player)
     def alterSelect(self,pressed_keys,pressed_keys_last):
-        if not (pressed_keys[K_UP] and pressed_keys_last[K_UP]):
-            if pressed_keys[K_UP]:
-                self.selectNum[self.menuStair]-=1
-                global_var.get_value('select_sound').stop()
-                global_var.get_value('select_sound').play()
-        if not (pressed_keys[K_DOWN] and pressed_keys_last[K_DOWN]):
-            if pressed_keys[K_DOWN]:
-                self.selectNum[self.menuStair]+=1
-                global_var.get_value('select_sound').stop()
-                global_var.get_value('select_sound').play()
+        if self.menuStair!=2:
+            if not (pressed_keys[K_UP] and pressed_keys_last[K_UP]):
+                if pressed_keys[K_UP]:
+                    self.selectNum[self.menuStair]-=1
+                    global_var.get_value('select_sound').stop()
+                    global_var.get_value('select_sound').play()
+            if not (pressed_keys[K_DOWN] and pressed_keys_last[K_DOWN]):
+                if pressed_keys[K_DOWN]:
+                    self.selectNum[self.menuStair]+=1
+                    global_var.get_value('select_sound').stop()
+                    global_var.get_value('select_sound').play()
+        else:
+            if not (pressed_keys[K_LEFT] and pressed_keys_last[K_LEFT]):
+                if pressed_keys[K_LEFT]:
+                    self.selectNum[self.menuStair]-=1
+                    global_var.get_value('select_sound').stop()
+                    global_var.get_value('select_sound').play()
+            if not (pressed_keys[K_RIGHT] and pressed_keys_last[K_RIGHT]):
+                if pressed_keys[K_RIGHT]:
+                    self.selectNum[self.menuStair]+=1
+                    global_var.get_value('select_sound').stop()
+                    global_var.get_value('select_sound').play()
+        if (pressed_keys[K_ESCAPE]!=pressed_keys_last[K_ESCAPE] and pressed_keys[K_ESCAPE]) or (pressed_keys[K_x]!=pressed_keys_last[K_x] and pressed_keys[K_x]):
+            if self.menuStair>0:
+                self.menuStair-=1
+                global_var.get_value('cancel_sound').play()
+            else:
+                if self.selectNum[0]!=7:
+                    self.selectNum[0]=7
+                    global_var.get_value('cancel_sound').play()
+                else:
+                    global_var.get_value('cancel_sound').play()
+                    sys.exit()
         if self.selectNum[self.menuStair]>self.stairMax[self.menuStair]:
             self.selectNum[self.menuStair]=0
         elif self.selectNum[self.menuStair]<0:
-            self.selectNum[0]=self.stairMax[self.menuStair]
+            self.selectNum[self.menuStair]=self.stairMax[self.menuStair]
     def drawSign(self,screen):
         if self.menuStair==0:
             for i in range(0,8):
@@ -81,6 +104,7 @@ class Menu():
                 elif self.selectNum[self.menuStair]==1:
                     global_var.set_value('playerNum',1)
                 global_var.get_value('ok_sound').play()
+                pygame.mixer.music.stop()
                 pygame.mixer.music.load('resource/bgm/lightnessOnTheWay.mp3')   # 载入背景音乐文件
                 #pygame.mixer.music.load('resource/bgm/上海アリス幻樂団 - 死体旅行~ Be of good cheer!.mp3')
                 pygame.mixer.music.set_volume(0.6)                  # 设定背景音乐音量

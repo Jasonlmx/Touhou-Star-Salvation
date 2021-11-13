@@ -206,7 +206,15 @@ global_var.set_value('select_sound',select_sound)
 ok_sound=pygame.mixer.Sound('resource/sound/se_ok00.wav')
 ok_sound.set_volume(0.35)
 global_var.set_value('ok_sound',ok_sound)
+cancel_sound=pygame.mixer.Sound('resource/sound/se_cancel00.wav')
+cancel_sound.set_volume(0.35)
+global_var.set_value('cancel_sound',cancel_sound)
 
+
+
+pygame.mixer.music.load('resource/bgm/mainTitle.mp3')
+pygame.mixer.music.set_volume(0.6)   
+pygame.mixer.music.play(loops=-1)
 
 global_var.set_value('ifBoss',False)
 global_var.set_value('pressingX',False)
@@ -523,5 +531,5 @@ while running:
     #pygame.display.update()
     
     
-    
+
 
