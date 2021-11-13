@@ -1,7 +1,6 @@
 import pygame,sys
 import random
 import math
-from pygame.display import gl_get_attribute
 from pygame.locals import *
 from pygame.sprite import Group
 import gF

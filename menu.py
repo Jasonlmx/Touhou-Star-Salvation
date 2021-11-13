@@ -19,11 +19,21 @@ class Menu():
         self.sign=global_var.get_value('menuSign')
         self.shadow=global_var.get_value('menuShadow')
         self.playerTitleImg=global_var.get_value('playerTitleImg')
+        self.kanjiLogo=global_var.get_value('kanjiLogo')
+        self.engLogo=global_var.get_value('engLogo')
+        self.lightLogo=global_var.get_value('lightLogo')
+        self.tachie=global_var.get_value('reimuLogo')
         self.selectNum=[0,0,0]
         self.stairMax=[7,0,1]
         self.menuStair=0 #0:main menu, 1 stage selection, 2 player selection
         self.playerReset=False
+        self.lightStrength=0.0
+        self.logoPosAdj=[0,0]
+        self.lastFrame=0
     def update(self,screen,pressed_keys,pressed_keys_last,player):
+        self.lastFrame+=1
+        if self.lastFrame>360:
+            self.lastFrame=self.lastFrame%360
         screen.blit(self.image,(0,0))
         self.alterSelect(pressed_keys,pressed_keys_last)
         self.drawSign(screen)
@@ -68,6 +78,14 @@ class Menu():
             self.selectNum[self.menuStair]=self.stairMax[self.menuStair]
     def drawSign(self,screen):
         if self.menuStair==0:
+            self.logoPosAdj=[math.sin(self.lastFrame*math.pi/180)*20,math.sin(self.lastFrame*0.5*math.pi/180)*5]
+            screen.blit(self.kanjiLogo,(100+self.logoPosAdj[0],30+self.logoPosAdj[1]))
+            self.lightStrength=0.5*math.sin(self.lastFrame*2*math.pi/180)+0.5
+            alpha=round(self.lightStrength*256)
+            self.lightLogo.set_alpha(alpha)
+            screen.blit(self.lightLogo,(100-5,164))
+            screen.blit(self.engLogo,(100,164))
+            screen.blit(self.tachie,(650,120))
             for i in range(0,8):
                 if i!=self.selectNum[self.menuStair]:
                     screen.blit(self.shadow[i],(100,250+i*48))
