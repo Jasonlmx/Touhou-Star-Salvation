@@ -1254,6 +1254,7 @@ class star_Bullet_Part4_Hex(star_Bullet):
         self.rotationAngle=0.3
         self.speed=4
         self.dAngle=random.randint(0,60)
+        self.stopFrame=60
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
@@ -1264,9 +1265,10 @@ class star_Bullet_Part4_Hex(star_Bullet):
     
     def moving_strategy(self):
         self.countAngle()
-        self.setSpeed(self.angle+self.direction*self.rotationAngle,self.speed)
+        if self.lastFrame<=self.stopFrame:
+            self.setSpeed(self.angle+self.direction*self.rotationAngle,self.speed)
     
-class orb_Bullet_Part6_delay(orb_Bullet):
+class orb_Bullet_Part6_delay(satsu_Bullet):
     def __init__(self):
         super(orb_Bullet_Part6_delay,self).__init__()
         self.displayDelay=2

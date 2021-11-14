@@ -14,25 +14,31 @@ import gameRule
 def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player):
     #part1 F300~F600:
     if frame>=300 and frame<=600:
-        if frame%30==0:
-            new_enemy=DADcharacter.spirit_part1_1()
-            new_enemy.initialize(690,340,1,-1)
+        if frame%10==0 and frame<=450:
+            angle=12+12*math.sin(frame*6*math.pi/180)
+            d_y=20+12*math.cos(frame*6*math.pi/180)
+            new_enemy=DADcharacter.spirit_part1_1(angle,random.random()*0.5+6)
+            #new_enemy.initialize(690,340,1,-1)
+            new_enemy.initialize(50,180+d_y,1,-1)
             enemys.add(new_enemy)
-        if frame%45==0:
-            new_enemy=DADcharacter.spirit_part1_2()
-            new_enemy.initialize(50,340,1,-1)
+        
+        elif frame%10==0:
+            angle=180-12-12*math.sin(frame*6*math.pi/180)
+            new_enemy=DADcharacter.spirit_part1_2(angle,random.random()*0.5+6)
+            new_enemy.initialize(690,190,1,-1)
             enemys.add(new_enemy)
+        
     
     #part2 F650~1000:
     if frame>=650 and frame<=1000:
-        if frame%36==0:
+        if frame%27==0:
             new_enemy=DADcharacter.ghost_part2_1()
             new_enemy.initialize(50,190,1,1)
             enemys.add(new_enemy)
     
     #part3 F1000~1400:
     if frame>=1000 and frame<=1400:
-        if frame%30==0:
+        if frame%24==0:
             new_enemy=DADcharacter.ghost_part3_1()
             new_enemy.initialize(670,120,1,0)
             enemys.add(new_enemy)
@@ -53,13 +59,21 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
 
     if frame==2050:
         new_enemy=DADcharacter.butterfly_part5_1()
-        new_enemy.initialize(360,20,1,-1)
+        new_enemy.initialize(200,20,1,-1)
+        enemys.add(new_enemy)
+        new_enemy=DADcharacter.butterfly_part5_1()
+        new_enemy.initialize(520,20,1,-1)
         enemys.add(new_enemy)
     
     if frame>=2300 and frame<=2500:
-        if frame%20==0:
+        if frame%30==0:
             new_enemy=DADcharacter.spirit_part5_1()
             new_enemy.initialize(670,200+random.random()*50-25,1,-1)
+            enemys.add(new_enemy)
+
+        if frame%30==0:
+            new_enemy=DADcharacter.spirit_part5_1(1)
+            new_enemy.initialize(50,300+random.random()*50-25,1,-1)
             enemys.add(new_enemy)
 
     #part6 F2500~3250

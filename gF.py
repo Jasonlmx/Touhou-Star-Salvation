@@ -405,7 +405,7 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
         ifStopPressing=global_var.get_value('ifStopPressing')
         screen.blit(global_var.get_value('pauseScreen'),(0,0))
         #screen.blit(global_var.get_value('pauseImg'),(60,300))
-        screen.blit(global_var.get_value('pauseRound'),(60,300))
+        screen.blit(global_var.get_value('pauseRound'),(75,300))
         selectNum=global_var.get_value('pauseSelectNum')
         if not (pressed_keys[K_UP] and pressed_keys_last[K_UP]):
             if pressed_keys[K_UP]:
@@ -424,7 +424,10 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
         global_var.set_value('pauseSelectNum',selectNum)
         screen.blit(global_var.get_value('selectSurf'),(72,348+48*selectNum))
         for i in range(0,6):
-            screen.blit(global_var.get_value('pauseSign')[i],(72,300+48*i))
+            if i==0:
+                screen.blit(global_var.get_value('pauseSign')[i],(60,300+48*i))
+            else:
+                screen.blit(global_var.get_value('pauseSign')[i],(100,300+48*i))
         if pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z] and ifStopPressing and selectNum==0:
             global_var.get_value('ok_sound').play()
             global_var.set_value('pause',False)
