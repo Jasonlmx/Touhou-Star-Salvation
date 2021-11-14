@@ -23,6 +23,8 @@ class Menu():
         self.engLogo=global_var.get_value('engLogo')
         self.lightLogo=global_var.get_value('lightLogo')
         self.tachie=global_var.get_value('reimuLogo')
+        self.selectImg=global_var.get_value('menuSelectImg')
+        self.levelImg=global_var.get_value('levelImg')
         self.selectNum=[0,0,0]
         self.stairMax=[7,0,1]
         self.menuStair=0 #0:main menu, 1 stage selection, 2 player selection
@@ -92,8 +94,10 @@ class Menu():
                 else:
                     screen.blit(self.sign[i],(100,250+i*48))
         elif self.menuStair==1:
-            pass
+            screen.blit(self.selectImg[0],(40,10))
+            screen.blit(self.levelImg[0],(288,264))
         elif self.menuStair==2:
+            screen.blit(self.selectImg[1],(40,10))
             for i in range(0,2):
                 self.playerTitleImg[i].set_alpha(256)
             if self.selectNum[2]==0:
@@ -101,7 +105,7 @@ class Menu():
             elif self.selectNum[2]==1:
                 self.playerTitleImg[0].set_alpha(100)
             for i in range(0,2):
-                screen.blit(self.playerTitleImg[i],(450*i,0))
+                screen.blit(self.playerTitleImg[i],(450*i,120))
         
     def doSelection(self,pressed_keys,pressed_keys_last,player):
         if pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z]:
@@ -113,20 +117,22 @@ class Menu():
                     global_var.get_value('ok_sound').play()
                     sys.exit()
             elif self.menuStair==1:
-                if self.selectNum[self.menuStair]==0:
-                    global_var.get_value('ok_sound').play()
-                    self.menuStair+=1
+                if self.selectNum[0]==0: 
+                    if self.selectNum[self.menuStair]==0:
+                        global_var.get_value('ok_sound').play()
+                        self.menuStair+=1
             elif self.menuStair==2:
-                if self.selectNum[self.menuStair]==0:
-                    global_var.set_value('playerNum',0)
-                elif self.selectNum[self.menuStair]==1:
-                    global_var.set_value('playerNum',1)
-                global_var.get_value('ok_sound').play()
-                pygame.mixer.music.stop()
-                pygame.mixer.music.load('resource/bgm/lightnessOnTheWay.mp3')   # 载入背景音乐文件
-                #pygame.mixer.music.load('resource/bgm/上海アリス幻樂団 - 死体旅行~ Be of good cheer!.mp3')
-                pygame.mixer.music.set_volume(0.6)                  # 设定背景音乐音量
-                pygame.mixer.music.play(loops=-1)
-                self.menuStair=0
-                global_var.set_value('menu',False)
-                self.playerReset=True
+                if self.selectNum[0]==0:
+                    if self.selectNum[self.menuStair]==0:
+                        global_var.set_value('playerNum',0)
+                    elif self.selectNum[self.menuStair]==1:
+                        global_var.set_value('playerNum',1)
+                    global_var.get_value('ok_sound').play()
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.load('resource/bgm/lightnessOnTheWay.mp3')   # 载入背景音乐文件
+                    #pygame.mixer.music.load('resource/bgm/上海アリス幻樂団 - 死体旅行~ Be of good cheer!.mp3')
+                    pygame.mixer.music.set_volume(0.6)                  # 设定背景音乐音量
+                    pygame.mixer.music.play(loops=-1)
+                    self.menuStair=0
+                    global_var.set_value('menu',False)
+                    self.playerReset=True

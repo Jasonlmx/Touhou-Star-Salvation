@@ -259,6 +259,12 @@ def loadImage():
     selectSurf.fill((200,200,200,100))
     global_var.set_value('selectSurf',selectSurf)
     global_var.set_value('pauseSelectNum',0)
+    levelImg=[]
+    for i in range(1,2):
+        new_image=pygame.image.load('resource/title/level0'+str(i)+'.png')
+        new_image=pygame.transform.smoothscale(new_image,(384,192))
+        levelImg.append(new_image)
+    global_var.set_value('levelImg',levelImg)
     menuImg=pygame.image.load('resource/title/title01.png')
     menuImg=pygame.transform.smoothscale(menuImg,(768,768))
     menuSign=[]
@@ -271,6 +277,14 @@ def loadImage():
                 menuSign.append(new_image)
             else:
                 menuShadow.append(new_image)
+    menuSelectImg=[]
+    selectImg=pygame.image.load('resource/title/select01.png')
+    for i in range(0,8):
+        new_image=pygame.Surface((256,49)).convert_alpha()
+        new_image.blit(selectImg,(0,0),(0,i*49,256,49))
+        new_image=pygame.transform.smoothscale(new_image,(384,74))
+        menuSelectImg.append(new_image)
+    global_var.set_value('menuSelectImg',menuSelectImg)
     global_var.set_value('menuSign',menuSign)
     global_var.set_value('menuShadow',menuShadow)
     playerTitle=pygame.image.load('resource/title/sl_pl00.png')

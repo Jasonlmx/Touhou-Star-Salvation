@@ -526,6 +526,7 @@ while running:
             player.power=100
             if global_var.get_value('ifTest'):
                 player.power=testFire
+                frame=10020
     pressed_keys_last=pressed_keys
     pygame.display.flip()
     #pygame.display.update()
