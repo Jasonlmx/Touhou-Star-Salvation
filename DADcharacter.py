@@ -391,7 +391,7 @@ class spirit_part1_1(spirit):
         self.moveAngle=angle
         self.speed=speed
         self.fireFrame=random.randint(0,40)
-        self.bulletColor='blue'
+        self.bulletColor='lemonYellow'
     def ai_move(self):
         '''
         if self.lastFrame<60:
@@ -422,7 +422,7 @@ class spirit_part1_1(spirit):
             angle=new_bullet.angle
             new_bullet.loadColor(self.bulletColor)
             bullets.add(new_bullet)
-            new_effect=Effect.bulletCreate(5)
+            new_effect=Effect.bulletCreate(6)
             new_effect.initial(self.tx,self.ty,64,32,15)
             effects.add(new_effect)
             for i in range(1,3):
@@ -441,10 +441,10 @@ class spirit_part1_1(spirit):
                 global_var.set_value('enemyFiring2',True)
             angle=random.random()*60
             for i in range(0,12):
-                new_bullet=Bullet.small_Bullet()
+                new_bullet=Bullet.rice_Bullet()
                 new_bullet.initial(self.rect.centerx,self.rect.centery,self.occupy)
                 new_bullet.setSpeed(angle+i*(360/12),3.5)
-                new_bullet.loadColor('white')
+                new_bullet.loadColor('pink')
                 bullets.add(new_bullet)
         
 
@@ -459,7 +459,7 @@ class spirit_part1_2(spirit_part1_1):
         self.moveAngle=angle
         self.speed=speed
         self.fireFrame=random.randint(0,40)
-        self.bulletColor='green'
+        self.bulletColor='blue'
 
 class ghost_part2_1(ghost):
     def __init__(self):
@@ -507,7 +507,7 @@ class ghost_part2_1(ghost):
             for j in range(0,4):
                 new_bullet=Bullet.scale_Bullet()
                 new_bullet.initial(self.tx,self.ty,1)
-                new_bullet.setSpeed(angle+i*2,6-j*0.5)
+                new_bullet.setSpeed(angle+i*2,4.5-j*0.3)
                 new_bullet.loadColor('blue')
                 bullets.add(new_bullet)
         self.kill()
@@ -538,7 +538,7 @@ class ghost_part3_1(ghost_part2_1):
             for j in range(0,5):
                 new_bullet=Bullet.scale_Bullet()
                 new_bullet.initial(self.tx,self.ty,1)
-                new_bullet.setSpeed(angle+i*2,6-j*0.4)
+                new_bullet.setSpeed(angle+i*2,4.7-j*0.4)
                 new_bullet.loadColor('red')
                 bullets.add(new_bullet)
         self.kill()
@@ -654,7 +654,7 @@ class butterfly_part5_1(butterfly):
             self.speedy=-3
     
     def fire(self,frame,bullets,effects):
-        if self.lastFrame>=80 and self.lastFrame%40==0:
+        if self.lastFrame>=80 and self.lastFrame%30==0:
             self.fireAngle=random.random()*360
             new_effect=Effect.bulletCreate(7)
             new_effect.initial(self.tx,self.ty,256,128,8)
@@ -667,7 +667,7 @@ class butterfly_part5_1(butterfly):
                 for j in range(0,3):
                     new_bullet=Bullet.orb_Bullet()
                     new_bullet.initial(self.tx,self.ty,self.occupy)
-                    new_bullet.setSpeed(self.fireAngle+i*(360/16)+(j-1)*2,5)
+                    new_bullet.setSpeed(self.fireAngle+i*(360/16)+(j-1)*2,4)
                     new_bullet.loadColor('orange')
                     bullets.add(new_bullet)
     
@@ -698,13 +698,13 @@ class spirit_part5_1(spirit):
             if not global_var.get_value('enemyFiring1'):
                 global_var.get_value('enemyGun_sound1').play()
                 global_var.set_value('enemyFiring1',True)
-            for i in range(0,10):
+            for i in range(0,5):
                 angle=random.random()*360
                 new_bullet=Bullet.orb_Bullet_gravity()
                 new_bullet.initial(self.tx,self.ty,1)
                 color=random.randint(0,6)
                 new_bullet.setGravity(0.1+0.05*random.random())
-                new_bullet.setGravMax(5+1*random.random())
+                new_bullet.setGravMax(3+1*random.random())
                 new_bullet.setSpeed(angle,random.random())
                 new_bullet.doColorCode(color)
                 bullets.add(new_bullet)
@@ -742,7 +742,7 @@ class spirit_part6_1(spirit):
         if frame>=3000:
             interval=18
             code=0
-            intense=15
+            intense=round(30*(3300-frame)/300+30)
             changeSpeed=4
         else:
             interval=25
@@ -1330,7 +1330,7 @@ class ghost_ravenclaw_spirit(ghost):
                 global_var.set_value('enemyFiring2',True)
             for i in range(0,4):
                 for j in range(0,3):
-                    new_bullet=Bullet.orb_Bullet()
+                    new_bullet=Bullet.scale_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.fireAngle+i*(360/4)-1*j*self.direct,4.5-0.8*j)
                     new_bullet.loadColor('yellow')

@@ -14,7 +14,7 @@ import gameRule
 def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player):
     #part1 F300~F600:
     if frame>=300 and frame<=600:
-        if frame%10==0 and frame<=450:
+        if frame%10==0 and (frame<=375 or (frame>=450 and frame<525)):
             angle=12+12*math.sin(frame*6*math.pi/180)
             d_y=20+12*math.cos(frame*6*math.pi/180)
             new_enemy=DADcharacter.spirit_part1_1(angle,random.random()*0.5+6)

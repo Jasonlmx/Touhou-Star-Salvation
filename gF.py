@@ -320,8 +320,12 @@ def loadImage():
     graze_text.blit(front00, (0, 0), (525,0,96,24))
     global_var.set_value('graze_text',graze_text)
 
-
-
+    orb_bullet_img=[]
+    c_list=['blue','darkBlue','green','grey','jade','lakeBlue','lightGreen','lightRed','lightYellow','orange','pink','purple','red','skyBlue','white','yellow']
+    for i in range(0,16):
+        new_image=pygame.image.load('resource/bullet/orb_bullet_'+c_list[i]+'.png').convert_alpha()
+        orb_bullet_img.append(new_image)
+    global_var.set_value('orb_bullet_img',orb_bullet_img)
 
 
 
@@ -417,13 +421,13 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
                 selectNum+=1
                 global_var.get_value('select_sound').stop()
                 global_var.get_value('select_sound').play()
-        if selectNum>4:
+        if selectNum>2:
             selectNum=0
         elif selectNum<0:
-            selectNum=4
+            selectNum=2
         global_var.set_value('pauseSelectNum',selectNum)
         screen.blit(global_var.get_value('selectSurf'),(72,348+48*selectNum))
-        for i in range(0,6):
+        for i in range(0,4):
             if i==0:
                 screen.blit(global_var.get_value('pauseSign')[i],(60,300+48*i))
             else:

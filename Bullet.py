@@ -712,13 +712,15 @@ class orb_Bullet(Bullet):
         self.rect = self.surf.get_rect()
         self.surf.fill((255,255,255))
         self.type=6
-        self.image=pygame.image.load('resource/bullet/orb_bullet_grey.png').convert_alpha()
         self.dx=12
         self.dy=12
         self.lastFrame=0
         self.codeDic=['red','blue','green','purple','pink','jade','yellow']
+        self.img=global_var.get_value('orb_bullet_img')
+        self.image=self.img[0]
+        self.c_list=['blue','darkBlue','green','grey','jade','lakeBlue','lightGreen','lightRed','lightYellow','orange','pink','purple','red','skyBlue','white','yellow']
     def doColorCode(self,code):
-        self.image=pygame.image.load('resource/bullet/orb_bullet_'+self.codeDic[code]+'.png')
+        self.loadColor(self.codeDic[code])
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
@@ -727,7 +729,9 @@ class orb_Bullet(Bullet):
         #screen.blit(self.surf,self.rect)
         self.checkValid()
     def loadColor(self,color):
-        self.image=pygame.image.load('resource/bullet/orb_bullet_'+color+'.png').convert_alpha()
+        if color in self.c_list:
+            n=self.c_list.index(color)
+            self.image=self.img[n]
     
     def drawBullet(self,screen):
         screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
@@ -1268,11 +1272,11 @@ class star_Bullet_Part4_Hex(star_Bullet):
         if self.lastFrame<=self.stopFrame:
             self.setSpeed(self.angle+self.direction*self.rotationAngle,self.speed)
     
-class orb_Bullet_Part6_delay(satsu_Bullet):
+class orb_Bullet_Part6_delay(bact_Bullet):
     def __init__(self):
         super(orb_Bullet_Part6_delay,self).__init__()
         self.displayDelay=2
-        self.changeAngle=0
+        self.changeAngle=60
         self.speed=1
         self.changeSpeed=6
         self.changeFrame=30
