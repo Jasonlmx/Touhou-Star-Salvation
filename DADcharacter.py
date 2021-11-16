@@ -1441,7 +1441,21 @@ class  Player(pygame.sprite.Sprite):
         self.graze=0
         self.highSpeed=7.0
         self.lowSpeed=2.5
+        self.unhitFrame=0
+        self.unhitable=False
+        self.boomUnhitMax=100
     #key dictionary
+
+    def unhitSetter(self,unhitFrame):
+        self.unhitFrame=unhitFrame
+
+    def doUnhit(self):
+        if self.unhitFrame>0:
+            self.unhitFrame-=1
+            self.unhitable=True
+        else:
+            self.unhitable=False
+
     def getBoomStatu(self):
         self.boomStatu=global_var.get_value('boomStatu')
 
@@ -1572,6 +1586,7 @@ class  Player(pygame.sprite.Sprite):
         self.cx=self.rect.centerx
         self.cy=self.rect.centery
         self.immunePlayer(f)
+        self.doUnhit()
         self.getBoomStatu()
         self.getGraze()
         self.decreaseDeadFrame()

@@ -54,7 +54,7 @@ def addStars(screen,stars):
 
 def missDetect(player,bullets,enemys,effects,miss_sound,items,slaves):
     miss=pygame.sprite.spritecollideany(player,bullets)
-    if miss!=None and player.immune!=1:
+    if miss!=None and player.immune!=1 and not player.unhitable:
         if player.deadStatu!=1:
             miss_sound.play()
             playerDeathEffect(player,effects)
@@ -137,6 +137,7 @@ def doBoom(player,booms,pressed_keys,slash_sound,items):
         booms.add(new_boom)
         slash_sound.play()
         player.spellBonus=False
+        player.unhitFrame=player.boomUnhitMax
         for item in items:
             if item.lastFrame>=5:
                 item.followPlayer=1
@@ -237,7 +238,7 @@ def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses):
         enemy.health-=100
 
 def drawPlayer(screen,player,frame):
-    if player.immune!=1:
+    if player.immune!=1 and not player.unhitable:
         player.draw(screen)
     else:
         if frame%4<2:
