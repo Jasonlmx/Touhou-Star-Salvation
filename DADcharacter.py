@@ -1977,9 +1977,9 @@ class Boss(pygame.sprite.Sprite):
         w,h=self.magicImage.get_size()
         size=round(w+math.sin(frame*math.pi/180)*1)+100
         #tempImage=pygame.transform.scale(self.magicImage,(size,size))
-        temp=pygame.Surface((size,size))
+        temp=pygame.Surface((size,size)).convert_alpha()
         temp.fill((0,0,0,0))
-        temp=temp.convert_alpha()
+        #temp=temp.convert_alpha()
         innerPeriod=480
         gF.drawRotation(pygame.transform.smoothscale(self.magicImage,(size,size)),(0,0),frame%innerPeriod*(360/innerPeriod),temp)
         rotatePeriod=840

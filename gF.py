@@ -254,12 +254,24 @@ def loadImage():
     reimuLogo=pygame.transform.smoothscale(reimuLogo,(360,640))
     global_var.set_value('reimuLogo',reimuLogo)
     pauseSign=[]
+    pauseLim=[315,240,168,192,300,300]
     for i in range(0,6):
         new_image=pygame.Surface((312,48)).convert_alpha()
         new_image.fill((0,0,0,0))
-        new_image.blit(pauseImg,(0,0),(72,i*48,312,48))
+        new_image.blit(pauseImg,(0,0),(72,i*48,pauseLim[i],48))
         pauseSign.append(new_image)
+    new_image=pygame.Surface((312,48)).convert_alpha()
+    new_image.fill((0,0,0,0))
+    new_image.blit(pauseImg,(0,0),(192,336,192,48))
+    pauseSign.append(new_image)
+    pauseCate=[]
+    for i in range(0,3):
+        new_image=pygame.Surface((105,48)).convert_alpha()
+        new_image.fill((0,0,0,0))
+        new_image.blit(pauseImg,(0,0),(72+i*105,0,105,48))
+        pauseCate.append(new_image)
     global_var.set_value('pauseSign',pauseSign)
+    global_var.set_value('pauseCate',pauseCate)
     selectSurf=pygame.Surface((312,48)).convert_alpha()
     selectSurf.fill((200,200,200,100))
     global_var.set_value('selectSurf',selectSurf)
@@ -443,13 +455,16 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
         screen.blit(global_var.get_value('selectSurf'),(72,398+48*selectNum))
         for i in range(0,4):
             if i==0:
-                screen.blit(global_var.get_value('pauseSign')[i],(60,300+48*i))
+                if not global_var.get_value('ifGameOver'):
+                    screen.blit(global_var.get_value('pauseCate')[0],(60,300+48*i))
+                else:
+                    screen.blit(global_var.get_value('pauseCate')[1],(60,300+48*i))
             else:
                 if i==1:
                     if not global_var.get_value('ifGameOver'):
                         screen.blit(global_var.get_value('pauseSign')[i],(100,398-48+48*i))
                     else:
-                        screen.blit(global_var.get_value('pauseSign')[5],(100,398-48+48*i))
+                        screen.blit(global_var.get_value('pauseSign')[6],(100,398-48+48*i))
                 else:
                     screen.blit(global_var.get_value('pauseSign')[i],(100,398-48+48*i))
         if pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z] and ifStopPressing and selectNum==0:
@@ -461,7 +476,15 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
             else:
                 global_var.get_value('ok_sound').play()
                 global_var.set_value('pause',False)
-                pygame.mixer.music.unpause()
+                pygame.mixer.music.stop()
+                if not global_var.get_value('ifBoss'):
+                    pygame.mixer.music.load('resource/bgm/lightnessOnTheWay.mp3')
+                    start1=global_var.get_value('bgmContinuePos')[0]
+                    pygame.mixer.music.play(loops=-1,start=start1/1000)
+                else:
+                    pygame.mixer.music.load('resource/bgm/金卡雷 - 引燃夜空的星火.mp3')
+                    start1=global_var.get_value('bgmContinuePos')[1]
+                    pygame.mixer.music.play(loops=-1,start=start1/1000)
                 global_var.set_value('pauseSelectNum',0)
                 px=player.tx
                 py=player.ty
@@ -469,6 +492,7 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
                 player.tx=px
                 player.ty=py
                 player.power=400   
+                player.spellBonus=False
                 global_var.set_value('ifGameOver',False)
                 player.score=0
         elif (pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z] and ifStopPressing and selectNum==1):
@@ -539,4 +563,5 @@ def restart(frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,
     global_var.set_value('pauseScreen',0)
     global_var.set_value('ifStopPressing',False)
     global_var.set_value('ifGameOver',False)
+    global_var.set_value('bgmContinuePos',[0,0])#[0]->for mid stage,[1]->for boss fight
     doBackground(screen,backgrounds)

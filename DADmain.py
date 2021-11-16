@@ -79,6 +79,8 @@ global_var.set_value('pauseScreen',0)
 global_var.set_value('ifStopPressing',False)
 global_var.set_value('menu',True)
 global_var.set_value('ifGameOver',False)
+global_var.set_value('bgmPauseFlag',0)
+global_var.set_value('bgmContinuePos',[0,0])#[0]->for mid stage,[1]->for boss fight
 log = open("./log.csv", 'w+')
 #main loop controller 
 running = True

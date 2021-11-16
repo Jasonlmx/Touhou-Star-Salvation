@@ -322,7 +322,17 @@ def checkLife(player,screen):
         global_var.set_value('pause',True)
         global_var.get_value('pause_sound').stop()
         global_var.get_value('pause_sound').play()
-        pygame.mixer.music.pause()
+        #global_var.set_value('bgmPauseFlag',pygame.mixer.music.get_pos())
+        cPos=global_var.get_value('bgmContinuePos')
+        if global_var.get_value('ifBoss'):
+            cPos[1]+=pygame.mixer.music.get_pos()
+            global_var.set_value('bgmContinuePos',cPos)
+        else:
+            cPos[0]+=pygame.mixer.music.get_pos()
+            global_var.set_value('bgmContinuePos',cPos)
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load('resource/bgm/playerScore.mp3')
+        pygame.mixer.music.play(loops=-1)
         global_var.get_value('nep_sound').stop()
         new_image=pygame.Surface((960,720)).convert_alpha()
         new_image.fill((0,0,0))
