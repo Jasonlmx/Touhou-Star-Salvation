@@ -234,16 +234,20 @@ def loadImage():
     pauseImg=pygame.transform.smoothscale(pauseImg,(384,384)).convert_alpha()
     global_var.set_value('pauseImg',pauseImg)
     pauseRound=pygame.Surface((72,312)).convert_alpha()
+    pauseRound.fill((0,0,0,0))
     pauseRound.blit(pauseImg,(0,0),(0,0,72,312))
     global_var.set_value('pauseRound',pauseRound)
     titleLogo=pygame.image.load('resource/title/title_logo.png')
     kanjiLogo=pygame.Surface((610,144)).convert_alpha()
+    kanjiLogo.fill((0,0,0,0))
     kanjiLogo.blit(titleLogo,(0,0),(0,0,610,144))
     global_var.set_value('kanjiLogo',kanjiLogo)
     engLogo=pygame.Surface((500,96)).convert_alpha()
+    engLogo.fill((0,0,0,0))
     engLogo.blit(titleLogo,(0,0),(500,160,500,96))
     global_var.set_value('engLogo',engLogo)
     lightLogo=pygame.Surface((500,96)).convert_alpha()
+    lightLogo.fill((0,0,0,0))
     lightLogo.blit(titleLogo,(0,0),(0,160,500,96))
     global_var.set_value('lightLogo',lightLogo)
     reimuLogo=pygame.image.load('resource/title/tachie.png').convert_alpha()
@@ -252,6 +256,7 @@ def loadImage():
     pauseSign=[]
     for i in range(0,6):
         new_image=pygame.Surface((312,48)).convert_alpha()
+        new_image.fill((0,0,0,0))
         new_image.blit(pauseImg,(0,0),(72,i*48,312,48))
         pauseSign.append(new_image)
     global_var.set_value('pauseSign',pauseSign)
@@ -272,6 +277,7 @@ def loadImage():
     for i in range(0,8):
         for j in range(0,2):
             new_image=pygame.Surface((192,48)).convert_alpha()
+            new_image.fill((0,0,0,0))
             new_image.blit(menuImg,(0,0),(j*192,i*48,192,48))
             if j==0:
                 menuSign.append(new_image)
@@ -281,6 +287,7 @@ def loadImage():
     selectImg=pygame.image.load('resource/title/select01.png')
     for i in range(0,8):
         new_image=pygame.Surface((256,49)).convert_alpha()
+        new_image.fill((0,0,0,0))
         new_image.blit(selectImg,(0,0),(0,i*49,256,49))
         new_image=pygame.transform.smoothscale(new_image,(384,74))
         menuSelectImg.append(new_image)
@@ -291,9 +298,11 @@ def loadImage():
     playerTitle=pygame.transform.smoothscale(playerTitle,(768,768))
     playerTitleImg=[]
     new_image=pygame.Surface((450,768)).convert_alpha()
+    new_image.fill((0,0,0,0))
     new_image.blit(playerTitle,(0,0),(0,0,450,768))
     playerTitleImg.append(new_image)
     new_image=pygame.Surface((318,768)).convert_alpha()
+    new_image.fill((0,0,0,0))
     new_image.blit(playerTitle,(0,0),(450,0,318,768))
     playerTitleImg.append(new_image)
     global_var.set_value('playerTitleImg',playerTitleImg)

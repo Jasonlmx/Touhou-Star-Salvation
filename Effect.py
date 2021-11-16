@@ -461,9 +461,9 @@ class bulletCreate(pygame.sprite.Sprite):
         self.alpha=180
         self.getImage()
     def getImage(self):
-        self.image=pygame.Surface((32,32))
+        self.image=pygame.Surface((32,32)).convert_alpha()
         self.image.fill((0,0,0,0))
-        self.image=self.image.convert_alpha()
+        #self.image=self.image.convert_alpha()
         self.image.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*self.colorNum,0, 32, 32))
     
     def initial(self,centerx,centery,Max,Min,maxFrame):

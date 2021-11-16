@@ -262,10 +262,11 @@ class spirit(enemy):
         self.lockNum=0
         self.lock=0
     def draw(self,screen,frame):
-        image=pygame.Surface((48,48))
-        image.set_alpha(256)
-        image=image.convert_alpha()
-        image.set_colorkey((0, 0, 0))
+        image=pygame.Surface((48,48)).convert_alpha()
+        #image.set_alpha(256)
+        #image=image.convert_alpha()
+        #image.set_colorkey((0, 0, 0))
+        image.fill((0,0,0,0))
         self.frame+=1
         self.countAngle()
         if self.frame>=self.interval:
