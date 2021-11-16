@@ -442,6 +442,8 @@ class mid_Bullet(Bullet):
         self.rect = self.surf.get_rect()
         self.surf.fill((255,255,255))
         self.type=2
+        self.img=global_var.get_value('mid_bullet_img')
+        self.c_list=['blue','darkBlue','darkGreen','darkYellow','green','grey','lightGreen','lightRed','orange','pink','purple','red','seaBlue','skyBlue','white','yellow']
         self.image=pygame.image.load('resource/bullet/mid_bullet_grey.png')
         self.dx=12
         self.dy=12
@@ -452,7 +454,9 @@ class mid_Bullet(Bullet):
         #screen.blit(self.surf,self.rect)
         self.checkValid()
     def loadColor(self,color):
-        self.image=pygame.image.load('resource/bullet/mid_bullet_'+color+'.png').convert_alpha()
+        if color in self.c_list:
+            n=self.c_list.index(color)
+            self.image=self.img[n]
     
     def drawBullet(self,screen):
         screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))

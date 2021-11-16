@@ -326,7 +326,12 @@ def loadImage():
         new_image=pygame.image.load('resource/bullet/orb_bullet_'+c_list[i]+'.png').convert_alpha()
         orb_bullet_img.append(new_image)
     global_var.set_value('orb_bullet_img',orb_bullet_img)
-
+    mid_bullet_img=[]
+    c_list2=['blue','darkBlue','darkGreen','darkYellow','green','grey','lightGreen','lightRed','orange','pink','purple','red','seaBlue','skyBlue','white','yellow']
+    for i in range(0,16):
+        new_image=pygame.image.load('resource/bullet/mid_bullet_'+c_list2[i]+'.png').convert_alpha()
+        mid_bullet_img.append(new_image)
+    global_var.set_value('mid_bullet_img',mid_bullet_img)
 
 
 
@@ -426,12 +431,12 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
         elif selectNum<0:
             selectNum=2
         global_var.set_value('pauseSelectNum',selectNum)
-        screen.blit(global_var.get_value('selectSurf'),(72,348+48*selectNum))
+        screen.blit(global_var.get_value('selectSurf'),(72,398+48*selectNum))
         for i in range(0,4):
             if i==0:
                 screen.blit(global_var.get_value('pauseSign')[i],(60,300+48*i))
             else:
-                screen.blit(global_var.get_value('pauseSign')[i],(100,300+48*i))
+                screen.blit(global_var.get_value('pauseSign')[i],(100,398-48+48*i))
         if pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z] and ifStopPressing and selectNum==0:
             global_var.get_value('ok_sound').play()
             global_var.set_value('pause',False)
