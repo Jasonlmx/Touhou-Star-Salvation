@@ -1417,7 +1417,7 @@ class  Player(pygame.sprite.Sprite):
         self.ty=0.0
         self.cx=0.0
         self.cy=0.0
-        self.life=5
+        self.life=2
         self.immune=0
         self.impStartFrame=-1
         self.boom=3

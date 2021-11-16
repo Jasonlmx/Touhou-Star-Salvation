@@ -391,10 +391,10 @@ def drawBlinder(screen,surf):
 
 def doPause(pressed_keys,screen):
     if pressed_keys[K_ESCAPE]!=global_var.get_value('escPressing') and pressed_keys[K_ESCAPE]:
-        if global_var.get_value('pause'):
+        if global_var.get_value('pause') and not global_var.get_value('ifGameOver'):
             global_var.set_value('pause',False)
             pygame.mixer.music.unpause()
-        else:
+        elif not global_var.get_value('ifGameOver'):
             global_var.set_value('pause',True)
             pygame.mixer.music.pause()
             global_var.get_value('pause_sound').stop()
@@ -436,12 +436,32 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
             if i==0:
                 screen.blit(global_var.get_value('pauseSign')[i],(60,300+48*i))
             else:
-                screen.blit(global_var.get_value('pauseSign')[i],(100,398-48+48*i))
+                if i==1:
+                    if not global_var.get_value('ifGameOver'):
+                        screen.blit(global_var.get_value('pauseSign')[i],(100,398-48+48*i))
+                    else:
+                        screen.blit(global_var.get_value('pauseSign')[5],(100,398-48+48*i))
+                else:
+                    screen.blit(global_var.get_value('pauseSign')[i],(100,398-48+48*i))
         if pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z] and ifStopPressing and selectNum==0:
-            global_var.get_value('ok_sound').play()
-            global_var.set_value('pause',False)
-            pygame.mixer.music.unpause()
-            global_var.set_value('pauseSelectNum',0)
+            if not global_var.get_value('ifGameOver'):
+                global_var.get_value('ok_sound').play()
+                global_var.set_value('pause',False)
+                pygame.mixer.music.unpause()
+                global_var.set_value('pauseSelectNum',0)
+            else:
+                global_var.get_value('ok_sound').play()
+                global_var.set_value('pause',False)
+                pygame.mixer.music.unpause()
+                global_var.set_value('pauseSelectNum',0)
+                px=player.tx
+                py=player.ty
+                player.__init__()
+                player.tx=px
+                player.ty=py
+                player.power=400   
+                global_var.set_value('ifGameOver',False)
+                player.score=0
         elif (pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z] and ifStopPressing and selectNum==1):
             global_var.set_value('restarting',True)
             global_var.get_value('ok_sound').play()
@@ -509,4 +529,5 @@ def restart(frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,
     global_var.set_value('escPressing',False)
     global_var.set_value('pauseScreen',0)
     global_var.set_value('ifStopPressing',False)
+    global_var.set_value('ifGameOver',False)
     doBackground(screen,backgrounds)

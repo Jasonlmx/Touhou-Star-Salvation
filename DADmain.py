@@ -78,6 +78,7 @@ global_var.set_value('escPressing',False)
 global_var.set_value('pauseScreen',0)
 global_var.set_value('ifStopPressing',False)
 global_var.set_value('menu',True)
+global_var.set_value('ifGameOver',False)
 log = open("./log.csv", 'w+')
 #main loop controller 
 running = True
@@ -234,6 +235,8 @@ while running:
     pressed_keys = pygame.key.get_pressed()
     if not global_var.get_value('menu'):
         gF.doPause(pressed_keys,stage)
+        if not global_var.get_value('pause'):
+            gameRule.checkLife(player,stage)
 
     stage.fill((0,0,0))
     screen.fill((0,0,0))
@@ -261,7 +264,7 @@ while running:
             if global_var.get_value('restarting'):
                 frame=0
                 if global_var.get_value('ifTest'):
-                    frame=10020#for test
+                    frame=8700#for test
                 global_var.set_value('restarting',False)
         frameText = myfont.render('F: '+str(frame), True, (255, 255, 255))
         
@@ -526,7 +529,7 @@ while running:
             player.power=100
             if global_var.get_value('ifTest'):
                 player.power=testFire
-                frame=10200
+                frame=8700
     pressed_keys_last=pressed_keys
     pygame.display.flip()
     #pygame.display.update()

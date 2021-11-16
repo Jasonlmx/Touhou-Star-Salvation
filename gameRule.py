@@ -315,3 +315,17 @@ def itemAllGet(items,player,effects):
                 #effects.add(new_effect)
                 #item.kill()
 
+def checkLife(player,screen):
+    if player.life<0:
+        global_var.set_value('ifGameOver',True)
+        global_var.set_value('pause',True)
+        global_var.get_value('pause_sound').stop()
+        global_var.get_value('pause_sound').play()
+        pygame.mixer.music.pause()
+        global_var.get_value('nep_sound').stop()
+        new_image=pygame.Surface((960,720)).convert_alpha()
+        new_image.fill((0,0,0))
+        new_image.blit(screen,(0,0))
+        new_image=pygame.transform.smoothscale(new_image,(480,360))
+        new_image=pygame.transform.smoothscale(new_image,(960,720))
+        global_var.set_value('pauseScreen',new_image)
