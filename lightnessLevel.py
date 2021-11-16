@@ -151,8 +151,9 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         new_enemy=DADcharacter.butterfly_part9_1()
         new_enemy.initialize(540,20,1,-1)
         enemys.add(new_enemy)
-        new_enemy=DADcharacter.butterfly_part9_2()
+        new_enemy=DADcharacter.butterfly_part9_1()
         new_enemy.initialize(180,20,1,-1)
+        new_enemy.no=1
         enemys.add(new_enemy)
 
     #part Final FF10300~ Boss fight

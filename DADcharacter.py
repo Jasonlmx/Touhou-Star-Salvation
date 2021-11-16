@@ -785,7 +785,7 @@ class spirit_part7_1(spirit):
         super(spirit_part7_1,self).__init__()
         self.health=600
         self.colorNum=5
-        self.fireFrame=random.randint(0,24)
+        self.fireFrame=random.randint(0,40)
     
     def ai_move(self):
         if self.lastFrame<60:
@@ -799,22 +799,39 @@ class spirit_part7_1(spirit):
         self.countAngle()
 
     def fire(self,frame,bullets,effects):
-        if self.lastFrame%25==self.fireFrame:
+        self.fireFrame+=1
+        if self.fireFrame%40==0:
             angle=random.random()*360
-            intense=3
+            intense=6
             if not global_var.get_value('enemyFiring2'):
+                global_var.get_value('enemyGun_sound2').stop()
                 global_var.get_value('enemyGun_sound2').play()
                 global_var.set_value('enemyFiring2',True)
             for j in range(0,3):
                 for i in range(0,intense):
-                    new_bullet=Bullet.orb_Bullet_Part7_delay()
+                    new_bullet=Bullet.small_Bullet()
                     new_bullet.initial(self.rect.centerx,self.rect.centery,self.occupy)
-                    new_bullet.setSpeed(angle+i*(360/intense),20)
-                    new_bullet.doColorCode(1)
-                    new_bullet.changeAngle=00                  
-                    new_bullet.speed=0.2+0.1*j
-                    new_bullet.changeSpeed=3+j*0.25
+                    new_bullet.setSpeed(angle+i*(360/intense)-20*j,2-0.4*j)
+                    new_bullet.loadColor('green')
                     bullets.add(new_bullet)
+        if self.fireFrame%30<=10 and self.fireFrame%2==0:
+            if not global_var.get_value('enemyFiring2'):
+                global_var.get_value('enemyGun_sound2').stop()
+                global_var.get_value('enemyGun_sound2').play()
+                global_var.set_value('enemyFiring2',True)
+            new_bullet=Bullet.scale_Bullet()
+            new_bullet.initial(self.tx,self.ty,1)
+            px=global_var.get_value('player1x')
+            py=global_var.get_value('player1y')
+            new_bullet.selfTarget(px,py,5.5)
+            new_bullet.countAngle()
+            angle=new_bullet.angle
+            for i in range(0,2):
+                new_bullet=Bullet.scale_Bullet()
+                new_bullet.initial(self.tx,self.ty,1)
+                new_bullet.setSpeed(angle+2*(i-0.5)*20,5.5-self.fireFrame%30/2*0.3)
+                new_bullet.loadColor('blue')
+                bullets.add(new_bullet)
 
     def doKill(self,effects,items,bullets):
         global_var.get_value('enemyDead_sound').play()
@@ -860,28 +877,55 @@ class butterfly_part8_1(butterfly):
         self.health=12000
         self.lastFrame=0
         self.fireAngle=random.random()*360
-
+        self.fireAngle2=random.random()*360
+        self.adjAngle=45
     def ai_move(self):
         if self.lastFrame<=60:
-            self.speedy=2.4
-        elif self.lastFrame<=640:
+            self.speedy=3.5
+        elif self.lastFrame<=940:
             self.speedy=0
         else:
             self.speedy=-3
-    
+        if self.lastFrame==1:
+            self.health=90000
+        elif self.lastFrame==200:
+            self.health=(self.health/90000)*12000
     def fire(self,frame,bullets,effects):
-        if self.lastFrame>=80 and self.lastFrame%8==0:
-            self.fireAngle+=10
+        if self.lastFrame>=80 and self.lastFrame%26==0:
+            self.fireAngle+=40+20*random.random()
             if not global_var.get_value('kiraing'):
                 global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
                 global_var.set_value('kiraing',True)
+                angleRnd=-2.6-0.22*random.random()
+                dAngleRnd=-0.010-0.002*random.random()
             for i in range(0,12):
                 new_bullet=Bullet.mid_Bullet_Part8_acc()
                 new_bullet.initial(self.tx,self.ty,self.occupy)
-                new_bullet.setSpeed(self.fireAngle-i*(360/12),1)
-                new_bullet.loadColor('red')
+                new_bullet.setSpeed(self.fireAngle-i*(360/12)-self.adjAngle,0.5)
+                new_bullet.speedNow=0.5
+                new_bullet.changeAngle1=angleRnd
+                new_bullet.dAngle=dAngleRnd
+                new_bullet.loadColor('pink')
                 bullets.add(new_bullet)
+        if self.lastFrame>=80 and self.lastFrame%26==13:
+            self.fireAngle2-=40+20*random.random()
+            if not global_var.get_value('kiraing'):
+                global_var.get_value('kira_sound').stop()
+                global_var.get_value('kira_sound').play()
+                global_var.set_value('kiraing',True)
+                angleRnd=2.6+0.22*random.random()
+                dAngleRnd=0.010+0.002*random.random()
+            for i in range(0,12):
+                new_bullet=Bullet.mid_Bullet_Part8_acc()
+                new_bullet.initial(self.tx,self.ty,self.occupy)
+                new_bullet.setSpeed(self.fireAngle2-i*(360/12)+self.adjAngle,0.5)
+                new_bullet.speedNow=0.5
+                new_bullet.changeAngle1=angleRnd
+                new_bullet.dAngle=dAngleRnd
+                new_bullet.loadColor('pink')
+                bullets.add(new_bullet)
+
     
     def dropItem(self,items):
         self.createItem(items,0,10)
@@ -893,7 +937,9 @@ class butterfly_part9_1(butterfly):
         self.health=12000
         self.lastFrame=0
         self.fireAngle=random.random()*360
-    
+        self.fireAngle2=random.random()*360
+        self.adjAngle=45
+        self.no=0
     def ai_move(self):
         if self.lastFrame<=60:
             self.speedy=2.4
@@ -904,19 +950,39 @@ class butterfly_part9_1(butterfly):
     
     def fire(self,frame,bullets,effects):
         if self.lastFrame>=80 and self.lastFrame%10==0:
-            self.fireAngle+=6
             if not global_var.get_value('kiraing'):
                 global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
                 global_var.set_value('kiraing',True)
-            for i in range(0,14):
+            if self.no==0:
+                angleRnd=3.6+0.02*random.random()
+                dAngleRnd=0.020+0.0001*random.random()
+                self.fireAngle+=40+20*random.random()
+            else:
+                angleRnd=-3.6-0.02*random.random()
+                dAngleRnd=-0.020-0.0001*random.random()
+                self.fireAngle-=40+20*random.random()
+            for i in range(0,9):
                 new_bullet=Bullet.mid_Bullet_Part8_acc()
                 new_bullet.initial(self.tx,self.ty,self.occupy)
-                new_bullet.setSpeed(self.fireAngle-i*(360/14),1)
-                new_bullet.speedLimit=5.0
-                new_bullet.loadColor('darkBlue')
+                new_bullet.setSpeed(self.fireAngle-i*(360/9),0.1)
+                new_bullet.speedNow=0.1
+                new_bullet.changeAngle1=angleRnd
+                new_bullet.dAngle=dAngleRnd
+                new_bullet.loadColor('blue')
                 bullets.add(new_bullet)
-    
+        if self.lastFrame>=80 and self.lastFrame%100==0:
+            if not global_var.get_value('enemyFiring1'):
+                global_var.get_value('enemyGun_sound1').stop()
+                global_var.get_value('enemyGun_sound1').play()
+                global_var.set_value('enemyFiring1',True)
+            new_bullet=Bullet.circle_Bullet()
+            new_bullet.initial(self.tx,self.ty,1)
+            new_bullet.doColorCode(5)
+            px=global_var.get_value('player1x')
+            py=global_var.get_value('player1y')
+            new_bullet.selfTarget(px,py,5.5)
+            bullets.add(new_bullet)
     def dropItem(self,items):
         self.createItem(items,3,1)
         self.createItem(items,2,2)
@@ -937,7 +1003,7 @@ class butterfly_part9_2(butterfly_part9_1):
                 new_bullet.initial(self.tx,self.ty,self.occupy)
                 new_bullet.setSpeed(self.fireAngle-i*(360/14),1)
                 new_bullet.speedLimit=5.0
-                new_bullet.loadColor('darkBlue')
+                new_bullet.loadColor('blue')
                 bullets.add(new_bullet)
 
 class ghost_slytherin_spirit(ghost):

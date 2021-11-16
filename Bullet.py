@@ -1321,28 +1321,34 @@ class orb_Bullet_Part7_delay(orb_Bullet):
         if self.lastFrame==self.changeFrame:
             self.setSpeed(self.angle+self.changeAngle,self.changeSpeed)
     
-class mid_Bullet_Part8_acc(mid_Bullet):
+class mid_Bullet_Part8_acc(rice_Bullet):
     def __init__(self):
         super(mid_Bullet_Part8_acc,self).__init__()
-        self.speedLimit=6.0
-        self.acceleration=0.1
-        self.speedNow=1
+        self.speedNow=0.5
         self.lastFrame=0
-        self.delayAcc=30
+        self.changeAngle1=-2.0
+        self.addSpeed=0.030
+        self.speedUpperLim=5
+        #self.change1Frame=200
+        self.dAngle=-0.016
 
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         self.countAngle()
-        if self.lastFrame<=self.delayAcc:
-            self.speedNow+=0.005
-            self.setSpeed(self.angle,self.speedNow)
-        elif self.speedNow<=self.speedLimit:
-            self.speedNow+=self.acceleration
-            self.setSpeed(self.angle,self.speedNow)
+        self.moveStrat()
         self.drawBullet(screen)
         self.checkValid()
 
+    def moveStrat(self):
+        if abs(self.changeAngle1)>self.dAngle:
+            self.setSpeed(self.angle+self.changeAngle1,self.speedNow)
+            self.changeAngle1-=self.dAngle
+        else:
+            self.setSpeed(self.angle+self.changeAngle1,self.speedNow)
+            self.changeAngle1=0
+        if self.speedNow<self.speedUpperLim:
+            self.speedNow+=self.addSpeed
 class orb_Bullet_bouncing_limit(orb_Bullet):
     def __init__(self,limit):
         super(orb_Bullet_bouncing_limit,self).__init__()
