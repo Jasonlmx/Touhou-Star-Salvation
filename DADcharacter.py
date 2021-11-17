@@ -465,7 +465,7 @@ class spirit_part1_2(spirit_part1_1):
 class ghost_part2_1(ghost):
     def __init__(self):
         super(ghost_part2_1,self).__init__()
-        self.health=500
+        self.health=200
         self.colorNum=2
         self.fireFrame=random.randint(0,40)
     def fire(self,frame,bullets,effects):
@@ -520,7 +520,7 @@ class ghost_part2_1(ghost):
 class ghost_part3_1(ghost_part2_1):
     def __init__(self):
         super(ghost_part3_1,self).__init__()
-        self.health=500
+        self.health=200
         self.colorNum=0
 
     def doKill(self,effects,items,bullets):
@@ -2429,7 +2429,7 @@ class satori(Boss):
                     if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').play()
                         global_var.set_value('enemyFiring2',True)
-                    new_bullet=Bullet.mid_Bullet()
+                    new_bullet=Bullet.scale_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle+i*(360/9),7)
                     new_bullet.loadColor('green')
@@ -2451,6 +2451,30 @@ class satori(Boss):
                 new_bullet.loadColor('purple')
                 bullets.add(new_bullet)
             self.randomAngle2+=8.3
+
+        if self.lastFrame%240==60:
+            new_effect=Effect.bulletCreate(5)
+            new_effect.initial(self.tx,self.ty,200,84,20)
+            effects.add(new_effect)
+        if self.lastFrame%240==80:
+            if not global_var.get_value('enemyFiring1'):
+                global_var.get_value('enemyGun_sound1').play()
+                global_var.set_value('enemyFiring1',True)
+            px=global_var.get_value('player1x')
+            py=global_var.get_value('player1y')
+            new_bullet=Bullet.scale_Bullet()
+            new_bullet.initial(self.tx,self.ty,1)
+            new_bullet.selfTarget(px,py,6)
+            new_bullet.countAngle()
+            angle=new_bullet.angle
+            for i in range(0,30):
+                new_bullet=Bullet.scale_Bullet()
+                new_bullet.initial(self.tx,self.ty,1)
+                randAngle=random.random()*5-2.5
+                randSpeed=random.random()*0.4+6
+                new_bullet.setSpeed(angle+randAngle,randSpeed-0.1*i)
+                new_bullet.loadColor('lightGreen')
+                bullets.add(new_bullet)
 
         if self.health<=0:
             self.cancalAllBullet(bullets,items,effects,True)

@@ -162,12 +162,15 @@ class Menu():
                 if self.selectNum[self.menuStair]==0:
                     global_var.get_value('ok_sound').play()
                     self.menuStair+=1
-                if self.selectNum[self.menuStair]==2:
+                elif self.selectNum[self.menuStair]==2:
                     global_var.get_value('ok_sound').play()
                     self.menuStair+=1
-                if self.selectNum[self.menuStair]==7:
+                elif self.selectNum[self.menuStair]==7:
                     global_var.get_value('ok_sound').play()
                     sys.exit()
+                else:
+                    global_var.get_value('invalid_sound').stop()
+                    global_var.get_value('invalid_sound').play()
             elif self.menuStair==1:
                 if self.selectNum[0]==0 or self.selectNum[0]==2: 
                     if self.selectNum[self.menuStair]==0:

@@ -489,7 +489,8 @@ class bulletCreate(pygame.sprite.Sprite):
         self.upper=True
         self.lower=False
         self.angle=random.random()*360
-        self.alpha=180
+        self.alpha=200
+        self.lowestAlpha=200
         self.getImage()
     def getImage(self):
         self.image=pygame.Surface((32,32)).convert_alpha()
@@ -510,7 +511,7 @@ class bulletCreate(pygame.sprite.Sprite):
 
     def update(self,screen):
         size=round(self.max-(self.lastFrame/self.maxFrame)*(self.max-self.min))
-        self.alpha=round((self.lastFrame/self.maxFrame)*(256-180)+180)
+        self.alpha=round((self.lastFrame/self.maxFrame)*(256-self.lowestAlpha)+self.lowestAlpha)
         self.temp=pygame.transform.scale(self.image,(size,size))
         self.temp.set_alpha(self.alpha)
         self.draw(size,screen)

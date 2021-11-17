@@ -212,6 +212,9 @@ global_var.set_value('ok_sound',ok_sound)
 cancel_sound=pygame.mixer.Sound('resource/sound/se_cancel00.wav')
 cancel_sound.set_volume(0.35)
 global_var.set_value('cancel_sound',cancel_sound)
+invalid_sound=pygame.mixer.Sound('resource/sound/se_invalid.wav')
+invalid_sound.set_volume(0.35)
+global_var.set_value('invalid_sound',invalid_sound)
 
 
 
@@ -266,7 +269,7 @@ while running:
             if global_var.get_value('restarting'):
                 frame=0
                 if global_var.get_value('ifTest'):
-                    frame=8700#for test
+                    frame=10020#for test
                 global_var.set_value('restarting',False)
         frameText = myfont.render('F: '+str(frame), True, (255, 255, 255))
         
