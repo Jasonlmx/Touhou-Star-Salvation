@@ -479,11 +479,15 @@ class ghost_part2_1(ghost):
             new_effect.initial(self.tx,self.ty,84,64,4)
             effects.add(new_effect)
             for i in range(0,5):
-                new_bullet=Bullet.rice_Bullet()
-                new_bullet.initial(self.rect.centerx,self.rect.centery,self.occupy)
-                new_bullet.setSpeed(90,6-i*0.7)
-                new_bullet.loadColor('blue')
-                bullets.add(new_bullet)
+                for j in range(0,2):
+                    new_bullet=Bullet.rice_Bullet()
+                    new_bullet.initial(self.rect.centerx,self.rect.centery,self.occupy)
+                    if j==0:
+                        new_bullet.setSpeed(90,6-i*0.7)
+                    else:
+                        new_bullet.setSpeed(-90,6-i*0.7)
+                    new_bullet.loadColor('blue')
+                    bullets.add(new_bullet)
 
     def dropItem(self,items):
         self.createItem(items,0,3)
@@ -555,11 +559,15 @@ class ghost_part3_1(ghost_part2_1):
             new_effect.initial(self.tx,self.ty,84,64,4)
             effects.add(new_effect)
             for i in range(0,5):
-                new_bullet=Bullet.rice_Bullet()
-                new_bullet.initial(self.rect.centerx,self.rect.centery,self.occupy)
-                new_bullet.setSpeed(90,6-i*0.7)
-                new_bullet.loadColor('red')
-                bullets.add(new_bullet)
+                for j in range(0,2):
+                    new_bullet=Bullet.rice_Bullet()
+                    new_bullet.initial(self.rect.centerx,self.rect.centery,self.occupy)
+                    if j==0:
+                        new_bullet.setSpeed(90,6-i*0.7)
+                    else:
+                        new_bullet.setSpeed(-90,6-i*0.7)
+                    new_bullet.loadColor('red')
+                    bullets.add(new_bullet)
     
 class butterfly_part4_1(butterfly):
     def __init__(self):
@@ -810,7 +818,7 @@ class spirit_part7_1(spirit):
                 global_var.set_value('enemyFiring2',True)
             for j in range(0,3):
                 for i in range(0,intense):
-                    new_bullet=Bullet.small_Bullet()
+                    new_bullet=Bullet.scale_Bullet()
                     new_bullet.initial(self.rect.centerx,self.rect.centery,self.occupy)
                     new_bullet.setSpeed(angle+i*(360/intense)-20*j,2-0.4*j)
                     new_bullet.loadColor('green')
@@ -840,13 +848,17 @@ class spirit_part7_1(spirit):
         new_effect=Effect.enemyDead()
         new_effect.initial(self.deadImage,self.rect.centerx,self.rect.centery)
         effects.add(new_effect)
-        for i in range(0,3):
-            new_bullet=Bullet.star_Bullet()
+        for i in range(0,1):
+            new_bullet=Bullet.laser_Bullet_main()
+            new_bullet.length=20
+            new_bullet.ratio=5
             new_bullet.initial(self.rect.centerx,self.rect.centery,self.occupy)
             px=global_var.get_value('player1x')
             py=global_var.get_value('player1y')
-            new_bullet.selfTarget(px,py,4+i*0.5)
-            new_bullet.loadColor('red')
+            new_bullet.selfTarget(px,py,6+i*0.5)
+            new_bullet.speed=6+i*0.5+1
+            new_bullet.doColorCode(2)
+            #new_bullet.loadColor('red')
             bullets.add(new_bullet)
         self.kill()
 
@@ -898,8 +910,12 @@ class butterfly_part8_1(butterfly):
                 global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
                 global_var.set_value('kiraing',True)
-                angleRnd=-2.6-0.22*random.random()
-                dAngleRnd=-0.010-0.002*random.random()
+            if not global_var.get_value('enemyFiring2'):
+                global_var.get_value('enemyGun_sound2').stop()
+                global_var.get_value('enemyGun_sound2').play()
+                global_var.set_value('enemyFiring2',True)
+            angleRnd=-2.6-0.22*random.random()
+            dAngleRnd=-0.010-0.002*random.random()
             for i in range(0,12):
                 new_bullet=Bullet.mid_Bullet_Part8_acc()
                 new_bullet.initial(self.tx,self.ty,self.occupy)
@@ -915,8 +931,12 @@ class butterfly_part8_1(butterfly):
                 global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
                 global_var.set_value('kiraing',True)
-                angleRnd=2.6+0.22*random.random()
-                dAngleRnd=0.010+0.002*random.random()
+            if not global_var.get_value('enemyFiring2'):
+                global_var.get_value('enemyGun_sound2').stop()
+                global_var.get_value('enemyGun_sound2').play()
+                global_var.set_value('enemyFiring2',True)
+            angleRnd=2.6+0.22*random.random()
+            dAngleRnd=0.010+0.002*random.random()
             for i in range(0,12):
                 new_bullet=Bullet.mid_Bullet_Part8_acc()
                 new_bullet.initial(self.tx,self.ty,self.occupy)
@@ -955,6 +975,10 @@ class butterfly_part9_1(butterfly):
                 global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
                 global_var.set_value('kiraing',True)
+            if not global_var.get_value('enemyFiring2'):
+                global_var.get_value('enemyGun_sound2').stop()
+                global_var.get_value('enemyGun_sound2').play()
+                global_var.set_value('enemyFiring2',True)
             if self.no==0:
                 angleRnd=3.6+0.02*random.random()
                 dAngleRnd=0.020+0.0001*random.random()

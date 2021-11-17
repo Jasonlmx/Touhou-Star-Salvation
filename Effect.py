@@ -335,6 +335,7 @@ class wave(pygame.sprite.Sprite):
         self.maxRadius=100
         self.color=(255,255,255)
         self.width=6
+        self.rainbow=False
         self.upper=False
         self.lower=False
     def initial(self,pos,maxRadius,maxFrame,color,width):
@@ -347,12 +348,42 @@ class wave(pygame.sprite.Sprite):
     def update(self,screen):
         self.lastFrame+=1
         self.radius=round(self.maxRadius*(self.lastFrame/self.maxFrame))
-        r,g,b=self.color
-        color_now=(round(r*(1-self.lastFrame/self.maxFrame)),round(g*(1-self.lastFrame/self.maxFrame)),round(b*(1-self.lastFrame/self.maxFrame)))
+        if not self.rainbow:
+            r,g,b=self.color
+            color_now=(round(r*(1-self.lastFrame/self.maxFrame)),round(g*(1-self.lastFrame/self.maxFrame)),round(b*(1-self.lastFrame/self.maxFrame)))
+        else:
+            r,g,b=self.getRainbowColor()
+            color_now=(r,g,b)
         pygame.draw.circle(screen,color_now,self.pos,self.radius,self.width)
         if self.maxFrame<=self.lastFrame:
             self.kill()
-
+    def getRainbowColor(self):
+        max=self.maxRadius
+        i=self.radius
+        r=0
+        g=0
+        b=0
+        if i<max/3:
+            r=255
+            g=math.ceil(255*3*i/max)
+            b=0
+        elif i<max/2:
+            r=math.ceil(750-i*(250*6/max))
+            g=255
+            b=0
+        elif(i<max*2/3):
+            r=0
+            g=255
+            b=math.ceil(i*(250*6/max)-750)
+        elif(i<max*5/6):
+            r=0
+            g=math.ceil(1250-i*(250*6/max))
+            b=255
+        else:
+            r=math.ceil(150*i*(6/max)-750)
+            g=0
+            b=255
+        return r,g,b
 class powerUp(pygame.sprite.Sprite):
     def __init__(self):
         super(powerUp,self).__init__()

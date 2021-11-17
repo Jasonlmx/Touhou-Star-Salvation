@@ -94,15 +94,19 @@ def missDetect(player,bullets,enemys,effects,miss_sound,items,slaves):
         width=60
         maxFrame=90
         new_effect=Effect.wave()
+        new_effect.rainbow=True
         new_effect.initial([player.cx+width*1,player.cy],900,maxFrame,(160,160,160),10)
         effects.add(new_effect)
         new_effect=Effect.wave()
+        new_effect.rainbow=True
         new_effect.initial([player.cx+width*-1,player.cy],900,maxFrame,(160,160,160),10)
         effects.add(new_effect)
         new_effect=Effect.wave()
+        new_effect.rainbow=True
         new_effect.initial([player.cx,player.cy+width*1],900,maxFrame,(160,160,160),10)
         effects.add(new_effect)
         new_effect=Effect.wave()
+        new_effect.rainbow=True
         new_effect.initial([player.cx,player.cy+width*-1],900,maxFrame,(160,160,160),10)
         effects.add(new_effect)
         addLastingCancel(player.cx+width*1,player.cy,slaves,90,False)

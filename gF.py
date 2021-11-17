@@ -495,6 +495,7 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
                 player.spellBonus=False
                 global_var.set_value('ifGameOver',False)
                 player.score=0
+                player.unhitSetter(120)
         elif (pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z] and ifStopPressing and selectNum==1):
             global_var.set_value('restarting',True)
             global_var.get_value('ok_sound').play()
