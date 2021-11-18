@@ -423,9 +423,11 @@ class spirit_part1_1(spirit):
             angle=new_bullet.angle
             new_bullet.loadColor(self.bulletColor)
             bullets.add(new_bullet)
+            '''
             new_effect=Effect.bulletCreate(6)
             new_effect.initial(self.tx,self.ty,64,32,15)
             effects.add(new_effect)
+            '''
             for i in range(1,3):
                 new_bullet=Bullet.rice_Bullet()
                 new_bullet.initial(self.rect.centerx,self.rect.centery,self.occupy)
@@ -433,9 +435,11 @@ class spirit_part1_1(spirit):
                 new_bullet.loadColor(self.bulletColor)
                 bullets.add(new_bullet)
         if self.fireFrame==80:
+            '''
             new_effect=Effect.bulletCreate(3)
             new_effect.initial(self.tx,self.ty,84,48,20)
             effects.add(new_effect)
+            '''
             if not global_var.get_value('enemyFiring2'):
                 global_var.get_value('enemyGun_sound2').stop()
                 global_var.get_value('enemyGun_sound2').play()
@@ -587,9 +591,11 @@ class butterfly_part4_1(butterfly):
     def fire(self,frame,bullets,effects):
         if self.lastFrame>=80 and self.lastFrame%8==0:
             self.fireAngle-=6
+            '''
             new_effect=Effect.bulletCreate(3)
             new_effect.initial(self.tx,self.ty,256,128,8)
             effects.add(new_effect)
+            '''
             if not global_var.get_value('kiraing'):
                 global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
@@ -665,9 +671,11 @@ class butterfly_part5_1(butterfly):
     def fire(self,frame,bullets,effects):
         if self.lastFrame>=80 and self.lastFrame%30==0:
             self.fireAngle=random.random()*360
+            '''
             new_effect=Effect.bulletCreate(7)
             new_effect.initial(self.tx,self.ty,256,128,8)
             effects.add(new_effect)
+            '''
             if not global_var.get_value('kiraing'):
                 global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
@@ -2779,9 +2787,11 @@ class Dumbledore(Boss):
 
         if self.lastFrame>=40:
             if (self.lastFrame-40)%5==0:
+                '''
                 new_effect=Effect.bulletCreate(5)
                 new_effect.initial(self.tx,self.ty,128,32,15)
                 effects.add(new_effect)
+                '''
                 for i in range(0,5):
                     if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').stop()
@@ -2805,11 +2815,12 @@ class Dumbledore(Boss):
                     bullets.add(new_bullet)
                 self.randomAngle+=5
                 self.randomAngle2-=5
-
+            '''
             if (self.lastFrame-40)%50==25:
                 new_effect=Effect.bulletCreate(4)
                 new_effect.initial(self.tx,self.ty,192,48,25)
                 effects.add(new_effect)
+            '''
             if (self.lastFrame-40)%50<=5:
                 n=(self.lastFrame-40)%50
                 if (self.lastFrame-40)%50==0:
@@ -2971,12 +2982,14 @@ class Dumbledore(Boss):
         if self.lastFrame>=80:
             if (self.lastFrame-80)%4==0:
                 self.effectSign+=1
+                '''
                 if self.effectSign%2==0:
                     new_effect=Effect.bulletCreate(3)
                 else:
                     new_effect=Effect.bulletCreate(4)
                 new_effect.initial(self.tx,self.ty,128,64,8)
                 effects.add(new_effect)
+                '''
                 for i in range(0,7):
                     if not global_var.get_value('enemyFiring1'):
                         global_var.get_value('enemyGun_sound1').stop()

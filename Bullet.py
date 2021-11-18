@@ -444,19 +444,40 @@ class mid_Bullet(Bullet):
         self.type=2
         self.img=global_var.get_value('mid_bullet_img')
         self.c_list=['blue','darkBlue','darkGreen','darkYellow','green','grey','lightGreen','lightRed','orange','pink','purple','red','seaBlue','skyBlue','white','yellow']
-        self.image=pygame.image.load('resource/bullet/mid_bullet_grey.png')
+        #self.image=pygame.image.load('resource/bullet/mid_bullet_grey.png')
+        self.createDict=[4,3,5,6,5,0,5,1,6,2,3,1,4,4,7,6]
         self.dx=12
         self.dy=12
+        self.createMax=9
+        self.lastFrame=0
+
+    def drawCreateImg(self,screen):
+        maxSize=(self.dx+self.dy)*4
+        size=round((1.5+3*(1-self.lastFrame/self.createMax))*(self.dx+self.dy))
+        self.tempCreate=pygame.transform.smoothscale(self.creatImage,(size,size))
+        screen.blit(self.tempCreate,(self.rect.centerx-round(size/2),self.rect.centery-round(size/2)))
+
+    def getCreateImage(self,code):
+        cropStart=self.createDict[code]
+        self.creatImage=pygame.Surface((32,32)).convert_alpha()
+        self.creatImage.fill((0,0,0,0))
+        #self.image=self.image.convert_alpha()
+        self.creatImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*cropStart,0, 32, 32))
 
     def update(self,screen,bullets,effects):
+        self.lastFrame+=1
         self.movement()
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         #screen.blit(self.surf,self.rect)
         self.checkValid()
     def loadColor(self,color):
         if color in self.c_list:
             n=self.c_list.index(color)
             self.image=self.img[n]
+            self.getCreateImage(n)
     
     def drawBullet(self,screen):
         screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
@@ -541,12 +562,31 @@ class star_Bullet(Bullet):
         self.startY=240
         self.colorDict={'grey':0,'red':1,'lightRed':2,'purple':3,'pink':4,'blue':5,'seaBlue':6,'skyBlue':7,'lightBlue':8,'lakeBlue':8,'darkGreen':9,'green':10,'lightGreen':11,'yellow':12,'lemonYellow':13,'orange':14,'white':15}
         #self.cvImage=pygame.image.load('resource/bullet/star_bullet_grey.png')
+        self.createDict=[0,1,1,3,2,3,4,4,4,5,5,5,6,6,6,7]
+        self.createMax=9
+
+    def getCreateImage(self,code):
+        cropStart=self.createDict[code]
+        self.creatImage=pygame.Surface((32,32)).convert_alpha()
+        self.creatImage.fill((0,0,0,0))
+        #self.image=self.image.convert_alpha()
+        self.creatImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*cropStart,0, 32, 32))
+
+    def drawCreateImg(self,screen):
+        maxSize=(self.dx+self.dy)*4
+        size=round((1+3*(1-self.lastFrame/self.createMax))*(self.dx+self.dy))
+        self.tempCreate=pygame.transform.smoothscale(self.creatImage,(size,size))
+        screen.blit(self.tempCreate,(self.rect.centerx-round(size/2),self.rect.centery-round(size/2)))
+
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
-        
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            #self.drawBullet(screen)
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         #screen.blit(self.surf,self.rect)
         self.checkValid()
     def doColorCode(self,code):
@@ -555,6 +595,7 @@ class star_Bullet(Bullet):
         self.image=self.image.convert_alpha()
         self.image.fill((0,0,0,0))
         self.image.blit(global_var.get_value('star_bullet_image'), (0, 0), (24*self.colorNum,0, 24, 24))
+        self.getCreateImage(code)
     def loadColor(self,color):
         self.doColorCode(self.colorDict[color])
     
@@ -1179,7 +1220,15 @@ class rice_Bullet(Bullet):
         self.tempImage=0
         self.lastFrame=0
         self.colorDict={'grey':0,'red':1,'lightRed':2,'purple':3,'pink':4,'blue':5,'seaBlue':6,'skyBlue':7,'lightBlue':8,'lakeBlue':8,'darkGreen':9,'green':10,'lightGreen':11,'yellow':12,'lemonYellow':13,'orange':14,'white':15}
-    
+        self.createDict=[0,1,1,3,2,3,4,4,4,5,5,5,6,6,6,7]
+        self.createMax=10
+    def getCreateImage(self,code):
+        cropStart=self.createDict[code]
+        self.creatImage=pygame.Surface((32,32)).convert_alpha()
+        self.creatImage.fill((0,0,0,0))
+        #self.image=self.image.convert_alpha()
+        self.creatImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*cropStart,0, 32, 32))
+
     def doColorCode(self,code):
         self.colorNum=code
         self.image=pygame.Surface((24,24))
@@ -1190,6 +1239,12 @@ class rice_Bullet(Bullet):
         self.image.blit(global_var.get_value('rice_bullet_image').convert_alpha(), (0, 0), (24*self.colorNum,0, 24, 24))
         if self.tempImage==0:
             self.tempImage=self.image
+        self.getCreateImage(code)
+    def drawCreateImg(self,screen):
+        maxSize=(self.dx+self.dy)*4
+        size=round((1+3*(1-self.lastFrame/self.createMax))*(self.dx+self.dy))
+        self.tempCreate=pygame.transform.smoothscale(self.creatImage,(size,size))
+        screen.blit(self.tempCreate,(self.rect.centerx-round(size/2),self.rect.centery-round(size/2)))
     def loadColor(self,color):
         self.doColorCode(self.colorDict[color])
 
@@ -1198,7 +1253,10 @@ class rice_Bullet(Bullet):
         self.movement()
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
         #screen.blit(self.surf,self.rect)
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         self.checkValid()
 
     def drawBullet(self,screen):
@@ -1235,6 +1293,7 @@ class satsu_Bullet(rice_Bullet):
         #self.image.set_colorkey((0, 0, 0))
         self.image.blit(global_var.get_value('satsu_bullet_image').convert_alpha(), (0, 0), (24*self.colorNum,0, 24, 24))
         self.tempImage=self.image
+        self.getCreateImage(code)
 class bact_Bullet(rice_Bullet):
     def __init__(self):
         super(bact_Bullet,self).__init__()
@@ -1252,6 +1311,7 @@ class bact_Bullet(rice_Bullet):
         #self.image.set_colorkey((0, 0, 0))
         self.image.blit(global_var.get_value('bact_bullet_image').convert_alpha(), (0, 0), (24*self.colorNum,0, 24, 24))
         self.tempImage=self.image
+        self.getCreateImage(code)
 #bullets modified for lightness level
 class star_Bullet_Part4_Hex(star_Bullet):
     def __init__(self):
