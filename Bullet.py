@@ -650,8 +650,8 @@ class scale_Bullet(Bullet):
         if color in self.c_list:
             n=self.c_list.index(color)
             self.image=self.img[n]
-            self.tempImage=self.image
             self.getCreateImage(n)
+            self.tempImage=self.createImage
     def drawBullet(self,screen):
         self.countAngle()
         angle=270-self.angle
@@ -1166,12 +1166,27 @@ class big_star_Bullet(Bullet):
         self.rect = self.surf.get_rect()
         self.surf.fill((255,255,255))
         self.type=8
+        self.lastFrame=0
         self.image=pygame.image.load('resource/bullet/star_bullet_grey.png').convert_alpha()
         self.dAngle=random.randint(0,60)
         self.dx=24
         self.dy=24
         self.colorNum=0
         self.image=0
+        self.createMax=15
+    def drawCreateImg(self,screen):
+        maxSize=(self.dx+self.dy)*4
+        size=round((1+2*(1-self.lastFrame/self.createMax))*(self.dx+self.dy))
+        self.tempCreate=pygame.transform.smoothscale(self.createImage,(size,size))
+        screen.blit(self.tempCreate,(self.rect.centerx-round(size/2),self.rect.centery-round(size/2)))
+
+    def getCreateImage(self,code):
+        cropStart=code
+        self.createImage=pygame.Surface((32,32)).convert_alpha()
+        self.createImage.fill((0,0,0,0))
+        #self.image=self.image.convert_alpha()
+        self.createImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*cropStart,0, 32, 32))
+
     def doColorCode(self,code):
         self.colorNum=code
         self.image=pygame.Surface((48,48))
@@ -1179,12 +1194,16 @@ class big_star_Bullet(Bullet):
         #self.image.set_alpha(256)
         self.image.fill((0,0,0,0))
         self.image.blit(global_var.get_value('big_star_bullet_image').convert_alpha(), (0, 0), (48*self.colorNum,0, 48, 48))
-    
+        self.getCreateImage(code)
     def update(self,screen,bullets,effects):
+        self.lastFrame+=1
         self.movement()
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
         #screen.blit(self.surf,self.rect)
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         self.checkValid()
     
     def drawBullet(self,screen):
@@ -1202,6 +1221,21 @@ class circle_Bullet(Bullet):
         self.dx=24
         self.dy=24
         self.colorNum=0
+        self.lastFrame=0
+        self.createMax=15
+
+    def drawCreateImg(self,screen):
+        maxSize=(self.dx+self.dy)*4
+        size=round((1+2*(1-self.lastFrame/self.createMax))*(self.dx+self.dy))
+        self.tempCreate=pygame.transform.smoothscale(self.createImage,(size,size))
+        screen.blit(self.tempCreate,(self.rect.centerx-round(size/2),self.rect.centery-round(size/2)))
+
+    def getCreateImage(self,code):
+        cropStart=code
+        self.createImage=pygame.Surface((32,32)).convert_alpha()
+        self.createImage.fill((0,0,0,0))
+        #self.image=self.image.convert_alpha()
+        self.createImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*cropStart,0, 32, 32))
     def doColorCode(self,code):
         self.colorNum=code
         self.image=pygame.Surface((48,48))
@@ -1210,10 +1244,14 @@ class circle_Bullet(Bullet):
         self.image.fill((0,0,0,0))
         #self.image.set_colorkey((0, 0, 0))
         self.image.blit(global_var.get_value('circle_bullet_image').convert_alpha(), (0, 0), (48*self.colorNum,0, 48, 48))
-    
+        self.getCreateImage(code)
     def update(self,screen,bullets,effects):
+        self.lastFrame+=1
         self.movement()
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         #screen.blit(self.surf,self.rect)
         self.checkValid()
     
@@ -1231,6 +1269,22 @@ class butterfly_Bullet(Bullet):
         self.dy=24
         self.colorNum=0
         self.lastAngle=-10000
+        self.createMax=15
+        self.lastFrame=0
+
+    def drawCreateImg(self,screen):
+        maxSize=(self.dx+self.dy)*4
+        size=round((1+2*(1-self.lastFrame/self.createMax))*(self.dx+self.dy))
+        self.tempCreate=pygame.transform.smoothscale(self.createImage,(size,size))
+        screen.blit(self.tempCreate,(self.rect.centerx-round(size/2),self.rect.centery-round(size/2)))
+
+    def getCreateImage(self,code):
+        cropStart=code
+        self.createImage=pygame.Surface((32,32)).convert_alpha()
+        self.createImage.fill((0,0,0,0))
+        #self.image=self.image.convert_alpha()
+        self.createImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*cropStart,0, 32, 32))
+
     def doColorCode(self,code):
         self.colorNum=code
         self.image=pygame.Surface((48,48))
@@ -1239,12 +1293,17 @@ class butterfly_Bullet(Bullet):
         self.image.fill((0,0,0,0))
         #self.image.set_colorkey((0, 0, 0))
         self.image.blit(global_var.get_value('butterfly_bullet_image').convert_alpha(), (0, 0), (48*self.colorNum,0, 48, 48))
-        self.tempImage=self.image
+        self.getCreateImage(code)
+        self.tempImage=self.createImage
     def update(self,screen,bullets,effects):
+        self.lastFrame+=1
         self.movement()
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
         screen.blit(self.surf,self.rect)
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         self.checkValid()
 
     def drawBullet(self,screen):
@@ -1295,9 +1354,9 @@ class rice_Bullet(Bullet):
         self.image.fill((0,0,0,0))
         #self.image.set_colorkey((0, 0, 0))
         self.image.blit(global_var.get_value('rice_bullet_image').convert_alpha(), (0, 0), (24*self.colorNum,0, 24, 24))
-        if self.tempImage==0:
-            self.tempImage=self.image
         self.getCreateImage(code)
+        if self.tempImage==0:
+            self.tempImage=self.createImage
     def drawCreateImg(self,screen):
         maxSize=(self.dx+self.dy)*4
         size=round((1+3*(1-self.lastFrame/self.createMax))*(self.dx+self.dy))
@@ -1368,8 +1427,8 @@ class bact_Bullet(rice_Bullet):
         self.image.fill((0,0,0,0))
         #self.image.set_colorkey((0, 0, 0))
         self.image.blit(global_var.get_value('bact_bullet_image').convert_alpha(), (0, 0), (24*self.colorNum,0, 24, 24))
-        self.tempImage=self.image
         self.getCreateImage(code)
+        self.tempImage=self.createImage
 
 #bullets modified for lightness level
 class star_Bullet_Part4_Hex(star_Bullet):
@@ -1513,7 +1572,10 @@ class big_star_Bullet_comet(big_star_Bullet):
         self.fire(bullets)
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
         #screen.blit(self.surf,self.rect)
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         self.checkValid()
 
     def fire(self,bullets):
@@ -1588,7 +1650,10 @@ class star_Bullet_fountain(big_star_Bullet):
         self.fire(bullets,effects)
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
         #screen.blit(self.surf,self.rect)
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         self.checkValid()
 
     def fire(self,bullets,effects):
@@ -1730,7 +1795,10 @@ class big_star_Bullet_distance(big_star_Bullet):
         self.checkDistance()
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
         #screen.blit(self.surf,self.rect)
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         self.checkValid()
     
     def drawBullet(self,screen):
@@ -2172,7 +2240,10 @@ class big_star_Bullet_slave(big_star_Bullet):
             self.motion_strategy(effects)
             #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
             #screen.blit(self.surf,self.rect)
-            self.drawBullet(screen)
+            if self.lastFrame<=self.createMax:
+                self.drawCreateImg(screen)
+            else:
+                self.drawBullet(screen)
             self.checkValid()
     
     def motion_strategy(self,effects):

@@ -2886,9 +2886,11 @@ class Dumbledore(Boss):
 
         if self.lastFrame>=300:
             if (self.lastFrame-300)%120<=40 and (self.lastFrame-300)%4==0:
+                '''
                 new_effect=Effect.bulletCreate(1)
                 new_effect.initial(self.tx,self.ty,144,64,4)
                 effects.add(new_effect)
+                '''
                 if not global_var.get_value('enemyFiring2'):
                     global_var.get_value('enemyGun_sound2').stop()
                     global_var.get_value('enemyGun_sound2').play()
@@ -3086,11 +3088,12 @@ class Dumbledore(Boss):
             if self.lastFrame%300==0:
                 self.gotoPosition(player.cx+random.random()*60-30,random.random()*40+80,50)
             
+            '''
             if self.lastFrame%150==140:
                 new_effect=Effect.bulletCreate(4)
                 new_effect.initial(self.tx,self.ty,256,48,10)
                 effects.add(new_effect)
-
+            '''
             if self.lastFrame>=100 and self.lastFrame%150==0:
                 fireAngle=random.random()*360
                 if not global_var.get_value('enemyFiring1'):
@@ -3154,9 +3157,7 @@ class Dumbledore(Boss):
                 else:
                     color="seaBlue"
                     speed=4.5
-                new_effect=Effect.bulletCreate(4)
-                new_effect.initial(self.tx,self.ty,96,32,10)
-                effects.add(new_effect)
+
                 for i in range(0,15):
                     if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').stop()
@@ -3327,9 +3328,6 @@ class Dumbledore(Boss):
         if self.lastFrame>=100:
             if (self.lastFrame-100)%180<=90:
                 if self.lastFrame%12==0:
-                    new_effect=Effect.bulletCreate(3)
-                    new_effect.initial(self.tx,self.ty,192,48,12)
-                    effects.add(new_effect)
                     if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').stop()
                         global_var.get_value('enemyGun_sound2').play()
@@ -3345,9 +3343,6 @@ class Dumbledore(Boss):
             if (self.lastFrame-100)%180>=90:
                 
                 if self.lastFrame%6==0:
-                    new_effect=Effect.bulletCreate(1)
-                    new_effect.initial(self.tx,self.ty,192,48,12)
-                    effects.add(new_effect)
                     if not global_var.get_value('enemyFiring1'):
                         global_var.get_value('enemyGun_sound1').stop()
                         global_var.get_value('enemyGun_sound1').play()
