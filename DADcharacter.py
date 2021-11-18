@@ -1103,7 +1103,7 @@ class ghost_slytherin_spirit(ghost):
             bullets.add(new_bullet)
         
     
-class ghost_hufflepuff_spirit(ghost):
+class ghost_hufflepuff_spirit(spirit):
     def __init__(self):
         super(ghost_hufflepuff_spirit,self).__init__()
         self.health=3000
@@ -1244,7 +1244,7 @@ class ghost_hufflepuff_spirit(ghost):
             self.draw(screen,frame)
 
 
-class ghost_gryffindor_spirit(ghost):
+class ghost_gryffindor_spirit(spirit):
     def __init__(self):
         super(ghost_gryffindor_spirit,self).__init__()
         self.health=6000
@@ -1366,7 +1366,7 @@ class ghost_gryffindor_spirit(ghost):
                     new_bullet.loadColor('red')
                     bullets.add(new_bullet)
 
-class ghost_ravenclaw_spirit(ghost):
+class ghost_ravenclaw_spirit(spirit):
     def __init__(self):
         super(ghost_ravenclaw_spirit,self).__init__()
         self.health=6000
@@ -3247,11 +3247,11 @@ class Dumbledore(Boss):
                         new_bullet.doColorCode(2)
                         new_effect.initial(rx,30,128,64,3)
                     bullets.add(new_bullet)
-                    effects.add(new_effect)
+                    #effects.add(new_effect)
         if (self.lastFrame-40)%60==50 and self.lastFrame>=80:
             new_effect=Effect.bulletCreate(1)
             new_effect.initial(self.tx,self.ty,192,48,10)
-            effects.add(new_effect)
+            #effects.add(new_effect)
         if (self.lastFrame-100)%60==0 and self.lastFrame>=80:
             if not global_var.get_value('enemyFiring1'):
                 global_var.get_value('enemyGun_sound1').stop()
@@ -3538,9 +3538,11 @@ class Dumbledore(Boss):
                     global_var.get_value('kira_sound').play()
                     global_var.set_value('kiraing',True)
                 self.randomAngle2+=0.84
+                '''
                 new_effect=Effect.bulletCreate(2)
                 new_effect.initial(self.tx,self.ty,100,24,4)
                 effects.add(new_effect)
+                '''
                 for i in range(0,8):
                     new_bullet=Bullet.scale_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
@@ -3664,7 +3666,7 @@ class Dumbledore(Boss):
             if (self.lastFrame-60)%13==0:
                 new_effect=Effect.bulletCreate(3)
                 new_effect.initial(self.tx,self.ty,192,100,13)
-                effects.add(new_effect)
+                #effects.add(new_effect)
                 global_var.get_value('enemyGun_sound2').play()
                 for i in range(0,8):
                     new_bullet=Bullet.star_Bullet_Part4_Hex()
@@ -3794,7 +3796,7 @@ class Dumbledore(Boss):
                 global_var.set_value('enemyFiring2',True)
             new_effect=Effect.bulletCreate(4)
             new_effect.initial(self.tx,self.ty,128,64,7)
-            effects.add(new_effect)
+            #effects.add(new_effect)
 
             for i in range(0,5):
                 new_bullet=Bullet.mid_Bullet()
@@ -3933,7 +3935,7 @@ class Dumbledore(Boss):
                 sspeed=3+2*random.random()
                 new_effect=Effect.bulletCreate(0)
                 new_effect.initial(sx,sy,128,64,10)
-                effects.add(new_effect)
+                #effects.add(new_effect)
                 #colorCode=random.randint(0,15)
                 for i in range(0,bulletNum):
                     new_bullet=Bullet.satsu_Bullet()
@@ -3991,7 +3993,7 @@ class Dumbledore(Boss):
                 sy=self.ty-100+random.random()*150
                 new_effect=Effect.bulletCreate(4)
                 new_effect.initial(sx,sy,128,64,7)
-                effects.add(new_effect)
+                #effects.add(new_effect)
                 for i in range(0,intense):
                     new_bullet=Bullet.orb_Bullet_bouncing_5()
                     new_bullet.initial(sx,sy,1)

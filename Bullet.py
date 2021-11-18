@@ -454,15 +454,15 @@ class mid_Bullet(Bullet):
     def drawCreateImg(self,screen):
         maxSize=(self.dx+self.dy)*4
         size=round((1.5+3*(1-self.lastFrame/self.createMax))*(self.dx+self.dy))
-        self.tempCreate=pygame.transform.smoothscale(self.creatImage,(size,size))
+        self.tempCreate=pygame.transform.smoothscale(self.createImage,(size,size))
         screen.blit(self.tempCreate,(self.rect.centerx-round(size/2),self.rect.centery-round(size/2)))
 
     def getCreateImage(self,code):
         cropStart=self.createDict[code]
-        self.creatImage=pygame.Surface((32,32)).convert_alpha()
-        self.creatImage.fill((0,0,0,0))
+        self.createImage=pygame.Surface((32,32)).convert_alpha()
+        self.createImage.fill((0,0,0,0))
         #self.image=self.image.convert_alpha()
-        self.creatImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*cropStart,0, 32, 32))
+        self.createImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*cropStart,0, 32, 32))
 
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
@@ -567,15 +567,15 @@ class star_Bullet(Bullet):
 
     def getCreateImage(self,code):
         cropStart=self.createDict[code]
-        self.creatImage=pygame.Surface((32,32)).convert_alpha()
-        self.creatImage.fill((0,0,0,0))
+        self.createImage=pygame.Surface((32,32)).convert_alpha()
+        self.createImage.fill((0,0,0,0))
         #self.image=self.image.convert_alpha()
-        self.creatImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*cropStart,0, 32, 32))
+        self.createImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*cropStart,0, 32, 32))
 
     def drawCreateImg(self,screen):
         maxSize=(self.dx+self.dy)*4
         size=round((1+3*(1-self.lastFrame/self.createMax))*(self.dx+self.dy))
-        self.tempCreate=pygame.transform.smoothscale(self.creatImage,(size,size))
+        self.tempCreate=pygame.transform.smoothscale(self.createImage,(size,size))
         screen.blit(self.tempCreate,(self.rect.centerx-round(size/2),self.rect.centery-round(size/2)))
 
     def update(self,screen,bullets,effects):
@@ -610,20 +610,48 @@ class scale_Bullet(Bullet):
         self.rect = self.surf.get_rect()
         self.surf.fill((255,255,255))
         self.type=5
-        self.image=pygame.image.load('resource/bullet/scale_bullet_grey.png').convert_alpha()
-        self.tempImage=pygame.image.load('resource/bullet/scale_bullet_grey.png').convert_alpha()
+        #self.image=pygame.image.load('resource/bullet/scale_bullet_grey.png').convert_alpha()
+        #self.tempImage=pygame.image.load('resource/bullet/scale_bullet_grey.png').convert_alpha()
         self.lastAngle=0
         #self.cvImage=pygame.image.load('resource/bullet/star_bullet_grey.png')
         self.dx=15
         self.dy=15
+        self.img=global_var.get_value('scale_bullet_img')
+        self.c_list=['blue','green','grey','lemonYellow','lightBlue','lightGreen','lightRed','lightYellow','orange','pink','purple','red','skyBlue','white','yellow']
+        self.createDict=[3,5,0,6,4,5,1,6,6,2,3,1,4,7,6]
+        self.createMax=9
+        self.lastFrame=0
+
+    def drawCreateImg(self,screen):
+        maxSize=(self.dx+self.dy)*4
+        size=round((1.5+3*(1-self.lastFrame/self.createMax))*(self.dx+self.dy))
+        self.tempCreate=pygame.transform.smoothscale(self.createImage,(size,size))
+        screen.blit(self.tempCreate,(self.rect.centerx-round(size/2),self.rect.centery-round(size/2)))
+
+    def getCreateImage(self,code):
+        cropStart=self.createDict[code]
+        self.createImage=pygame.Surface((32,32)).convert_alpha()
+        self.createImage.fill((0,0,0,0))
+        #self.image=self.image.convert_alpha()
+        self.createImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*cropStart,0, 32, 32))
+
     def update(self,screen,bullets,effects):
+        self.lastFrame+=1
         self.movement()
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
         #screen.blit(self.surf,self.rect)
-        self.drawBullet(screen)
+
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         self.checkValid()
     def loadColor(self,color):
-        self.image=pygame.image.load('resource/bullet/scale_bullet_'+color+'.png').convert_alpha()
+        if color in self.c_list:
+            n=self.c_list.index(color)
+            self.image=self.img[n]
+            self.tempImage=self.image
+            self.getCreateImage(n)
     def drawBullet(self,screen):
         self.countAngle()
         angle=270-self.angle
@@ -764,12 +792,31 @@ class orb_Bullet(Bullet):
         self.img=global_var.get_value('orb_bullet_img')
         self.image=self.img[0]
         self.c_list=['blue','darkBlue','green','grey','jade','lakeBlue','lightGreen','lightRed','lightYellow','orange','pink','purple','red','skyBlue','white','yellow']
+        self.createMax=9
+        self.createDict=[4,3,5,0,5,4,5,1,6,6,2,3,1,4,7,6]
+
+    def drawCreateImg(self,screen):
+        maxSize=(self.dx+self.dy)*4
+        size=round((1.5+3*(1-self.lastFrame/self.createMax))*(self.dx+self.dy))
+        self.tempCreate=pygame.transform.smoothscale(self.createImage,(size,size))
+        screen.blit(self.tempCreate,(self.rect.centerx-round(size/2),self.rect.centery-round(size/2)))
+
+    def getCreateImage(self,code):
+        cropStart=self.createDict[code]
+        self.createImage=pygame.Surface((32,32)).convert_alpha()
+        self.createImage.fill((0,0,0,0))
+        #self.image=self.image.convert_alpha()
+        self.createImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*cropStart,0, 32, 32))
+    
     def doColorCode(self,code):
         self.loadColor(self.codeDic[code])
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         #screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
         #screen.blit(self.surf,self.rect)
         self.checkValid()
@@ -777,18 +824,19 @@ class orb_Bullet(Bullet):
         if color in self.c_list:
             n=self.c_list.index(color)
             self.image=self.img[n]
+            self.getCreateImage(n)
     
     def drawBullet(self,screen):
         screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
 
-class orb_Bullet_gravity(Bullet):
+class orb_Bullet_gravity(orb_Bullet):
     def __init__(self):
         super(orb_Bullet_gravity,self).__init__()
         self.surf = pygame.Surface((12,12))
         self.rect = self.surf.get_rect()
         self.surf.fill((255,255,255))
         self.type=6
-        self.image=pygame.image.load('resource/bullet/orb_bullet_grey.png').convert_alpha()
+        #self.image=pygame.image.load('resource/bullet/orb_bullet_grey.png').convert_alpha()
         self.gravity=0.1
         self.gravMax=999
         self.totalGrav=0
@@ -796,8 +844,10 @@ class orb_Bullet_gravity(Bullet):
         self.dy=12
         self.gravDirection=2
         self.codeDic=['red','blue','green','purple','pink','jade','yellow']
+    '''
     def doColorCode(self,code):
         self.image=pygame.image.load('resource/bullet/orb_bullet_'+self.codeDic[code]+'.png').convert_alpha()
+    '''
 
     def setGravity(self,gravity):
         self.gravity=gravity
@@ -806,6 +856,7 @@ class orb_Bullet_gravity(Bullet):
         self.gravMax=gravMax
 
     def update(self,screen,bullets,effects):
+        self.lastFrame+=1
         self.movement()
         if self.totalGrav<self.gravMax:
             if self.gravDirection==2:
@@ -819,11 +870,17 @@ class orb_Bullet_gravity(Bullet):
             self.totalGrav+=self.gravity
         #if self.ty>300:
             #self.speedx=0
-        screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
+        #screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
         #screen.blit(self.surf,self.rect)
         self.checkValid()
+    '''
     def loadColor(self,color):
         self.image=pygame.image.load('resource/bullet/orb_bullet_'+color+'.png').convert_alpha()
+    '''
     def drawBullet(self,screen):
         screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
 
@@ -839,7 +896,8 @@ class orb_Bullet_bouncing_leftright(Bullet):
     def update(self,screen,bullets,effects):
         self.movement()
         self.bouncing()
-        screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
+        
+        #screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
         #screen.blit(self.surf,self.rect)
         self.checkValid()
     def loadColor(self,color):
@@ -1224,10 +1282,10 @@ class rice_Bullet(Bullet):
         self.createMax=10
     def getCreateImage(self,code):
         cropStart=self.createDict[code]
-        self.creatImage=pygame.Surface((32,32)).convert_alpha()
-        self.creatImage.fill((0,0,0,0))
+        self.createImage=pygame.Surface((32,32)).convert_alpha()
+        self.createImage.fill((0,0,0,0))
         #self.image=self.image.convert_alpha()
-        self.creatImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*cropStart,0, 32, 32))
+        self.createImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*cropStart,0, 32, 32))
 
     def doColorCode(self,code):
         self.colorNum=code
@@ -1243,7 +1301,7 @@ class rice_Bullet(Bullet):
     def drawCreateImg(self,screen):
         maxSize=(self.dx+self.dy)*4
         size=round((1+3*(1-self.lastFrame/self.createMax))*(self.dx+self.dy))
-        self.tempCreate=pygame.transform.smoothscale(self.creatImage,(size,size))
+        self.tempCreate=pygame.transform.smoothscale(self.createImage,(size,size))
         screen.blit(self.tempCreate,(self.rect.centerx-round(size/2),self.rect.centery-round(size/2)))
     def loadColor(self,color):
         self.doColorCode(self.colorDict[color])
@@ -1312,6 +1370,7 @@ class bact_Bullet(rice_Bullet):
         self.image.blit(global_var.get_value('bact_bullet_image').convert_alpha(), (0, 0), (24*self.colorNum,0, 24, 24))
         self.tempImage=self.image
         self.getCreateImage(code)
+
 #bullets modified for lightness level
 class star_Bullet_Part4_Hex(star_Bullet):
     def __init__(self):
@@ -1327,8 +1386,10 @@ class star_Bullet_Part4_Hex(star_Bullet):
         self.lastFrame+=1
         self.movement()
         self.moving_strategy()
-        if self.lastFrame>=self.displayDelay:
+        if self.lastFrame>=self.createMax:
             self.drawBullet(screen)
+        else:
+            self.drawCreateImg(screen)
         self.checkValid()
     
     def moving_strategy(self):
@@ -1617,7 +1678,10 @@ class orb_Bullet_distance(orb_Bullet):
         self.lastFrame+=1
         self.movement()
         self.checkDistance()
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         #screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
         #screen.blit(self.surf,self.rect)
         self.checkValid()
@@ -1766,7 +1830,10 @@ class orb_Bullet_split_5(rice_Bullet):
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         self.split(bullets)
         #screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
         #screen.blit(self.surf,self.rect)
@@ -1795,7 +1862,10 @@ class orb_Bullet_split_sub(rice_Bullet):
         self.lastFrame+=1
         self.checkFrame()
         self.movement()
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         #self.split()
         #screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
         #screen.blit(self.surf,self.rect)
@@ -1816,7 +1886,10 @@ class orb_Bullet_bouncing_5(rice_Bullet):
         self.lastFrame+=1
         self.movement()
         self.bouncing()
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         #screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
         #screen.blit(self.surf,self.rect)
         self.checkValid()
@@ -1959,7 +2032,10 @@ class orb_bullet_delay(orb_Bullet):
         self.lastFrame+=1
         self.movement()
         self.motionStrat()
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         #screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
         #screen.blit(self.surf,self.rect)
         self.checkValid()
@@ -2000,7 +2076,10 @@ class mid_bullet_delay(mid_Bullet):
         self.lastFrame+=1
         self.movement()
         self.motionStrat()
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         #screen.blit(self.surf,self.rect)
         self.checkValid()
     
@@ -2033,7 +2112,10 @@ class star_bullet_side_selfTarget(star_Bullet):
         self.lastFrame+=1
         self.movement()
         self.motion_strategy(effects)
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         self.checkValid()
     
     def checkValid(self):
@@ -2157,7 +2239,10 @@ class star_Bullet_delay(star_Bullet):
         self.doDelay(effects)
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
         #screen.blit(self.surf,self.rect)
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         self.checkValid()
     
 class rice_Bullet_delay(satsu_Bullet):
@@ -2197,7 +2282,10 @@ class rice_Bullet_delay(satsu_Bullet):
         self.accelerate()
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
         
-        self.drawBullet(screen)
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         #screen.blit(self.surf,self.rect)
         self.checkValid()
     

@@ -353,7 +353,12 @@ def loadImage():
         new_image=pygame.image.load('resource/bullet/mid_bullet_'+c_list2[i]+'.png').convert_alpha()
         mid_bullet_img.append(new_image)
     global_var.set_value('mid_bullet_img',mid_bullet_img)
-
+    scale_bullet_img=[]
+    c_list3=['blue','green','grey','lemonYellow','lightBlue','lightGreen','lightRed','lightYellow','orange','pink','purple','red','skyBlue','white','yellow']
+    for i in range(0,15):
+        new_image=pygame.image.load('resource/bullet/scale_bullet_'+c_list3[i]+'.png').convert_alpha()
+        scale_bullet_img.append(new_image)
+    global_var.set_value('scale_bullet_img',scale_bullet_img)
 
 
 
