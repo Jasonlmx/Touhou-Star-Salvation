@@ -13,8 +13,6 @@ import gameRule
 import lightnessLevel
 import menu
 
-
-
 #define background
 
 angle = 0

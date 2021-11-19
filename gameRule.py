@@ -330,6 +330,9 @@ def checkLife(player,screen):
         cPos=global_var.get_value('bgmContinuePos')
         if global_var.get_value('ifBoss'):
             cPos[1]+=pygame.mixer.music.get_pos()
+            length=277.23755102040815
+            while cPos[1]>=length*1000:
+                cPos[1]-=length*1000
             global_var.set_value('bgmContinuePos',cPos)
         else:
             cPos[0]+=pygame.mixer.music.get_pos()

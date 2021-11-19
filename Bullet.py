@@ -424,16 +424,47 @@ class small_Bullet(Bullet):
         self.surf = pygame.Surface((8,8))
         self.surf.fill((255,255,255))
         self.rect = self.surf.get_rect()
-        self.image=pygame.image.load('resource/bullet/small_bullet_grey.png')
+        self.img=global_var.get_value('small_bullet_img')
+        self.c_list=['blue','darkBlue','green','greenish','grey','lightBlue','lightGreen','lightYellow','orange','pink','purple','red','skyBlue','violet','white','yellow']
+        self.createDict=[4,3,5,5,0,4,5,6,6,2,3,1,4,3,7,6]
+        #self.image=pygame.image.load('resource/bullet/small_bullet_grey.png')
         self.dx=6
         self.dy=6
+        self.createMax=9
+        self.lastFrame=0
+        self.lastFrame=0
+    
+    def drawCreateImg(self,screen):
+        maxSize=(self.dx+self.dy)*4
+        size=round((1.5+3*(1-self.lastFrame/self.createMax))*(self.dx+self.dy))
+        self.tempCreate=pygame.transform.smoothscale(self.createImage,(size,size))
+        screen.blit(self.tempCreate,(self.rect.centerx-round(size/2),self.rect.centery-round(size/2)))
+
+    def getCreateImage(self,code):
+        cropStart=self.createDict[code]
+        self.createImage=pygame.Surface((32,32)).convert_alpha()
+        self.createImage.fill((0,0,0,0))
+        #self.image=self.image.convert_alpha()
+        self.createImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*cropStart,0, 32, 32))
+
     def update(self,screen,bullets,effects):
+        self.lastFrame+=1
         self.movement()
-        screen.blit(self.image,(self.rect.centerx-6,self.rect.centery-6))
+        if self.lastFrame<=self.createMax:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
         #screen.blit(self.surf,self.rect)
         self.checkValid()
+
     def loadColor(self,color):
-        self.image=pygame.image.load('resource/bullet/small_bullet_'+color+'.png')
+        if color in self.c_list:
+            n=self.c_list.index(color)
+            self.image=self.img[n]
+            self.getCreateImage(n)
+    
+    def drawBullet(self,screen):
+        screen.blit(self.image,(self.rect.centerx-6,self.rect.centery-6))
 
 class mid_Bullet(Bullet):
     def __init__(self):

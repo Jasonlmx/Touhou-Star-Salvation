@@ -2381,9 +2381,6 @@ class satori(Boss):
             self.frameLimit=1200
         if self.lastFrame%240>=0:
             if self.lastFrame%9==0:
-                new_effect=Effect.bulletCreate(4)
-                new_effect.initial(self.tx,self.ty,100,48,9)
-                effects.add(new_effect)
                 for i in range(0,8):
                     if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').play()
@@ -2430,9 +2427,6 @@ class satori(Boss):
 
         if self.lastFrame%240>=120:
             if self.lastFrame%6==0:
-                new_effect=Effect.bulletCreate(5)
-                new_effect.initial(self.tx,self.ty,96,48,6)
-                effects.add(new_effect)
                 for i in range(0,9):
                     if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').play()
