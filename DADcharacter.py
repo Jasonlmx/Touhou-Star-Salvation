@@ -2411,8 +2411,13 @@ class satori(Boss):
             if self.lastFrame%6==0:
                 for i in range(0,9):
                     if not global_var.get_value('enemyFiring2'):
+                        global_var.get_value('enemyGun_sound2').stop()
                         global_var.get_value('enemyGun_sound2').play()
                         global_var.set_value('enemyFiring2',True)
+                    if not global_var.get_value('kiraing'):
+                        global_var.get_value('kira_sound').stop()
+                        global_var.get_value('kira_sound').play()
+                        global_var.set_value('kiraing',True)
                     new_bullet=Bullet.scale_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle+i*(360/9),7)
@@ -2422,13 +2427,11 @@ class satori(Boss):
         else:
             self.randomAngle=random.random()*360
         if self.lastFrame%9==0:
-            new_effect=Effect.bulletCreate(2)
-            new_effect.initial(self.tx,self.ty,64,24,9)
-            effects.add(new_effect)
             for i in range(0,12):
-                if not global_var.get_value('enemyFiring2'):
-                    global_var.get_value('enemyGun_sound2').play()
-                    global_var.set_value('enemyFiring2',True)
+                if not global_var.get_value('enemyFiring3'):
+                    global_var.get_value('enemyGun_sound3').stop()
+                    global_var.get_value('enemyGun_sound3').play()
+                    global_var.set_value('enemyFiring3',True)
                 new_bullet=Bullet.small_Bullet()
                 new_bullet.initial(self.tx,self.ty,1)
                 new_bullet.setSpeed(self.randomAngle2+i*(360/12),4)
@@ -2442,6 +2445,7 @@ class satori(Boss):
             effects.add(new_effect)
         if self.lastFrame%240==80:
             if not global_var.get_value('enemyFiring1'):
+                global_var.get_value('enemyGun_sound1').stop()
                 global_var.get_value('enemyGun_sound1').play()
                 global_var.set_value('enemyFiring1',True)
             px=global_var.get_value('player1x')
