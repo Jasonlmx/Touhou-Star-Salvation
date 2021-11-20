@@ -1039,11 +1039,11 @@ class butterfly_part9_2(butterfly_part9_1):
                 new_bullet.loadColor('blue')
                 bullets.add(new_bullet)
 
-class ghost_slytherin_spirit(ghost):
+class ghost_slytherin_spirit(spirit):
     def __init__(self):
         super(ghost_slytherin_spirit,self).__init__()
         self.health=9999999
-        self.colorNum=1
+        self.colorNum=2
         self.adjMax=40
         self.maxLastFrame=800
         self.endAngle=0
@@ -1107,7 +1107,7 @@ class ghost_hufflepuff_spirit(spirit):
     def __init__(self):
         super(ghost_hufflepuff_spirit,self).__init__()
         self.health=3000
-        self.colorNum=2
+        self.colorNum=4
         self.bounceLim=5
         self.speed_now=10
         self.x_bouncing=False
@@ -1162,9 +1162,6 @@ class ghost_hufflepuff_spirit(spirit):
             if not self.fireWatcher and self.bounceLim>0:
                 self.fireDensity=round(self.fireDensity*1.2)
                 angle=random.random()*360
-                new_effect=Effect.bulletCreate(3)
-                new_effect.initial(self.tx,self.ty,128,64,10)
-                effects.add(new_effect)
                 for i in range(0,self.fireDensity):
                     new_bullet=Bullet.star_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
@@ -1181,9 +1178,6 @@ class ghost_hufflepuff_spirit(spirit):
         
         if self.bounceLim==0 and not self.deadFire:
             angle=random.random()*360
-            new_effect=Effect.bulletCreate(3)
-            new_effect.initial(self.tx,self.ty,192,84,20)
-            effects.add(new_effect)
             for i in range(0,20):
                 for j in range(0,6):
                     new_bullet=Bullet.orb_Bullet()
@@ -1196,9 +1190,6 @@ class ghost_hufflepuff_spirit(spirit):
         if self.lastFrame%4==0:
             self.getDistance()
             if self.distance>=60:
-                new_effect=Effect.bulletCreate(3)
-                new_effect.initial(self.tx,self.ty,100,32,8)
-                effects.add(new_effect)
                 self.startAngle+=28.1
                 new_bullet=Bullet.orb_bullet_delay()
                 new_bullet.retainFrame=120
@@ -1248,7 +1239,7 @@ class ghost_gryffindor_spirit(spirit):
     def __init__(self):
         super(ghost_gryffindor_spirit,self).__init__()
         self.health=6000
-        self.colorNum=0
+        self.colorNum=5
         self.targetPos=[0,0]
         self.targetAngle=0
         self.speed=0
@@ -1330,9 +1321,6 @@ class ghost_gryffindor_spirit(spirit):
             if maxRandom<10:
                 maxRandom=10
             if d_Frame%15==0:
-                new_effect=Effect.bulletCreate(1)
-                new_effect.initial(self.tx,self.ty,128,64,30)
-                effects.add(new_effect)
                 if not global_var.get_value('enemyFiring3'):
                     global_var.get_value('enemyGun_sound3').stop()
                     global_var.get_value('enemyGun_sound3').play()
@@ -1350,9 +1338,6 @@ class ghost_gryffindor_spirit(spirit):
                         new_bullet.loadColor('red')
                         bullets.add(new_bullet)
             if d_Frame%2==0:
-                new_effect=Effect.bulletCreate(1)
-                new_effect.initial(self.tx,self.ty,64,16,16)
-                effects.add(new_effect)
                 if not global_var.get_value('enemyFiring1'):
                     global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()
@@ -1419,9 +1404,6 @@ class ghost_ravenclaw_spirit(spirit):
 
     def fire(self,frame,bullets,effects):
         if self.lastFrame%9==0:
-            new_effect=Effect.bulletCreate(6)
-            new_effect.initial(self.tx,self.ty,128,64,18)
-            effects.add(new_effect)
             self.fireAngle+=8.3*self.direct
             if not global_var.get_value('enemyFiring2'):
                 global_var.get_value('enemyGun_sound2').stop()
@@ -2344,8 +2326,8 @@ class satori(Boss):
             player.midPath=True
             new_effect=Effect.enemyDead()
             new_effect.initial(self.deadImage,self.tx,self.ty)
-            new_effect.coef=0.50
-            new_effect.interval=3
+            new_effect.coef=0.20
+            new_effect.interval=1
             effects.add(new_effect)
             width=60
             maxFrame=150
@@ -3369,7 +3351,7 @@ class Dumbledore(Boss):
             self.lastFrame=0
             self.reset=False
             player.spellBonus=True
-            self.maxHealth=170000
+            self.maxHealth=100000
             self.health=self.maxHealth
             self.gotoPosition(360,200,80)
             self.frameLimit=7200
@@ -3429,7 +3411,7 @@ class Dumbledore(Boss):
                 self.randomAngle=random.random()*360
             if (self.lastFrame-80)%250==0:
                 self.directToggle+=1
-                time=1+math.floor(self.fireCount/2)
+                time=1+math.floor(self.fireCount)
                 if time>7:
                     time=7
                 elif self.directToggle%2==0:

@@ -161,13 +161,13 @@ class enemyDead(pygame.sprite.Sprite):
         super(enemyDead,self).__init__()
         self.frame=0
         self.image=pygame.image.load('resource/sprite/sprite_dead.png')
-        self.decorate=pygame.transform.scale(self.image,(84,12))
+        self.decorate=pygame.transform.scale(self.image,(84,16))
         self.deco_rotation=random.random()*180-90
         self.cx=0
         self.cy=0
-        self.interval=2
+        self.interval=1
         self.part=0
-        self.coef=0.15
+        self.coef=0.10
         self.upper=False
         self.lower=False
     def initial(self,image,cx,cy):
@@ -178,6 +178,7 @@ class enemyDead(pygame.sprite.Sprite):
     def update(self,screen):
         self.frame+=1
         self.part=math.floor(self.frame/self.interval)
+        '''
         w,h=self.image.get_size()
         w_now=round(w*(1+self.coef*self.part))
         h_now=round(h*(1+self.coef*self.part))
@@ -185,14 +186,16 @@ class enemyDead(pygame.sprite.Sprite):
         tempImage=pygame.transform.scale(self.image,(w_now,h_now))
         tempImage.set_alpha(220-20*self.part)
         screen.blit(tempImage,(self.cx-round(w_now/2),self.cy-round(h_now/2)))
+        '''
         w_d,h_d=self.decorate.get_size()
         w_d_now=round(w_d*(1+self.coef*self.part))
-        h_d_now=round(h_d*(1+self.coef*self.part))
-        tempDec=pygame.transform.scale(self.decorate,(w_d_now,h_d_now))
-        tempDec.set_alpha(220-20*self.part)
-        gF.drawRotation(tempDec,(self.cx-round(w_d_now/2),self.cy-round(h_d_now/2)),self.deco_rotation,screen)
+        h_d_now=round(0.127*self.part**2+1)
+        tempDec=pygame.transform.smoothscale(self.decorate,(w_d_now,h_d_now))
+        tempDec.set_alpha(246-8*self.part)
+        for i in range(0,3):
+            gF.drawRotation(tempDec,(self.cx-round(w_d_now/2),self.cy-round(h_d_now/2)),self.deco_rotation+(360/3)*i,screen)
 
-        if self.part>=12:
+        if self.part>=24:
             self.kill()
 
 class itemFade(pygame.sprite.Sprite):

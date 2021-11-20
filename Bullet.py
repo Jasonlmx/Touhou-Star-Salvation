@@ -1793,12 +1793,16 @@ class orb_Bullet_distance(orb_Bullet):
         if self.lastFrame<=5:
             screen.blit(self.image,(self.rect.centerx-12,self.rect.centery-12))
         elif self.lastFrame<=30:
-            self.tempImage=self.image
+            self.tempImage=pygame.Surface((24,24)).convert_alpha()
+            self.tempImage.fill((0,0,0,0))
+            self.tempImage.blit(self.image,(0,0))
             alpha=256-round((self.lastFrame-5)*10.24)
             self.tempImage.set_alpha(alpha)
             screen.blit(self.tempImage,(self.rect.centerx-12,self.rect.centery-12))
         else:
-            self.tempImage=self.image
+            self.tempImage=pygame.Surface((24,24)).convert_alpha()
+            self.tempImage.fill((0,0,0,0))
+            self.tempImage.blit(self.image,(0,0))
             alpha=round(-1/200*self.distance**2+256)
             if alpha>=256:
                 alpha=256
