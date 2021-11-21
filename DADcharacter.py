@@ -2527,7 +2527,7 @@ class satori(Boss):
                 rx=random.random()*600+60
                 ry=random.random()*20+30
                 new_effect.initial(rx,ry,82,48,randomBulletInterval)
-                effects.add(new_effect)
+                #effects.add(new_effect)
                 new_bullet=Bullet.rice_Bullet()
                 new_bullet.initial(rx,ry,1)
                 new_bullet.setSpeed(random.random()*20+80,randomBulletISpeed)
@@ -2539,7 +2539,7 @@ class satori(Boss):
                 rx=random.random()*600+60
                 ry=random.random()*20+30
                 new_effect.initial(rx,ry,82,48,targetBulletInterval)
-                effects.add(new_effect)
+                #effects.add(new_effect)
                 new_bullet=Bullet.rice_Bullet()
                 new_bullet.initial(rx,ry,1)
                 new_bullet.selfTarget(player.cx,player.cy,targetBulletISpeed)
@@ -2548,9 +2548,6 @@ class satori(Boss):
             
             if self.lastFrame%180>=160:
                 if self.lastFrame%2==0:
-                    new_effect=Effect.bulletCreate(4)
-                    new_effect.initial(self.tx,self.ty,82,48,2)
-                    effects.add(new_effect)
                     if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').stop()
                         global_var.get_value('enemyGun_sound2').play()
