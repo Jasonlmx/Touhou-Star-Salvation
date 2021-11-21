@@ -186,6 +186,122 @@ class boomSquare(playerGun):
         self.checkValid()
         screen.blit(self.image,(self.rect.centerx-103,self.rect.centery-103))
 
+class reimuBoomOrb(playerGun):
+    def __init__(self,colorCode=0):
+        super(reimuBoomOrb,self).__init__()
+        self.surf = pygame.Surface((80,80))
+        self.surf.fill((255,255,255))
+        self.rect=self.surf.get_rect()
+        self.radius=0
+        self.rSpeed=5
+        self.rDirect=1
+        self.wSpeed=6.3
+        self.wAngle=0
+        self.lastFrame=0
+        self.maxFrame=360
+        self.rotaionMaxFrame=180
+        self.centerx=global_var.get_value('player1x')
+        self.centery=global_var.get_value('player1y')
+        self.ifBoss=global_var.get_value('ifBoss')
+        self.adjAngle=10
+        self.speed=12
+        self.collidable=False
+        self.expDamage=2000
+        self.accSpeed=0.2
+        self.colorNum=colorCode
+        self.getImage()
+    def update(self,screen):
+        self.lastFrame+=1
+        if self.lastFrame<self.rotaionMaxFrame:
+            self.rotation()
+        elif self.lastFrame==self.rotaionMaxFrame:
+            self.setSpeed(270,self.speed)
+            self.collidable=True
+        elif self.lastFrame<=self.rotaionMaxFrame+20:
+            self.target()
+            self.speed+=self.accSpeed
+        else:
+            self.speed+=self.accSpeed
+            self.setSpeed(self.angle,self.speed)
+        self.movement()
+        self.truePos()
+        self.checkValid()
+        self.draw(screen)
+    
+    def getImage(self):
+        self.image=pygame.Surface((32,32)).convert_alpha()
+        self.image.fill((0,0,0,0))
+        #self.image=self.image.convert_alpha()
+        self.image.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*self.colorNum,0, 32, 32))
+        self.image=pygame.transform.smoothscale(self.image,(120,120))
+
+    def rDirectToggle(self):
+        if self.lastFrame<=60:
+            self.rDirect=1
+        else:
+            self.rDirect=-1
+    def getCenter(self):
+        self.centerx=global_var.get_value('player1x')
+        self.centery=global_var.get_value('player1y')
+
+    def rotation(self):
+        self.getCenter()
+        self.rDirectToggle()
+        self.radius+=self.rSpeed*self.rDirect
+        self.wAngle+=self.wSpeed
+        self.tx,self.ty=self.getRotationPos(self.radius,self.wAngle)
+
+    def getRotationPos(self,radius,angle):
+        dx=self.centerx+radius*math.cos(angle*math.pi/180)
+        dy=self.centery+radius*math.sin(angle*math.pi/180)
+        return dx,dy
+
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            global_var.set_value('boomStatu',0)
+            self.doKill()
+        if self.lastFrame>=self.rotaionMaxFrame+100:
+            if self.rect.top>=720-30+10 or self.rect.bottom<=0+30 or self.rect.right<=0+60 or self.rect.left>=660:
+                self.doKill()
+
+        
+    def draw(self,screen):
+        if self.lastFrame%2==0:
+            self.tempImage=pygame.transform.flip(self.image, False, True)
+        else:
+            self.tempImage=self.image
+        screen.blit(self.tempImage,(self.tx-120/2,self.ty-120/2))
+    def doKill(self):
+        #global_var.get_value("nep_sound").stop()
+        #global_var.set_value('boomStatu',0)
+        self.kill()
+    
+    def target(self):
+        pos=global_var.get_value('enemyPos')
+        tx=pos[0]
+        ty=pos[1]
+        self.initAngle=self.angle
+        if tx>60 and tx<660 and ty>30 and ty<690:
+            self.selfTarget(tx,ty,self.speed)
+        self.countAngle()
+        if abs(self.initAngle-self.angle)<=self.adjAngle:
+            pass
+        else:
+            da=self.initAngle-self.angle
+            if da>0:
+                if da>=180:
+                    self.setSpeed(self.initAngle+self.adjAngle,self.speed)
+                    self.angle=self.initAngle+self.adjAngle
+                elif da<180:
+                    self.setSpeed(self.initAngle-self.adjAngle,self.speed)
+                    self.angle=self.initAngle-self.adjAngle
+            else:
+                if abs(da)>=180:
+                    self.setSpeed(self.initAngle-self.adjAngle,self.speed)
+                    self.angle=self.initAngle-self.adjAngle
+                elif abs(da)<180:
+                    self.setSpeed(self.initAngle+self.adjAngle,self.speed)
+                    self.angle=self.initAngle+self.adjAngle
 
 class straightGun(playerGun):
     def __init__(self):

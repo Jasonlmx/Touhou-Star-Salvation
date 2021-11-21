@@ -1810,7 +1810,7 @@ class Reimu(Player):
         self.floatImage.blit(global_var.get_value('reimu_fire'),(0,0),(121-24,1,23,23))
         self.gunCycle=0
         self.gunAdj=[0,-60]
-    
+        self.boomUnhitMax=360
     def customizeFloat(self):
         shift_down=global_var.get_value('shift_down')
 

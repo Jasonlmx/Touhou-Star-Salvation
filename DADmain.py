@@ -213,7 +213,9 @@ global_var.set_value('cancel_sound',cancel_sound)
 invalid_sound=pygame.mixer.Sound('resource/sound/se_invalid.wav')
 invalid_sound.set_volume(0.35)
 global_var.set_value('invalid_sound',invalid_sound)
-
+reimuBoom_sound=pygame.mixer.Sound('resource/sound/se_tan00.wav')
+reimuBoom_sound.set_volume(0.40)
+global_var.set_value('reimuBoom_sound',reimuBoom_sound)
 
 
 pygame.mixer.music.load('resource/bgm/mainTitle.mp3')
@@ -262,6 +264,7 @@ while running:
     if not global_var.get_value('menu'):
         bulletSum=0
         enemySum=0
+        boomSum=0
         if not global_var.get_value('pause'):
             frame+=1
             if global_var.get_value('restarting'):
@@ -425,39 +428,45 @@ while running:
                 boom.update(stage)
                 #if boom.lastFrame==598:
                     #slash_sound.play()
-                if boom.lastFrame==599 and boom.ifBoss==False:
-                    #gameRule.cancalAllBullet(bullets,items,effects,True)
-                    gameRule.addLastingCancel(boom.tx,boom.ty,slaves,20,True)
-                    for enemy in enemys:
-                        enemy.health-=2000
-                    slash_sound.play()
-                    new_effect=Effect.wave()
-                    new_effect.initial([boom.tx,boom.ty],900,20,(244,213,87),6)
-                    effects.add(new_effect)
-                    global_var.get_value('nep_sound').stop()
-                elif boom.ifBoss and boom.lastFrame==399:
-                    #gameRule.cancalAllBullet(bullets,items,effects,True)
-                    gameRule.addLastingCancel(boom.tx,boom.ty,slaves,20,True)
-                    for enemy in enemys:
-                        enemy.health-=2000
-                    slash_sound.play()
-                    new_effect=Effect.wave()
-                    new_effect.initial([boom.tx,boom.ty],900,20,(244,213,87),6)
-                    effects.add(new_effect)
-                    global_var.get_value('nep_sound').stop()
-                if boom.lastFrame>=5 and pressed_keys[K_x] and not global_var.get_value('pressingX'):
-                    #gameRule.cancalAllBullet(bullets,items,effects,True)
-                    gameRule.addLastingCancel(boom.tx,boom.ty,slaves,20,True)
-                    for enemy in enemys:
-                        enemy.health-=2000
-                    slash_sound.play()
+                if player.__class__.__name__=="Marisa":
+                    if boom.lastFrame==599 and boom.ifBoss==False:
+                        #gameRule.cancalAllBullet(bullets,items,effects,True)
+                        gameRule.addLastingCancel(boom.tx,boom.ty,slaves,20,True)
+                        for enemy in enemys:
+                            enemy.health-=2000
+                        slash_sound.play()
+                        new_effect=Effect.wave()
+                        new_effect.initial([boom.tx,boom.ty],900,20,(244,213,87),6)
+                        effects.add(new_effect)
+                        global_var.get_value('nep_sound').stop()
+                    elif boom.ifBoss and boom.lastFrame==399:
+                        #gameRule.cancalAllBullet(bullets,items,effects,True)
+                        gameRule.addLastingCancel(boom.tx,boom.ty,slaves,20,True)
+                        for enemy in enemys:
+                            enemy.health-=2000
+                        slash_sound.play()
+                        new_effect=Effect.wave()
+                        new_effect.initial([boom.tx,boom.ty],900,20,(244,213,87),6)
+                        effects.add(new_effect)
+                        global_var.get_value('nep_sound').stop()
+                    if boom.lastFrame>=5 and pressed_keys[K_x] and not global_var.get_value('pressingX'):
+                        #gameRule.cancalAllBullet(bullets,items,effects,True)
+                        gameRule.addLastingCancel(boom.tx,boom.ty,slaves,20,True)
+                        for enemy in enemys:
+                            enemy.health-=2000
+                        slash_sound.play()
+                        global_var.set_value('boomStatu',0)
+                        boom.kill()
+                        new_effect=Effect.wave()
+                        new_effect.initial([boom.tx,boom.ty],900,20,(244,213,87),6)
+                        effects.add(new_effect)
+                        global_var.get_value('nep_sound').stop()
+                if player.__class__.__name__=="Reimu":
+                    boomSum+=1
+            if player.__class__.__name__=="Reimu":
+                if boomSum==0:
+                    global_var.get_value("nep_sound").stop()
                     global_var.set_value('boomStatu',0)
-                    boom.kill()
-                    new_effect=Effect.wave()
-                    new_effect.initial([boom.tx,boom.ty],900,20,(244,213,87),6)
-                    effects.add(new_effect)
-                    global_var.get_value('nep_sound').stop()
-
             #key
             if pressed_keys[K_LSHIFT]:
                 gF.drawRotation(point,(player.rect.centerx-48,player.rect.centery-48),angle,stage)
@@ -468,7 +477,7 @@ while running:
             
 
             #detect enemy hitten
-            gameRule.hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses)
+            gameRule.hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses,slaves)
             
             #avoid continues boom key
             if pressed_keys[K_x]:

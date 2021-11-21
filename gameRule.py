@@ -135,10 +135,18 @@ def doBoom(player,booms,pressed_keys,slash_sound,items):
         global_var.set_value('boomStatu',1)
         player.deadStatu=0
         player.deadFrame=10
-        new_boom=Bullet.boomSquare()
-        new_boom.tx=player.cx
-        new_boom.ty=player.cy
-        booms.add(new_boom)
+        if player.__class__.__name__=="Reimu":
+            for i in range(0,6):
+                new_boom=Bullet.reimuBoomOrb(i)
+                new_boom.wAngle=60*i
+                new_boom.tx=player.cx
+                new_boom.ty=player.cy
+                booms.add(new_boom)
+        elif player.__class__.__name__=="Marisa":
+            new_boom=Bullet.boomSquare()
+            new_boom.tx=player.cx
+            new_boom.ty=player.cy
+            booms.add(new_boom)
         slash_sound.play()
         player.spellBonus=False
         player.unhitFrame=player.boomUnhitMax
@@ -147,7 +155,7 @@ def doBoom(player,booms,pressed_keys,slash_sound,items):
                 item.followPlayer=1
                 item.followSpeed=9 
     
-def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses):
+def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses,slaves):
     enemy_hit=pygame.sprite.groupcollide(enemys,playerGuns,0,0)
     bullet_hit=pygame.sprite.groupcollide(playerGuns,enemys,0,0)
     for enemy in enemy_hit:
@@ -240,6 +248,23 @@ def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses):
     enemy_boomed=pygame.sprite.groupcollide(enemys,booms,0,0)
     for enemy in enemy_boomed:
         enemy.health-=100
+    
+    if player.__class__.__name__=="Reimu":
+        boom_collide=pygame.sprite.groupcollide(booms,enemys,0,0)
+        for boom in boom_collide:
+            if boom.collidable:
+                single_boom=pygame.sprite.spritecollide(boom,enemys,False)
+                for enemy in single_boom:
+                    enemy.health-=boom.expDamage
+                global_var.get_value("reimuBoom_sound").stop()
+                global_var.get_value("reimuBoom_sound").play()
+                new_slave=Slave.bulletCancelLasting()
+                new_slave.initial(boom.tx,boom.ty,5,300,True)
+                slaves.add(new_slave)
+                new_effect=Effect.bulletCreate(boom.colorNum)
+                new_effect.initial(boom.tx,boom.ty,240,120,10)
+                effects.add(new_effect)
+                boom.doKill()
 
 def drawPlayer(screen,player,frame):
     if player.immune!=1 and not player.unhitable:

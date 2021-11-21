@@ -128,7 +128,7 @@ class Menu():
             self.lightLogo.set_alpha(alpha)
             screen.blit(self.lightLogo,(100-5,164))
             screen.blit(self.engLogo,(100,164))
-            screen.blit(self.tachie,(650,120))
+            screen.blit(self.tachie,(600,90))
             for i in range(0,8):
                 if i!=self.selectNum[self.menuStair]:
                     screen.blit(self.shadow[i],(100,250+i*48))
