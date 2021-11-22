@@ -425,7 +425,7 @@ while running:
             gameRule.doBoom(player,booms,pressed_keys,slash_sound,items)
 
             for boom in booms:
-                boom.update(stage)
+                boom.update(stage,effects)
                 #if boom.lastFrame==598:
                     #slash_sound.play()
                 if player.__class__.__name__=="Marisa":

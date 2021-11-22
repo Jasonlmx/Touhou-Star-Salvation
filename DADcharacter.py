@@ -2275,6 +2275,7 @@ class satori(Boss):
         self.flip=0
         self.speedNum=0
         self.maxSpell=3
+        self.boomImmune=False
     def draw(self,screen):
         image=pygame.Surface((72,99))
         image.set_alpha(256)
@@ -2634,6 +2635,7 @@ class Dumbledore(Boss):
         self.spell10_int=[[0,0,0],[0,0,0],[0,0,750],[500,0,1000],[500,0,1000]]
         self.alpha=0
         self.deadFrame=0
+        self.boomImmune=True
     def drawBossName(self,screen):
         screen.blit(self.bossName,(60,692))
     def draw(self,screen):

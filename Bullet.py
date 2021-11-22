@@ -168,7 +168,7 @@ class boomSquare(playerGun):
                 global_var.set_value('boomStatu',0)
                 self.kill()
             
-    def update(self,screen):
+    def update(self,screen,effects):
         self.lastFrame+=1
         if self.ty>=300:
             if self.ifBoss:
@@ -189,13 +189,13 @@ class boomSquare(playerGun):
 class reimuBoomOrb(playerGun):
     def __init__(self,colorCode=0):
         super(reimuBoomOrb,self).__init__()
-        self.surf = pygame.Surface((80,80))
+        self.surf = pygame.Surface((100,100))
         self.surf.fill((255,255,255))
         self.rect=self.surf.get_rect()
         self.radius=0
-        self.rSpeed=5
+        self.rSpeed=4
         self.rDirect=1
-        self.wSpeed=6.3
+        self.wSpeed=5.0
         self.wAngle=0
         self.lastFrame=0
         self.maxFrame=360
@@ -206,11 +206,11 @@ class reimuBoomOrb(playerGun):
         self.adjAngle=10
         self.speed=12
         self.collidable=False
-        self.expDamage=2000
+        self.expDamage=4500
         self.accSpeed=0.2
         self.colorNum=colorCode
         self.getImage()
-    def update(self,screen):
+    def update(self,screen,effects):
         self.lastFrame+=1
         if self.lastFrame<self.rotaionMaxFrame:
             self.rotation()
@@ -225,16 +225,23 @@ class reimuBoomOrb(playerGun):
             self.setSpeed(self.angle,self.speed)
         self.movement()
         self.truePos()
+        self.doShadow(effects)
         self.checkValid()
         self.draw(screen)
     
+    def doShadow(self,effects):
+        if self.lastFrame%2==0:
+            new_effect=Effect.bulletCreate(self.colorNum)
+            new_effect.initial(self.tx,self.ty,160,10,10)
+            effects.add(new_effect)
+
     def getImage(self):
         self.image=pygame.Surface((32,32)).convert_alpha()
         self.image.fill((0,0,0,0))
         #self.image=self.image.convert_alpha()
         self.image.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*self.colorNum,0, 32, 32))
-        self.image=pygame.transform.smoothscale(self.image,(120,120))
-
+        self.image=pygame.transform.smoothscale(self.image,(160,160))
+        self.filpedImage=pygame.transform.flip(self.image, False, True)
     def rDirectToggle(self):
         if self.lastFrame<=60:
             self.rDirect=1
@@ -267,10 +274,11 @@ class reimuBoomOrb(playerGun):
         
     def draw(self,screen):
         if self.lastFrame%2==0:
-            self.tempImage=pygame.transform.flip(self.image, False, True)
+            self.tempImage=self.filpedImage
         else:
             self.tempImage=self.image
-        screen.blit(self.tempImage,(self.tx-120/2,self.ty-120/2))
+        screen.blit(self.tempImage,(self.tx-160/2,self.ty-160/2))
+        #screen.blit(self.surf,self.rect)
     def doKill(self):
         #global_var.get_value("nep_sound").stop()
         #global_var.set_value('boomStatu',0)
@@ -302,6 +310,35 @@ class reimuBoomOrb(playerGun):
                 elif abs(da)<180:
                     self.setSpeed(self.initAngle+self.adjAngle,self.speed)
                     self.angle=self.initAngle+self.adjAngle
+
+class reimuBoomAoe(playerGun):
+    def __init__(self):
+        super(reimuBoomAoe,self).__init__()
+        self.surf = pygame.Surface((250,250))
+        self.surf.fill((255,255,255))
+        self.rect=self.surf.get_rect()
+        self.lastFrame=0
+        self.hit=1000
+
+    def initial(self,tx,ty):
+        self.tx=tx
+        self.ty=ty
+        self.setSpeed(0,0)
+    
+    def update(self,screen):
+        self.lastFrame+=1
+        #self.movement()
+        self.truePos()
+        self.checkVaild()
+        self.draw(screen)
+    
+    def checkVaild(self):
+        if self.lastFrame>1:
+            self.kill()
+
+    def draw(self,screen):
+        pass
+        #screen.blit(self.surf,self.rect)
 
 class straightGun(playerGun):
     def __init__(self):

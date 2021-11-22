@@ -262,9 +262,34 @@ def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses,s
                 new_slave.initial(boom.tx,boom.ty,5,300,True)
                 slaves.add(new_slave)
                 new_effect=Effect.bulletCreate(boom.colorNum)
-                new_effect.initial(boom.tx,boom.ty,240,120,10)
+                new_effect.initial(boom.tx,boom.ty,160,300,20)
                 effects.add(new_effect)
+                new_fire=Bullet.reimuBoomAoe()
+                new_fire.initial(boom.tx,boom.ty)
+                playerGuns.add(new_fire)
                 boom.doKill()
+    
+    #detect boom-hit boss
+    if player.__class__.__name__=="Reimu":
+        boom_collide=pygame.sprite.groupcollide(booms,bosses,0,0)
+        for boom in boom_collide:
+            if boom.collidable:
+                single_boom=pygame.sprite.spritecollide(boom,bosses,False)
+                for boss in single_boom:
+                    if (not boss.boomImmune) or (not boss.ifSpell):
+                        boss.health-=boom.expDamage
+                        global_var.get_value("reimuBoom_sound").stop()
+                        global_var.get_value("reimuBoom_sound").play()
+                        new_slave=Slave.bulletCancelLasting()
+                        new_slave.initial(boom.tx,boom.ty,5,300,True)
+                        slaves.add(new_slave)
+                        new_effect=Effect.bulletCreate(boom.colorNum)
+                        new_effect.initial(boom.tx,boom.ty,160,300,20)
+                        effects.add(new_effect)
+                        new_fire=Bullet.reimuBoomAoe()
+                        new_fire.initial(boom.tx,boom.ty)
+                        playerGuns.add(new_fire)
+                        boom.doKill()
 
 def drawPlayer(screen,player,frame):
     if player.immune!=1 and not player.unhitable:
