@@ -256,6 +256,7 @@ def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses,s
                 single_boom=pygame.sprite.spritecollide(boom,enemys,False)
                 for enemy in single_boom:
                     enemy.health-=boom.expDamage
+                global_var.set_value('shakeFrame',20)
                 global_var.get_value("reimuBoom_sound").stop()
                 global_var.get_value("reimuBoom_sound").play()
                 new_slave=Slave.bulletCancelLasting()
@@ -277,7 +278,8 @@ def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses,s
                 single_boom=pygame.sprite.spritecollide(boom,bosses,False)
                 for boss in single_boom:
                     if (not boss.boomImmune) or (not boss.ifSpell):
-                        boss.health-=boom.expDamage
+                        boss.health-=boom.expDamage*0.5
+                        global_var.set_value('shakeFrame',20)
                         global_var.get_value("reimuBoom_sound").stop()
                         global_var.get_value("reimuBoom_sound").play()
                         new_slave=Slave.bulletCancelLasting()

@@ -9,6 +9,7 @@ import Slave
 import global_var
 import Effect
 import Item
+import danmaku
 
 class enemy(pygame.sprite.Sprite):
     def __init__(self):
@@ -3903,7 +3904,7 @@ class Dumbledore(Boss):
                     global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()
                     global_var.set_value('enemyFiring1',True)
-                bulletNum=random.randint(30,46)
+                bulletNum=random.randint(32,46)
                 sx=self.tx-100+random.random()*200
                 sy=self.ty-100+random.random()*200
                 sspeed=3+2*random.random()
@@ -3911,13 +3912,24 @@ class Dumbledore(Boss):
                 new_effect.initial(sx,sy,128,64,10)
                 #effects.add(new_effect)
                 #colorCode=random.randint(0,15)
+                '''
                 for i in range(0,bulletNum):
                     new_bullet=Bullet.satsu_Bullet()
                     new_bullet.initial(sx,sy,1)
+                    #buffAngle=(i*(360/bulletNum))%90
+                    #if buffAngle<=45:
+                     #   speed=sspeed/math.cos(buffAngle/180*math.pi)
+                    #else:
+                     #   speed=sspeed/math.cos((90-buffAngle)/180*math.pi)
                     new_bullet.setSpeed(self.randomAngle+i*(360/bulletNum),sspeed)
                     new_bullet.loadColor('purple')
                     #new_bullet.doColorCode(colorCode)
                     bullets.add(new_bullet)
+                '''
+                bulletTotal=50
+                side=random.randint(3,10)
+                num=bulletTotal//side
+                danmaku.polyByLength(bullets,Bullet.satsu_Bullet,num,side,3,self.randomAngle,[sx,sy],'blue')
                 self.randomAngle=random.random()*360
         
             if (self.lastFrame-8900)%200==0:

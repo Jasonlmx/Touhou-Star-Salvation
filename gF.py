@@ -499,7 +499,9 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
                 global_var.set_value('pauseSelectNum',0)
                 px=player.tx
                 py=player.ty
+                midPath=player.midPath
                 player.__init__()
+                player.midPath=midPath
                 player.tx=px
                 player.ty=py
                 player.power=400   
