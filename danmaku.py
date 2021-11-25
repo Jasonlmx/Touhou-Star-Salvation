@@ -10,7 +10,7 @@ import global_var
 import Effect
 import Item
 
-def polyByLength(bullets,type,length,sideNum,standardSpeed,standardAngle,pos,color='white'):
+def polyByLength(bullets,type,length,sideNum,standardSpeed,standardAngle,pos,color='white',*args):
     halfAngle=360/sideNum/2
     counterAngle=90-halfAngle
     wholeAngle=halfAngle*2
@@ -18,7 +18,7 @@ def polyByLength(bullets,type,length,sideNum,standardSpeed,standardAngle,pos,col
     sideLength=2*math.tan(halfAngle/180*math.pi)*standardSpeed
     for i in range(0,sideNum):
         for j in range(0,length):
-            new_bullet=type()
+            new_bullet=type(*args)
             #print(new_bullet)
             unitLength=sideLength/length
             dLength=j*unitLength
