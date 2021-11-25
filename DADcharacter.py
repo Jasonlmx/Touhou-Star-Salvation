@@ -3896,9 +3896,10 @@ class Dumbledore(Boss):
             self.randomAngle=random.random()*360
             #self.randomAngle2=random.random()*360
             self.frameLimit=2100
+            self.fireCount=0
         
         if self.lastFrame>=90:
-            if (self.lastFrame-90)%15==0:
+            if (self.lastFrame-90)%30==0:
 
                 if not global_var.get_value('enemyFiring1'):
                     global_var.get_value('enemyGun_sound1').stop()
@@ -3927,12 +3928,26 @@ class Dumbledore(Boss):
                     bullets.add(new_bullet)
                 '''
                 bulletTotal=50
-                side=random.randint(3,10)
-                num=bulletTotal//side
-                danmaku.polyByLength(bullets,Bullet.satsu_Bullet,num,side,3,self.randomAngle,[sx,sy],'blue')
-                self.randomAngle=random.random()*360
+                colorList=['purple','blue','green','pink','red','white']
+               
+                #side=random.randint(3,10)
+                #num=bulletTotal//side
+                pos=[[random.random()*20+100+self.tx,self.ty],[-random.random()*20-100+self.tx,self.ty]]
+                sideNum=3
+                speed=random.random()*1+3
+                self.fireCount+=1
+                for i in range(2):
+                    colorNum=self.fireCount%5
+                    new_bullet=Bullet.small_Bullet()
+                    new_bullet.initial(pos[i][0],pos[i][1],1)
+                    new_bullet.selfTarget(player.cx,player.cy,speed)
+                    new_bullet.countAngle()
+                    angle=new_bullet.angle
+                    danmaku.polyByLength(bullets,Bullet.satsu_Bullet,6,sideNum,speed,angle,pos[i],colorList[colorNum])
+                    danmaku.polyByLength(bullets,Bullet.satsu_Bullet,6,sideNum,speed,angle-60,pos[i],colorList[colorNum])
+                    self.randomAngle=random.random()*360
         
-            if (self.lastFrame-8900)%200==0:
+            if (self.lastFrame-90)%200==0:
                 self.gotoPosition(280+160*random.random(),200+60*random.random(),60)
                 
                  
@@ -3967,11 +3982,11 @@ class Dumbledore(Boss):
         if not self.powerUp:
             interval=100
             intense=40
-
+            color='white'
         else:
             interval=70
             intense=50
-
+            color='grey'
 
         if self.lastFrame>=80:
             if (self.lastFrame-80)%interval==0:
@@ -3980,6 +3995,10 @@ class Dumbledore(Boss):
                 new_effect=Effect.bulletCreate(4)
                 new_effect.initial(sx,sy,128,64,7)
                 #effects.add(new_effect)
+                '''
+                danmaku.polyByLength(bullets,Bullet.orb_Bullet_bouncing_5,intense//6,3,2.3,self.randomAngle,[sx,sy],color)
+                danmaku.polyByLength(bullets,Bullet.orb_Bullet_bouncing_5,intense//6,3,2.3,self.randomAngle-60,[sx,sy],color)
+                '''
                 for i in range(0,intense):
                     new_bullet=Bullet.orb_Bullet_bouncing_5()
                     new_bullet.initial(sx,sy,1)
@@ -3990,11 +4009,12 @@ class Dumbledore(Boss):
                         new_bullet.loadColor('grey')
                     bullets.add(new_bullet)
                 self.randomAngle=random.random()*360
+
                 if not global_var.get_value('enemyFiring1'):
                     global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()
                     global_var.set_value('enemyFiring1',True)
-        
+                
             if (self.lastFrame-80)%100==20:
                 self.gotoPosition(280+160*random.random(),200+60*random.random(),60)
 
