@@ -2531,6 +2531,7 @@ class satori(Boss):
                 new_effect.initial(rx,ry,82,48,randomBulletInterval)
                 #effects.add(new_effect)
                 new_bullet=Bullet.rice_Bullet()
+                new_bullet.anmStay=True
                 new_bullet.initial(rx,ry,1)
                 new_bullet.setSpeed(random.random()*20+80,randomBulletISpeed)
                 new_bullet.loadColor('blue')
@@ -2543,6 +2544,7 @@ class satori(Boss):
                 new_effect.initial(rx,ry,82,48,targetBulletInterval)
                 #effects.add(new_effect)
                 new_bullet=Bullet.rice_Bullet()
+                new_bullet.anmStay=True
                 new_bullet.initial(rx,ry,1)
                 new_bullet.selfTarget(player.cx,player.cy,targetBulletISpeed)
                 new_bullet.loadColor('purple')
@@ -2565,6 +2567,7 @@ class satori(Boss):
                         for i in range(-1,2):
                             if i!=0:
                                 new_bullet=Bullet.satsu_Bullet()
+                                new_bullet.anmStay=True
                                 new_bullet.initial(self.tx,self.ty,1)
                                 new_bullet.setSpeed(angle+i*30,2.5+0.4*(self.lastFrame%180-160))
                                 new_bullet.loadColor('blue')
@@ -3822,7 +3825,7 @@ class Dumbledore(Boss):
         if (self.lastFrame-60)%300==0:
             self.eventNum+=1
             global_var.set_value('bossEvent_'+str(self.eventNum),False)
-            new_bullet=Bullet.orb_Bullet_star_pattern_main(50,4,self.eventNum)
+            new_bullet=Bullet.orb_Bullet_star_pattern_main(30,9,self.eventNum)
             new_bullet.initial(self.tx,self.ty,1)
             new_bullet.selfTarget(player.cx,player.cy,new_bullet.n)
             new_bullet.countAngle()
@@ -3834,7 +3837,7 @@ class Dumbledore(Boss):
             new_bullet.transColor='lakeBlue'
             bullets.add(new_bullet)
 
-            new_bullet=Bullet.orb_Bullet_star_pattern_main(80,4,self.eventNum)
+            new_bullet=Bullet.orb_Bullet_star_pattern_main(40,6,self.eventNum)
             new_bullet.initial(self.tx,self.ty,1)
             new_bullet.selfTarget(player.cx,player.cy,new_bullet.n)
             new_bullet.countAngle()
@@ -3899,24 +3902,25 @@ class Dumbledore(Boss):
             self.fireCount=0
         
         if self.lastFrame>=90:
-            if (self.lastFrame-90)%30==0:
+            if (self.lastFrame-90)%20==0:
 
                 if not global_var.get_value('enemyFiring1'):
                     global_var.get_value('enemyGun_sound1').stop()
                     global_var.get_value('enemyGun_sound1').play()
                     global_var.set_value('enemyFiring1',True)
-                bulletNum=random.randint(32,46)
+                bulletNum=random.randint(20,46)
                 sx=self.tx-100+random.random()*200
                 sy=self.ty-100+random.random()*200
-                sspeed=3+2*random.random()
+                sspeed=180/bulletNum
                 new_effect=Effect.bulletCreate(0)
                 new_effect.initial(sx,sy,128,64,10)
                 #effects.add(new_effect)
                 #colorCode=random.randint(0,15)
-                '''
+            
                 for i in range(0,bulletNum):
                     new_bullet=Bullet.satsu_Bullet()
                     new_bullet.initial(sx,sy,1)
+                    new_bullet.anmStay=True
                     #buffAngle=(i*(360/bulletNum))%90
                     #if buffAngle<=45:
                      #   speed=sspeed/math.cos(buffAngle/180*math.pi)
@@ -3926,27 +3930,32 @@ class Dumbledore(Boss):
                     new_bullet.loadColor('purple')
                     #new_bullet.doColorCode(colorCode)
                     bullets.add(new_bullet)
+                self.randomAngle=random.random()*360
                 '''
                 bulletTotal=50
                 colorList=['purple','blue','green','pink','red','white']
-               
+                num=[12,9]
                 #side=random.randint(3,10)
                 #num=bulletTotal//side
-                pos=[[random.random()*20+100+self.tx,self.ty],[-random.random()*20-100+self.tx,self.ty]]
-                sideNum=3
-                speed=random.random()*1+3
+                if self.fireCount%2==0:
+                    pos=[[random.random()*20+100+self.tx,self.ty],[-random.random()*20-100+self.tx,self.ty]]
+                else:
+                    pos=[[-random.random()*20-100+self.tx,self.ty],[random.random()*20+100+self.tx,self.ty]]
+                sideNum=[3,4]
+                speed=[random.random()*1+3,random.random()*0.4+2]
+                resAngle=[60,45]
                 self.fireCount+=1
                 for i in range(2):
                     colorNum=self.fireCount%5
                     new_bullet=Bullet.small_Bullet()
                     new_bullet.initial(pos[i][0],pos[i][1],1)
-                    new_bullet.selfTarget(player.cx,player.cy,speed)
+                    new_bullet.selfTarget(player.cx,player.cy,speed[i])
                     new_bullet.countAngle()
                     angle=new_bullet.angle
-                    danmaku.polyByLength(bullets,Bullet.satsu_Bullet,6,sideNum,speed,angle,pos[i],colorList[colorNum])
-                    danmaku.polyByLength(bullets,Bullet.satsu_Bullet,6,sideNum,speed,angle-60,pos[i],colorList[colorNum])
+                    danmaku.polyByLength(bullets,Bullet.satsu_Bullet,num[i],sideNum[i],speed[i],angle,pos[i],colorList[colorNum])
+                    danmaku.polyByLength(bullets,Bullet.satsu_Bullet,num[i],sideNum[i],speed[i],angle-resAngle[i],pos[i],colorList[colorNum])
                     self.randomAngle=random.random()*360
-        
+                '''
             if (self.lastFrame-90)%200==0:
                 self.gotoPosition(280+160*random.random(),200+60*random.random(),60)
                 
@@ -4239,7 +4248,7 @@ class Dumbledore(Boss):
             self.lastFrame=0
             self.reset=False
             player.spellBonus=True
-            self.maxHealth=70000
+            self.maxHealth=180000
             self.health=self.maxHealth
             #self.gotoPosition(360,160,80)
             self.frameLimit=12000
@@ -4259,7 +4268,7 @@ class Dumbledore(Boss):
             global_var.get_value('spell_sound').play()
         self.cardBonus-=self.framePunishment
 
-        basicHealth=60000
+        basicHealth=50000
         quarterHealth=(self.maxHealth-basicHealth)/4
         self.powerRank=4-math.ceil((self.health-basicHealth)/quarterHealth)
         if self.powerRank>=4:

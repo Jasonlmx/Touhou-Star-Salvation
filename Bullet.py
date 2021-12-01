@@ -483,7 +483,10 @@ class Bullet(pygame.sprite.Sprite):
         self.distance=10000
         self.graze=1
         self.cancalable=True
-    
+        self.speed=0
+        self.anmStay=False
+        self.createMax=0
+        self.lastFrame=0
     def genEffect(self,effects):
         pass
 
@@ -516,9 +519,10 @@ class Bullet(pygame.sprite.Sprite):
             global_var.set_value('grazeNum',grazeNum)
 
     def movement(self):
-        tick=global_var.get_value('DELTA_T')
-        self.tx+=self.speedx*60/1000*tick
-        self.ty+=self.speedy*60/1000*tick
+        if not self.anmStay or self.lastFrame>=self.createMax:
+            tick=global_var.get_value('DELTA_T')
+            self.tx+=self.speedx*60/1000*tick
+            self.ty+=self.speedy*60/1000*tick
         self.truePos()
     
     def speedAlter(self,speedx,speedy):
@@ -558,6 +562,7 @@ class Bullet(pygame.sprite.Sprite):
         c=math.cos(math.radians(angle))
         self.speedy=s*speed
         self.speedx=c*speed
+        #self.speed=speed
     #def update(self):
 
     def checkValid(self):
@@ -1249,7 +1254,7 @@ class star_Bullet_delaySelfTarget(star_Bullet):
             self.motion=1
 
 class laser_Bullet_main(Bullet):
-    def __init__(self,ratio=8):
+    def __init__(self,ratio=8,leng=20,speed=5):
         super(laser_Bullet_main,self).__init__()
         self.ratio=ratio
         self.surf = pygame.Surface((self.ratio,self.ratio))
@@ -1258,11 +1263,17 @@ class laser_Bullet_main(Bullet):
         #self.image=pygame.image.load('resource/bullet/small_bullet_grey.png').convert_alpha()
         self.dx=4
         self.dy=4
-        self.speed=0
+        self.speed=speed
         self.lastFrame=0
-        self.length=20
+        self.length=leng
         self.colorNum=0
         self.angle=0
+    def movement(self):
+        tick=global_var.get_value('DELTA_T')
+        self.tx+=self.speedx
+        self.ty+=self.speedy
+        self.truePos()
+
     def doColorCode(self,code):
         self.colorNum=code
         self.image=pygame.Surface((16,16))
