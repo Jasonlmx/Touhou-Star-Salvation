@@ -3046,10 +3046,10 @@ class Dumbledore(Boss):
                         new_bullet.initial(rx,ry,1)
                     ra=90+43+angleInc+random.random()*4
                     rs=7+random.random()*1.5
-                    new_bullet.speed=rs
                     new_bullet.setSpeed(ra,rs)
+                    new_bullet.speed=rs+1
                     #new_bullet.loadColor('purple')
-                    new_bullet.doColorCode(8)
+                    new_bullet.doColorCode(random.randint(0,15))
                     bullets.add(new_bullet)
 
 
@@ -3087,7 +3087,10 @@ class Dumbledore(Boss):
                     new_bullet=Bullet.big_star_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(fireAngle+i*(360/40),3)
-                    new_bullet.doColorCode(3)
+                    if i%2==0:
+                        new_bullet.doColorCode(3)
+                    else:
+                        new_bullet.doColorCode(1)
                     bullets.add(new_bullet)
 
         if self.health<=0:
@@ -3307,34 +3310,40 @@ class Dumbledore(Boss):
             self.randomAngle=random.random()*360
             self.randomAngle2=random.random()*360
             self.frameLimit=1800
-
+            self.fireCount=0
         if self.lastFrame>=100:
-            if (self.lastFrame-100)%180<=90:
+            if (self.lastFrame-100)%180<=102:
                 if self.lastFrame%12==0:
+                    self.fireCount+=1
                     if not global_var.get_value('enemyFiring2'):
                         global_var.get_value('enemyGun_sound2').stop()
                         global_var.get_value('enemyGun_sound2').play()
                         global_var.set_value('enemyFiring2',True)
-                    for i in range(0,30):
+                    for i in range(0,24):
                         new_bullet=Bullet.butterfly_Bullet()
                         new_bullet.initial(self.tx,self.ty,1)
                         new_bullet.doColorCode(3)
-                        new_bullet.setSpeed(self.randomAngle+i*(360/30),5)
+                        if self.fireCount%2==0:
+                            angle=self.randomAngle+i*(360/24)
+                        else:
+                            angle=self.randomAngle+(i+0.5)*(360/24)
+                        new_bullet.setSpeed(angle,5.3)
+                        
                         bullets.add(new_bullet)
             else:
                 self.randomAngle=random.random()*360
-            if (self.lastFrame-100)%180>=90:
+            if (self.lastFrame-100)%180>=75:
                 
-                if self.lastFrame%6==0:
+                if self.lastFrame%5==0:
                     if not global_var.get_value('enemyFiring1'):
                         global_var.get_value('enemyGun_sound1').stop()
                         global_var.get_value('enemyGun_sound1').play()
                         global_var.set_value('enemyFiring1',True)
-                    for i in range(0,9):
+                    for i in range(0,12):
                         new_bullet=Bullet.butterfly_Bullet()
                         new_bullet.initial(self.tx,self.ty,1)
                         new_bullet.doColorCode(1)
-                        new_bullet.setSpeed(self.randomAngle2+i*(360/9),5)
+                        new_bullet.setSpeed(self.randomAngle2+i*(360/12),6.0)
                         bullets.add(new_bullet)
                     self.randomAngle2+=17
             else:
