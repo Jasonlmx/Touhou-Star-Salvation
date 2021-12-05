@@ -1642,6 +1642,8 @@ class laser_line(Bullet):
         self.createDict=[0,1,1,3,2,3,4,4,4,5,5,5,6,6,6,7]
         self.widthNow=0
         self.changeFrame=20
+        self.lastLength=0
+        self.endFrame=0
     def getDecoImage(self):
         self.decoImage=pygame.Surface((32,32)).convert_alpha()
         self.decoImage.fill((0,0,0,0))
@@ -1656,7 +1658,7 @@ class laser_line(Bullet):
         self.image=self.image.convert_alpha()
         self.image.fill((0,0,0,0))
         #self.image.set_alpha(256)
-        self.image.blit(global_var.get_value('laser_image'), (0, 0), (16*self.colorNum,0, 16, 16))
+        self.image.blit(global_var.get_value('laser_image').convert_alpha(), (0, 0), (16*self.colorNum,0, 16, 16))
         self.getDecoImage()
 
     def setFeature(self,degree,width,maxFrame=100,warnFrame=20,centerWidth=64,changeFrame=20):
@@ -1666,14 +1668,19 @@ class laser_line(Bullet):
         self.warnFrame=warnFrame
         self.centerWidth=centerWidth
         self.changeFrame=changeFrame
-
+        self.endFrame=self.changeFrame
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         if self.lastFrame-self.warnFrame<=self.changeFrame:
             self.widthNow=round((self.lastFrame-self.warnFrame)/self.changeFrame*(self.width-1)+1)
+        elif self.lastFrame>=self.maxFrame-self.endFrame:
+            self.widthNow=round((self.maxFrame-self.lastFrame)/self.endFrame*(self.width-1)+1)
         else:
             self.widthNow=self.width
+        if self.lastFrame==self.warnFrame:
+            global_var.get_value('laser_sound').stop()
+            global_var.get_value('laser_sound').play()
         self.bx=self.tx
         self.by=self.ty
         self.degree+=self.dDegree
@@ -1699,7 +1706,7 @@ class laser_line(Bullet):
         self.endPoint=[self.bx,self.by]
 
     def doLaser(self,screen,bullets,effects):
-        while not (self.bx>=660 or self.bx<=60 or self.by>=690 or self.by<=30):
+        while not (self.bx>=660+10 or self.bx<=60-10 or self.by>=690+10 or self.by<=30-10):
             if self.countDistance(self.bx,self.by)<=20:
                 new_bullet=laser_line_sub(radius=self.widthNow)
                 new_bullet.initial(self.bx,self.by,1)
@@ -1730,8 +1737,13 @@ class laser_line(Bullet):
         length=round(math.sqrt((self.tx-self.endPoint[0])**2+(self.ty-self.endPoint[1])**2))
         
         if length>0:
+            if self.lastLength==length and self.lastFrame>self.changeFrame+self.warnFrame and self.lastFrame<self.maxFrame-self.endFrame:
+                self.tempImg=self.laserImg
+            else:
+                self.tempImg=pygame.transform.smoothscale(self.image,(self.widthNow,length))
+                self.laserImg=self.tempImg
             midPoint=(round((self.tx+self.endPoint[0])/2),round((self.ty+self.endPoint[1])/2))
-            self.tempImg=pygame.transform.smoothscale(self.image,(self.widthNow,length))
+            
             gF.drawRotation(self.tempImg,(midPoint[0]-round(self.widthNow/2),midPoint[1]-round(length/2)),(270-self.degree),screen)
 
 class laser_line_sub(Bullet):
