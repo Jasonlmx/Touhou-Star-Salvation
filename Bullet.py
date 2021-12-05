@@ -1625,6 +1625,138 @@ class bact_Bullet(rice_Bullet):
         self.getCreateImage(code)
         self.tempImage=self.createImage
 
+
+class laser_line(Bullet):
+    def __init__(self):
+        super(laser_line,self).__init__()
+        self.type=14
+        self.cancalable=False
+        self.degree=0
+        self.warnFrame=7
+        self.width=6
+        self.bx=0
+        self.by=0
+        self.maxFrame=100
+        self.dDegree=0
+        self.endPoint=[0,0]
+        self.createDict=[0,1,1,3,2,3,4,4,4,5,5,5,6,6,6,7]
+        self.widthNow=0
+        self.changeFrame=20
+    def getDecoImage(self):
+        self.decoImage=pygame.Surface((32,32)).convert_alpha()
+        self.decoImage.fill((0,0,0,0))
+        #self.image=self.image.convert_alpha()
+        code=self.createDict[self.colorNum]
+        self.decoImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*code,0, 32, 32))
+        self.decoImage=pygame.transform.smoothscale(self.decoImage,(self.centerWidth,self.centerWidth))
+        self.flipImage=pygame.transform.flip(self.decoImage,False,True)
+    def doColorCode(self,code):
+        self.colorNum=code
+        self.image=pygame.Surface((16,16))
+        self.image=self.image.convert_alpha()
+        self.image.fill((0,0,0,0))
+        #self.image.set_alpha(256)
+        self.image.blit(global_var.get_value('laser_image'), (0, 0), (16*self.colorNum,0, 16, 16))
+        self.getDecoImage()
+
+    def setFeature(self,degree,width,maxFrame=100,warnFrame=20,centerWidth=64,changeFrame=20):
+        self.degree=degree
+        self.width=width
+        self.maxFrame=maxFrame
+        self.warnFrame=warnFrame
+        self.centerWidth=centerWidth
+        self.changeFrame=changeFrame
+
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.movement()
+        if self.lastFrame-self.warnFrame<=self.changeFrame:
+            self.widthNow=round((self.lastFrame-self.warnFrame)/self.changeFrame*(self.width-1)+1)
+        else:
+            self.widthNow=self.width
+        self.bx=self.tx
+        self.by=self.ty
+        self.degree+=self.dDegree
+        if self.lastFrame>self.warnFrame:
+            self.doLaser(screen,bullets,effects)
+            self.drawLaser(screen)
+            self.drawCenter(screen)
+            #self.drawWarnLine(screen)
+        else:
+            self.doWarnLine()
+            self.drawWarnLine(screen)
+        
+        self.checkValid()
+    
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
+    
+    def doWarnLine(self):
+        while not (self.bx>=660 or self.bx<=60 or self.by>=690 or self.by<=30):
+            self.bx+=math.cos(self.degree/180*math.pi)*self.width
+            self.by+=math.sin(self.degree/180*math.pi)*self.width
+        self.endPoint=[self.bx,self.by]
+
+    def doLaser(self,screen,bullets,effects):
+        while not (self.bx>=660 or self.bx<=60 or self.by>=690 or self.by<=30):
+            if self.countDistance(self.bx,self.by)<=20:
+                new_bullet=laser_line_sub(radius=self.widthNow)
+                new_bullet.initial(self.bx,self.by,1)
+                new_bullet.update(screen,bullets,effects)
+                bullets.add(new_bullet)
+            self.bx+=math.cos(self.degree/180*math.pi)*(self.widthNow+3)
+            self.by+=math.sin(self.degree/180*math.pi)*(self.widthNow+3)
+        self.endPoint=[self.bx,self.by]
+    
+    def drawCenter(self,screen):
+        if self.lastFrame%2==0:
+            img=self.decoImage
+        else:
+            img=self.flipImage
+        screen.blit(img,(self.tx-round(self.centerWidth/2),self.ty-round(self.centerWidth/2)))
+    def countDistance(self,bx,by):
+        px=global_var.get_value('player1x')
+        py=global_var.get_value('player1y')
+        dx=abs(px-bx)
+        dy=abs(py-by)
+        distance=math.sqrt(math.pow(dx,2)+math.pow(dy,2))
+        return distance
+
+    def drawWarnLine(self,screen):
+        pygame.draw.line(screen,(255,255,255),(self.tx,self.ty),self.endPoint,1)
+    
+    def drawLaser(self,screen):
+        length=round(math.sqrt((self.tx-self.endPoint[0])**2+(self.ty-self.endPoint[1])**2))
+        
+        if length>0:
+            midPoint=(round((self.tx+self.endPoint[0])/2),round((self.ty+self.endPoint[1])/2))
+            self.tempImg=pygame.transform.smoothscale(self.image,(self.widthNow,length))
+            gF.drawRotation(self.tempImg,(midPoint[0]-round(self.widthNow/2),midPoint[1]-round(length/2)),(270-self.degree),screen)
+
+class laser_line_sub(Bullet):
+    def __init__(self,radius=8):
+        super(laser_line_sub,self).__init__()
+        self.surf = pygame.Surface((radius,radius))
+        self.rect = self.surf.get_rect()
+        #self.surf.fill((255,255,255))
+        self.type=15
+        self.graze=0
+    def checkValid(self):
+        if self.lastFrame>1:
+            self.kill()
+
+    def drawBullet(self,screen):
+        screen.blit(self.surf,self.rect)
+
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.movement()
+        self.checkValid()
+        #if self.lastFrame<=1:
+            #self.drawBullet(screen)
+        
+
 #bullets modified for lightness level
 class star_Bullet_Part4_Hex(star_Bullet):
     def __init__(self):

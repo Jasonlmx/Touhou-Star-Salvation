@@ -19,7 +19,7 @@ def addLastingCancel(tx,ty,slaves,maxFrame,doBonus):
 
 def cancalAllBullet(bullets,items,effects,doBonus):
     for bullet in bullets:
-        if bullet.cancalable:
+        if bullet.cancalable and bullet.type!=15:
             new_effect=Effect.bulletVanish()
             exception=(5,7,10,11,12,13)
             if not bullet.type in exception:
@@ -62,7 +62,7 @@ def missDetect(player,bullets,enemys,effects,miss_sound,items,slaves):
         player.bulletSurpress=60
 
         new_effect=Effect.bulletVanish()
-        exception=(5,7,10,11,12,13)
+        exception=(5,7,10,11,12,13,15)
         if not miss.type in exception:
             new_effect.initial(miss.image,miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
         elif miss.type==5:
@@ -225,9 +225,9 @@ def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses,s
     #detect boom-cancelled bullets
     bullet_cancel=pygame.sprite.groupcollide(bullets,booms,0,0)  
     for bullet in bullet_cancel:
-        if bullet.cancalable:
+        if bullet.cancalable and bullet.type!=15:
             new_effect=Effect.bulletVanish()
-            exception=(5,7,10,11,12,13)
+            exception=(5,7,10,11,12,13,15)
             if not bullet.type in exception:
                 new_effect.initial(bullet.image,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
             elif bullet.type==5:

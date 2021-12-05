@@ -2175,9 +2175,9 @@ class Boss(pygame.sprite.Sprite):
             deg=180
         self.angle=deg
         return deg 
-    def addLastingCancel(self,tx,ty,slaves,maxFrame,doBonus):
+    def addLastingCancel(self,tx,ty,slaves,maxFrame,doBonus,harsh=True):
         new_slave=Slave.bulletCancelLasting()
-        new_slave.initial(tx,ty,maxFrame,900,doBonus)
+        new_slave.initial(tx,ty,maxFrame,900,doBonus,harsh)
         slaves.add(new_slave)
     def movement(self):
         if self.maxMovingFrame!=0:
@@ -2766,14 +2766,16 @@ class Dumbledore(Boss):
             self.randomAngle2=self.randomAngle
             self.randomAngle3=random.random()*360
             self.frameLimit=1800
-
+            self.fireCount=0
 
         if self.lastFrame>=40:
-            if (self.lastFrame-40)%5==0:
+            #5
+            if (self.lastFrame-40)%100==0:
                 '''
                 new_effect=Effect.bulletCreate(5)
                 new_effect.initial(self.tx,self.ty,128,32,15)
                 effects.add(new_effect)
+                '''
                 '''
                 for i in range(0,5):
                     if not global_var.get_value('enemyFiring2'):
@@ -2799,6 +2801,23 @@ class Dumbledore(Boss):
                 self.randomAngle+=5
                 self.randomAngle2-=5
             '''
+                
+                dg=random.random()*360
+                sg=random.random()*180
+                self.fireCount+=1
+                for i in range(0,6):
+                    
+                    new_bullet=Bullet.laser_line()
+                    new_bullet.initial(self.tx,self.ty,1)
+                    new_bullet.setFeature(dg+i*(360/6),10,360,40)
+                    new_bullet.doColorCode(6)
+                    if self.fireCount%2==0:
+                        new_bullet.dDegree=0.45
+                    else:
+                        new_bullet.dDegree=-0.45
+                    new_bullet.setSpeed(sg,2.0)
+                    bullets.add(new_bullet)
+            '''
             if (self.lastFrame-40)%50==25:
                 new_effect=Effect.bulletCreate(4)
                 new_effect.initial(self.tx,self.ty,192,48,25)
@@ -2818,7 +2837,7 @@ class Dumbledore(Boss):
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle3+i*(360/30),4-0.1*n)
                     new_bullet.loadColor('lightBlue')
-                    bullets.add(new_bullet)
+                    #bullets.add(new_bullet)
 
             if (self.lastFrame-40)%100==0:
                 self.gotoPosition(random.random()*60+330,random.random()*20+170,40)

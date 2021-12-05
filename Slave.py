@@ -262,13 +262,14 @@ class bulletCancelLasting(pygame.sprite.Sprite):
         self.maxRadius=900
         self.lastFrame=0
         self.doBonus=False
-    def initial(self,tx,ty,maxFrame=12,maxRadius=900,doBonus=False):
+    def initial(self,tx,ty,maxFrame=12,maxRadius=900,doBonus=False,harsh=False):
         self.tx=tx
         self.ty=ty
         self.maxFrame=maxFrame
         self.maxRadius=maxRadius
         self.doBonus=doBonus
-    
+        self.harsh=harsh
+
     def checkValid(self):
         if self.lastFrame>=self.maxFrame:
             self.kill()
@@ -281,9 +282,9 @@ class bulletCancelLasting(pygame.sprite.Sprite):
     def cancelBullet(self,bullets,effects,items,radius):
         for bullet in bullets:
             if self.getDistance(bullet.tx,bullet.ty)<radius:
-                if bullet.cancalable:
+                if (bullet.cancalable or self.harsh) and bullet.type!=15:
                     new_effect=Effect.bulletVanish()
-                    exception=(5,7,10,11,12,13)
+                    exception=(5,7,10,11,12,13,15)
                     if not bullet.type in exception:
                         new_effect.initial(bullet.image,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
                     elif bullet.type==5:
@@ -297,7 +298,7 @@ class bulletCancelLasting(pygame.sprite.Sprite):
                         new_effect.initial(bullet.tempImage,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
 
                     effects.add(new_effect)
-                    if self.doBonus:
+                    if self.doBonus and bullet.type!=15:
                         Bullet.createItem(bullet.tx,bullet.ty,items)
                     bullet.kill()
 
