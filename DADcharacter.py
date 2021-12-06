@@ -4118,12 +4118,21 @@ class Dumbledore(Boss):
                     new_bullet.countAngle()
                     self.releaseAngle=new_bullet.angle
                 if (self.lastFrame-150)%2==0:
+                    num=49
                     for i in range(0,2):
-                        new_bullet=Bullet.laser_line()
-                        new_bullet.initial(self.tx,self.ty,1)
-                        new_bullet.setFeature(self.releaseAngle+(i-0.5)*2*self.fireCount*(360/50.5),12,90,60,64,10)
-                        new_bullet.doColorCode(self.fireCount%16)
-                        bullets.add(new_bullet)
+                        for j in (0,2):
+                            new_bullet=Bullet.laser_line()
+                            new_bullet.initial(self.tx,self.ty,1)
+                            if j==0:
+                                releaseAngle=self.releaseAngle+(i-0.5)*2*self.fireCount*(360/num)
+                                color=6
+                            else:
+                                releaseAngle=(self.releaseAngle+(i-0.5)*2*self.fireCount*(360/num))+180
+                                color=6
+                            new_bullet.setFeature(releaseAngle,15,50,30,64,5,5)
+                            new_bullet.ifSimplifiedMode=True
+                            new_bullet.doColorCode(self.fireCount%16)
+                            bullets.add(new_bullet)
                     self.fireCount+=1
             '''
             if (self.lastFrame-150)%60==0:
