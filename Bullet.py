@@ -1,3 +1,4 @@
+from typing import ForwardRef
 import pygame,sys
 import random
 import math
@@ -1647,6 +1648,11 @@ class laser_line(Bullet):
         self.alpha=256
         self.colorRGB=[(151,151,151),(255,24,24),(255,127,127),(251,66,255),(253,109,242),(62,69,255),(105,137,255),(108,255,255),(63,249,255),(57,255,182),(114,255,192),(201,255,128),(255,255,128),(255,255,122),(255,255,122),(233,233,233)]
         self.ifSimplifiedMode=False
+        self.forwardSpeed=-1
+        self.forwardMax=0
+        self.forwardNow=0
+        self.furryCollide=0
+        self.warnLineColored=False
     def getDecoImage(self):
         self.decoImage=pygame.Surface((32,32)).convert_alpha()
         self.decoImage.fill((0,0,0,0))
@@ -1670,7 +1676,11 @@ class laser_line(Bullet):
             pygame.draw.circle(self.image,self.colorRGB[code], (8,8) , 8, 8)
         self.getDecoImage()
 
-    def setFeature(self,degree,width,maxFrame=100,warnFrame=20,centerWidth=64,changeFrame=20,endFrame=20):
+    def goForward(self):
+        if self.forwardSpeed>0:
+            self.forwardMax+=self.forwardSpeed
+
+    def setFeature(self,degree,width,maxFrame=100,warnFrame=20,centerWidth=64,changeFrame=20,endFrame=20,forwardSpeed=-1):
         self.degree=degree
         self.width=width
         self.maxFrame=maxFrame
@@ -1678,6 +1688,7 @@ class laser_line(Bullet):
         self.centerWidth=centerWidth
         self.changeFrame=changeFrame
         self.endFrame=endFrame
+        self.forwardSpeed=forwardSpeed
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
@@ -1693,15 +1704,17 @@ class laser_line(Bullet):
         self.bx=self.tx
         self.by=self.ty
         self.degree+=self.dDegree
+        self.forwardNow=0
         if self.lastFrame>self.warnFrame:
+            self.goForward()
             self.doLaser(screen,bullets,effects)
             self.drawLaser(screen)
-            self.drawCenter(screen)
             #self.drawWarnLine(screen)
         else:
             self.doWarnLine()
             self.drawWarnLine(screen)
         
+        self.drawCenter(screen)
         self.checkValid()
     
     def checkValid(self):
@@ -1715,14 +1728,16 @@ class laser_line(Bullet):
         self.endPoint=[self.bx,self.by]
 
     def doLaser(self,screen,bullets,effects):
-        while not (self.bx>=660+10 or self.bx<=60-10 or self.by>=690+10 or self.by<=30-10):
+        while (not (self.bx>=660+10 or self.bx<=60-10 or self.by>=690+10 or self.by<=30-10)) and ((self.forwardNow<=self.forwardMax) or (self.forwardSpeed<=0)):
             if self.countDistance(self.bx,self.by)<=20:
                 new_bullet=laser_line_sub(radius=self.widthNow)
                 new_bullet.initial(self.bx,self.by,1)
                 new_bullet.update(screen,bullets,effects)
                 bullets.add(new_bullet)
-            self.bx+=math.cos(self.degree/180*math.pi)*(self.widthNow+3)
-            self.by+=math.sin(self.degree/180*math.pi)*(self.widthNow+3)
+            forward=self.widthNow+3
+            self.bx+=math.cos(self.degree/180*math.pi)*(forward)
+            self.by+=math.sin(self.degree/180*math.pi)*(forward)
+            self.forwardNow+=forward
         self.endPoint=[self.bx,self.by]
     
     def drawCenter(self,screen):
@@ -1740,11 +1755,15 @@ class laser_line(Bullet):
         return distance
 
     def drawWarnLine(self,screen):
-        pygame.draw.line(screen,(255,255,255),(self.tx,self.ty),self.endPoint,1)
+        if self.warnLineColored:
+            color=self.colorRGB[self.colorNum]
+        else:
+            color=(255,255,255)
+        pygame.draw.line(screen,color,(self.tx,self.ty),self.endPoint,1)
     
     def drawLaser(self,screen):
+        width=self.widthNow+self.furryCollide
         if self.ifSimplifiedMode:
-            width=self.widthNow
             pygame.draw.line(screen,self.colorRGB[self.colorNum],(self.tx,self.ty),self.endPoint,width)
             if width>=3:
                 pygame.draw.line(screen,(255,255,255),(self.tx,self.ty),self.endPoint,round(width/2))
@@ -1755,11 +1774,11 @@ class laser_line(Bullet):
                 if self.lastLength==length and self.lastFrame>self.changeFrame+self.warnFrame and self.lastFrame<self.maxFrame-self.endFrame:
                     self.tempImg=self.laserImg
                 else:
-                    self.tempImg=pygame.transform.smoothscale(self.image,(self.widthNow,length))
+                    self.tempImg=pygame.transform.smoothscale(self.image,(width,length))
                     self.laserImg=self.tempImg
                 midPoint=(round((self.tx+self.endPoint[0])/2),round((self.ty+self.endPoint[1])/2))
                 self.tempImg.set_alpha(self.alpha)
-                gF.drawRotation(self.tempImg,(midPoint[0]-round(self.widthNow/2),midPoint[1]-round(length/2)),(270-self.degree),screen)
+                gF.drawRotation(self.tempImg,(midPoint[0]-round(width/2),midPoint[1]-round(length/2)),(270-self.degree),screen)
 
 class laser_line_sub(Bullet):
     def __init__(self,radius=8):
@@ -2722,3 +2741,50 @@ class rice_Bullet_delay(satsu_Bullet):
         if self.lastFrame>=self.delay and self.lastFrame<self.delay+self.accFrame:
             self.n_speed+=(self.speed/self.accFrame)
             self.setSpeed(self.angle,self.n_speed)
+
+    
+class circle_laser_slave(Bullet):
+    def __init__(self):
+        super(circle_laser_slave,self).__init__()
+        self.startAngle=0
+        self.direction=1
+        self.dAngle=360/300
+        self.fireAngleAdj=0
+        self.speed=0
+        self.colorNum=0
+        self.cancalable=False
+        self.type=16
+    def setFeature(self,startAngle,direction,speed,colorNum):
+        self.startAngle=startAngle
+        self.direction=direction
+        self.fireAngle=self.startAngle
+        self.speed=speed
+        self.colorNum=colorNum
+
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.fire(bullets)
+        self.movement()
+        self.motionStrat()
+        self.checkValid()
+
+    def motionStrat(self):
+        self.countAngle()
+        self.setSpeed(self.angle+self.direction*self.dAngle,self.speed)
+
+    def checkValid(self):
+        if self.lastFrame>=299:
+            self.kill()
+    
+    def fire(self,bullets):
+        if self.lastFrame%10==0:
+            self.countAngle()
+            new_bullet=laser_line()
+            new_bullet.initial(self.tx,self.ty,1)
+            new_bullet.setFeature(self.angle-self.fireAngleAdj+self.direction*60,8,160,50,48,15,15,-1)
+            new_bullet.ifSimplifiedMode=True
+            new_bullet.warnLineColored=True
+            new_bullet.doColorCode(self.colorNum)
+            new_bullet.furryCollide=10
+            bullets.add(new_bullet)
+            self.fireAngleAdj+=150/36*self.direction

@@ -284,7 +284,7 @@ class bulletCancelLasting(pygame.sprite.Sprite):
             if self.getDistance(bullet.tx,bullet.ty)<radius:
                 if (bullet.cancalable or self.harsh) and bullet.type!=15:
                     new_effect=Effect.bulletVanish()
-                    exception=(5,7,10,11,12,13,15)
+                    exception=(5,7,10,11,12,13,15,16)
                     if not bullet.type in exception:
                         new_effect.initial(bullet.image,bullet.rect.centerx,bullet.rect.centery,bullet.dx,bullet.dy)
                     elif bullet.type==5:

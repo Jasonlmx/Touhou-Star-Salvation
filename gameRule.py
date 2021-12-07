@@ -62,7 +62,7 @@ def missDetect(player,bullets,enemys,effects,miss_sound,items,slaves):
         player.bulletSurpress=60
 
         new_effect=Effect.bulletVanish()
-        exception=(5,7,10,11,12,13,15)
+        exception=(5,7,10,11,12,13,15,16)
         if not miss.type in exception:
             new_effect.initial(miss.image,miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
         elif miss.type==5:

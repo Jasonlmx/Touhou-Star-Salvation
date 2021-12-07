@@ -4101,14 +4101,17 @@ class Dumbledore(Boss):
             self.gotoPosition(360,230,80)
             self.randomAngle=random.random()*360
             #self.randomAngle2=random.random()*360
-            self.frameLimit=2100
+            self.frameLimit=5100
             self.directToggle=1
             self.colorCode=['darkBlue','red','orange','yellow','green','blue','blue','lakeBlue','purple','pink','white','grey','jade']
             self.releaseAngle=0
             self.fireCount=0
         if self.lastFrame>=150:
-            if (self.lastFrame-150)%300<=202:
+            if (self.lastFrame-150)%300<=36:
                 if (self.lastFrame-150)%300==0:
+                    self.laserColor=random.randint(0,15)
+                    self.warnFrame=30
+                    self.warnNow=self.warnFrame
                     self.fireCount=0
                     new_bullet=Bullet.small_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
@@ -4118,22 +4121,26 @@ class Dumbledore(Boss):
                     new_bullet.countAngle()
                     self.releaseAngle=new_bullet.angle
                 if (self.lastFrame-150)%2==0:
-                    num=49
-                    for i in range(0,2):
-                        for j in (0,2):
-                            new_bullet=Bullet.laser_line()
-                            new_bullet.initial(self.tx,self.ty,1)
-                            if j==0:
-                                releaseAngle=self.releaseAngle+(i-0.5)*2*self.fireCount*(360/num)
-                                color=6
-                            else:
-                                releaseAngle=(self.releaseAngle+(i-0.5)*2*self.fireCount*(360/num))+180
-                                color=6
-                            new_bullet.setFeature(releaseAngle,15,50,30,64,5,5)
-                            new_bullet.ifSimplifiedMode=True
-                            new_bullet.doColorCode(self.fireCount%16)
-                            bullets.add(new_bullet)
-                    self.fireCount+=1
+                    num=37
+                    for k in range(0,1):
+                        for i in range(0,2):
+                            for j in range(0,2):
+                                new_bullet=Bullet.laser_line()
+                                new_bullet.initial(self.tx,self.ty,1)
+                                if j==0:
+                                    releaseAngle=self.releaseAngle+(i-0.5)*2*self.fireCount*(360/num)
+                                    color=6
+                                else:
+                                    releaseAngle=(self.releaseAngle+(i-0.5)*2*self.fireCount*(360/num))+180
+                                    color=6
+                                new_bullet.setFeature(releaseAngle,16,self.warnNow+100,self.warnNow,64,2,2,60)
+                                new_bullet.ifSimplifiedMode=True
+                                new_bullet.dDegree=0
+                                new_bullet.doColorCode(self.laserColor)
+                                bullets.add(new_bullet)
+                        self.warnNow=30#round((self.warnFrame-10)*(1-((self.lastFrame-150)%300/50))+10)
+                        #print(self.warnNow)
+                        self.fireCount+=1
             '''
             if (self.lastFrame-150)%60==0:
                 if not global_var.get_value('enemyFiring1'):
@@ -4240,15 +4247,18 @@ class Dumbledore(Boss):
             #self.gotoPosition(360,160,80)
             self.frameLimit=7200
             self.cardBonus=10000000
+            self.fireCount=0
             self.framePunishment=1300
             self.spellName='Holy Spell [Magic orb]'
-            self.gotoPosition(360,250,50)
+            self.gotoPosition(360,220,50)
             self.randomAngle=random.random()*360
             global_var.get_value('spell_sound').play()
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)
+            #self.spell9_colorList=[2,4,6,8,10]
         self.cardBonus-=self.framePunishment
 
+        '''
         intervalAngle=50
         if self.lastFrame>=160:
             if self.lastFrame%270==140:
@@ -4271,7 +4281,31 @@ class Dumbledore(Boss):
         if (self.lastFrame-160)%270==240:
             global_var.get_value("ch00_sound").play()
         
+        '''
 
+        #test card 9 光彩陆离乱舞
+        if self.lastFrame>=160:
+            if self.lastFrame%300==0:
+                global_var.get_value('enemyGun_sound1').stop()
+                global_var.get_value('enemyGun_sound1').play()
+                if self.fireCount%2==0:
+                    direction=1
+                else:
+                    direction=-1
+                for i in range(0,5):
+                    new_bullet=Bullet.circle_laser_slave()
+                    new_bullet.initial(self.tx,self.ty,1)
+                    new_bullet.setFeature(self.randomAngle+i*(360/5),direction,2,(i+1)*2)
+                    new_bullet.setSpeed(self.randomAngle+i*(360/5),2)
+                    bullets.add(new_bullet)
+                self.randomAngle=random.random()*360
+                self.fireCount+=1
+        if self.lastFrame%300==260:
+            new_effect=Effect.powerUp()
+            new_effect.initial((self.tx,self.ty),400,40,(255,255,255),2,3,10)
+            effects.add(new_effect)
+        if self.lastFrame%300==0 and self.lastFrame>300:
+            self.gotoPosition(random.random()*80+320,random.random()*30+200,60)
         #spell end
         if self.health<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
