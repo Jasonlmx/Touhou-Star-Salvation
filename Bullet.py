@@ -1762,7 +1762,12 @@ class laser_line(Bullet):
         pygame.draw.line(screen,color,(self.tx,self.ty),self.endPoint,1)
     
     def drawLaser(self,screen):
-        width=self.widthNow+self.furryCollide
+        if self.lastFrame-self.warnFrame<=self.changeFrame:
+            width=round((self.lastFrame-self.warnFrame)/self.changeFrame*(self.width-1+self.furryCollide)+1)
+        elif self.lastFrame>=self.maxFrame-self.endFrame:
+            width=round((self.maxFrame-self.lastFrame)/self.endFrame*(self.width-1+self.furryCollide)+1)
+        else:
+            width=self.width+self.furryCollide
         if self.ifSimplifiedMode:
             pygame.draw.line(screen,self.colorRGB[self.colorNum],(self.tx,self.ty),self.endPoint,width)
             if width>=3:
@@ -2781,10 +2786,10 @@ class circle_laser_slave(Bullet):
             self.countAngle()
             new_bullet=laser_line()
             new_bullet.initial(self.tx,self.ty,1)
-            new_bullet.setFeature(self.angle-self.fireAngleAdj+self.direction*60,8,160,50,48,15,15,-1)
+            new_bullet.setFeature(self.angle-self.fireAngleAdj+self.direction*60,8,160,60,48,10,10,-1)
             new_bullet.ifSimplifiedMode=True
             new_bullet.warnLineColored=True
             new_bullet.doColorCode(self.colorNum)
-            new_bullet.furryCollide=10
+            new_bullet.furryCollide=14
             bullets.add(new_bullet)
-            self.fireAngleAdj+=150/36*self.direction
+            self.fireAngleAdj+=80/36*self.direction

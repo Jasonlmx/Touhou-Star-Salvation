@@ -4249,7 +4249,7 @@ class Dumbledore(Boss):
             self.cardBonus=10000000
             self.fireCount=0
             self.framePunishment=1300
-            self.spellName='Holy Spell [Magic orb]'
+            self.spellName=u"想起 [虹彩陆离乱舞]"
             self.gotoPosition(360,220,50)
             self.randomAngle=random.random()*360
             global_var.get_value('spell_sound').play()
@@ -4284,10 +4284,10 @@ class Dumbledore(Boss):
         '''
 
         #test card 9 光彩陆离乱舞
-        if self.lastFrame>=160:
+        if self.lastFrame>=0:
             if self.lastFrame%300==0:
-                global_var.get_value('enemyGun_sound1').stop()
-                global_var.get_value('enemyGun_sound1').play()
+                global_var.get_value('enemyBigGun_sound').stop()
+                global_var.get_value('enemyBigGun_sound').play()
                 if self.fireCount%2==0:
                     direction=1
                 else:
@@ -4301,8 +4301,9 @@ class Dumbledore(Boss):
                 self.randomAngle=random.random()*360
                 self.fireCount+=1
         if self.lastFrame%300==260:
+            global_var.get_value('ch00_sound').play()
             new_effect=Effect.powerUp()
-            new_effect.initial((self.tx,self.ty),400,40,(255,255,255),2,3,10)
+            new_effect.initial((self.tx,self.ty),500,40,(255,255,255),5,3,20)
             effects.add(new_effect)
         if self.lastFrame%300==0 and self.lastFrame>300:
             self.gotoPosition(random.random()*80+320,random.random()*30+200,60)
