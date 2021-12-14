@@ -1722,7 +1722,7 @@ class laser_line(Bullet):
             self.kill()
     
     def doWarnLine(self):
-        while not (self.bx>=660 or self.bx<=60 or self.by>=690 or self.by<=30):
+        while not (self.bx>=660+10 or self.bx<=60-10 or self.by>=690+10 or self.by<=30-10):
             self.bx+=math.cos(self.degree/180*math.pi)*self.width
             self.by+=math.sin(self.degree/180*math.pi)*self.width
         self.endPoint=[self.bx,self.by]
@@ -1771,7 +1771,7 @@ class laser_line(Bullet):
         if self.ifSimplifiedMode:
             pygame.draw.line(screen,self.colorRGB[self.colorNum],(self.tx,self.ty),self.endPoint,width)
             if width>=3:
-                pygame.draw.line(screen,(255,255,255),(self.tx,self.ty),self.endPoint,round(width/2))
+                pygame.draw.line(screen,(255,255,255),(self.tx,self.ty),self.endPoint,round(width/2.5))
         else:
             length=round(math.sqrt((self.tx-self.endPoint[0])**2+(self.ty-self.endPoint[1])**2))
             
@@ -2036,6 +2036,7 @@ class star_Bullet_fountain(big_star_Bullet):
 
     def fire(self,bullets,effects):
         if self.touched and self.touchFrame==1:
+            '''
             new_laser=laser_Bullet_main()
             new_laser.length=60
             new_laser.initial(self.tx,self.ty,1)
@@ -2055,6 +2056,23 @@ class star_Bullet_fountain(big_star_Bullet):
             new_effect.initial(self.tx,self.ty,84,48,60)
             effects.add(new_effect)
             global_var.get_value('laser_sound').play()
+            '''
+            new_laser=laser_line()
+            new_laser.initial(self.tx,self.ty,1)
+            new_laser.ifSimplifiedMode=True
+            if self.touch_direction==1:
+                dg=180
+            elif self.touch_direction==2:
+                dg=270
+            elif self.touch_direction==3:
+                dg=0
+            elif self.touch_direction==4:
+                dg=90
+            new_laser.setFeature(dg,9,80,20,40,10,10,70)
+            new_laser.warnLineColored=True
+            new_laser.furryCollide=7
+            new_laser.doColorCode(8)
+            bullets.add(new_laser)
         if self.touched and self.touchFrame%8==0 and self.touchFrame<=90:
             new_bullet=orb_Bullet_gravity()
             new_bullet.setGravity(0.05)
@@ -2782,14 +2800,14 @@ class circle_laser_slave(Bullet):
             self.kill()
     
     def fire(self,bullets):
-        if self.lastFrame%10==0:
+        if self.lastFrame%8==0:
             self.countAngle()
             new_bullet=laser_line()
             new_bullet.initial(self.tx,self.ty,1)
-            new_bullet.setFeature(self.angle-self.fireAngleAdj+self.direction*60,8,160,60,48,10,10,-1)
+            new_bullet.setFeature(self.angle-self.fireAngleAdj+self.direction*60,8,150,60,48,10,10,50)
             new_bullet.ifSimplifiedMode=True
             new_bullet.warnLineColored=True
             new_bullet.doColorCode(self.colorNum)
-            new_bullet.furryCollide=14
+            new_bullet.furryCollide=9
             bullets.add(new_bullet)
             self.fireAngleAdj+=80/36*self.direction
