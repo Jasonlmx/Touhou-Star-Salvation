@@ -366,8 +366,10 @@ def loadImage():
         small_bullet_img.append(new_image)
     global_var.set_value('small_bullet_img',small_bullet_img)
 
-
-
+    titleStar=pygame.image.load('resource/title/titleStar.png')
+    titleStar=pygame.transform.smoothscale(titleStar,(64,64)).convert_alpha()
+    global_var.set_value('titleStar',titleStar)
+    
 class star_effect(pygame.sprite.Sprite):
     def __init__(self):
         super(star_effect,self).__init__()

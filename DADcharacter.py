@@ -1193,7 +1193,7 @@ class ghost_hufflepuff_spirit(spirit):
             self.getDistance()
             if self.distance>=60:
                 self.startAngle+=28.1
-                new_bullet=Bullet.orb_bullet_delay()
+                new_bullet=Bullet.scale_bullet_delay()
                 new_bullet.retainFrame=120
                 new_bullet.startSpeed=0.1
                 new_bullet.endSpeed=4
@@ -1203,7 +1203,7 @@ class ghost_hufflepuff_spirit(spirit):
                 new_bullet.loadColor('blue')
                 bullets.add(new_bullet)
                 self.startAngle2-=35.4
-                new_bullet=Bullet.orb_bullet_delay()
+                new_bullet=Bullet.scale_bullet_delay()
                 new_bullet.retainFrame=120
                 new_bullet.startSpeed=0.1
                 new_bullet.endSpeed=5
@@ -2176,9 +2176,9 @@ class Boss(pygame.sprite.Sprite):
             deg=180
         self.angle=deg
         return deg 
-    def addLastingCancel(self,tx,ty,slaves,maxFrame,doBonus,harsh=True):
+    def addLastingCancel(self,tx,ty,slaves,maxFrame,doBonus,harsh=True,cancelType=0):
         new_slave=Slave.bulletCancelLasting()
-        new_slave.initial(tx,ty,maxFrame,900,doBonus,harsh)
+        new_slave.initial(tx,ty,maxFrame,900,doBonus,harsh,cancelType)
         slaves.add(new_slave)
     def movement(self):
         if self.maxMovingFrame!=0:
@@ -3264,25 +3264,27 @@ class Dumbledore(Boss):
                 global_var.get_value('enemyGun_sound1').stop()
                 global_var.get_value('enemyGun_sound1').play()
                 global_var.set_value('enemyFiring1',True)
-            new_bullet=Bullet.big_star_Bullet()
+            new_bullet=Bullet.scale_Bullet()
             new_bullet.initial(self.tx,self.ty,1)
-            new_bullet.selfTarget(player.cx,player.cy,4)
+            new_bullet.selfTarget(player.cx,player.cy,5)
             new_bullet.countAngle()
             angle=new_bullet.angle
-            new_bullet.doColorCode(1)
+            new_bullet.loadColor('red')
+            #new_bullet.doColorCode(1)
             bullets.add(new_bullet)
             for i in range(-2,3):
                 if i!=0:
-                    new_bullet=Bullet.big_star_Bullet()
+                    new_bullet=Bullet.scale_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.setSpeed(angle+i*40,4)
-                    new_bullet.doColorCode(1)
+                    new_bullet.setSpeed(angle+i*40,5)
+                    new_bullet.loadColor('red')
+                    #new_bullet.doColorCode(1)
                     bullets.add(new_bullet)
             for i in range(1,6):
                 for j in range(-2,3):
-                    new_bullet=Bullet.orb_Bullet()
+                    new_bullet=Bullet.scale_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.setSpeed(angle+j*40,4-i*0.5)
+                    new_bullet.setSpeed(angle+j*40,5-i*0.7)
                     new_bullet.loadColor('red')
                     bullets.add(new_bullet)
 
@@ -3292,7 +3294,7 @@ class Dumbledore(Boss):
 
         if self.health<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,40,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,30,True,cancelType=2)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3311,7 +3313,7 @@ class Dumbledore(Boss):
         
         if self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,40,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,30,True,cancelType=2)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3403,7 +3405,7 @@ class Dumbledore(Boss):
             effects.add(new_effect)
         self.cardBonus-=self.framePunishment
         if self.lastFrame>=80:
-            if (self.lastFrame-80)%250==125:
+            if (self.lastFrame-80)%250==0:
                 if self.percentHealth<=25:
                     s_interval=2
                     s_speed=7
@@ -3602,6 +3604,7 @@ class Dumbledore(Boss):
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.selfTarget(player.cx,player.cy,5)
                     new_bullet.doColorCode(3)
+                    new_bullet.attColorNow=3
                     bullets.add(new_bullet)
                     global_var.get_value('enemyGun_sound1').play()
             elif (self.lastFrame-70)%700==550:
@@ -3611,7 +3614,8 @@ class Dumbledore(Boss):
                 new_bullet.countAngle()
                 angle=new_bullet.angle-180
                 new_bullet.setSpeed(angle,5)
-                new_bullet.doColorCode(3)
+                new_bullet.doColorCode(2)
+                new_bullet.attColorNow=2
                 bullets.add(new_bullet)
                 global_var.get_value('enemyGun_sound1').play()
                 for i in range(-1,2):
@@ -3619,7 +3623,8 @@ class Dumbledore(Boss):
                         new_bullet=Bullet.star_Bullet_fountain()
                         new_bullet.initial(self.tx,self.ty,1)
                         new_bullet.setSpeed(angle+i*40,5)
-                        new_bullet.doColorCode(3)
+                        new_bullet.doColorCode(2)
+                        new_bullet.attColorNow=2
                         bullets.add(new_bullet)
 
         if (self.lastFrame-70)%700==450:
@@ -3793,6 +3798,7 @@ class Dumbledore(Boss):
             self.health=50000
             self.gotoPosition(360,270,40)
             self.randomAngle=random.random()*360
+            self.angleAddon=0
             #self.randomAngle2=random.random()*360
             self.frameLimit=2100
         
@@ -3818,7 +3824,9 @@ class Dumbledore(Boss):
                         new_bullet.setSpeed(self.randomAngle+i*(360/5)+j*2,4.7)
                         new_bullet.loadColor('blue')
                         bullets.add(new_bullet)
-            self.randomAngle-=13
+            self.angleAddon+=2
+            self.angleAddon=self.angleAddon%360
+            self.randomAngle-=13-self.angleAddon
 
         if (self.lastFrame-80)%180==90:
             self.gotoPosition(random.random()*120+300,random.random()*50+150,80)
@@ -4305,8 +4313,8 @@ class Dumbledore(Boss):
             new_effect=Effect.powerUp()
             new_effect.initial((self.tx,self.ty),500,40,(255,255,255),5,3,20)
             effects.add(new_effect)
-        if self.lastFrame%300==0 and self.lastFrame>300:
-            self.gotoPosition(random.random()*80+320,random.random()*30+200,60)
+        if self.lastFrame%300==150 and self.lastFrame>0:
+            self.gotoPosition(random.random()*200+260,random.random()*60+180,60)
         #spell end
         if self.health<=0:
             #self.cancalAllBullet(bullets,items,effects,True)

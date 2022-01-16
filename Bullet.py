@@ -2016,6 +2016,9 @@ class star_Bullet_fountain(big_star_Bullet):
         self.touch_direction=0
         self.randomAngle=random.random()*360
         self.eruptRandomAngle=16
+        self.attachColor=[0,1,4,5,6,9,12,15]
+        self.attColorNow=0
+        #[0,1,1,3,2,3,4,4,4,5,5,5,6,6,6,7]
 
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
@@ -2023,7 +2026,8 @@ class star_Bullet_fountain(big_star_Bullet):
         if self.touched:
             self.touchFrame+=1
         self.movement()
-        if not self.touched and self.lastFrame%20==0:
+        if not self.touched and self.lastFrame%6==0:
+            global_var.get_value('kira_sound').stop()
             global_var.get_value('kira_sound').play()
         self.fire(bullets,effects)
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
@@ -2071,7 +2075,7 @@ class star_Bullet_fountain(big_star_Bullet):
             new_laser.setFeature(dg,9,80,20,40,10,10,70)
             new_laser.warnLineColored=True
             new_laser.furryCollide=7
-            new_laser.doColorCode(8)
+            new_laser.doColorCode(self.attachColor[self.attColorNow])
             bullets.add(new_laser)
         if self.touched and self.touchFrame%8==0 and self.touchFrame<=90:
             new_bullet=orb_Bullet_gravity()
@@ -2105,7 +2109,8 @@ class star_Bullet_fountain(big_star_Bullet):
                 new_bullet=star_Bullet()
                 new_bullet.initial(self.tx,self.ty,1)
                 new_bullet.setSpeed(self.randomAngle+i*(360/18),2.5)
-                new_bullet.loadColor('blue')
+                new_bullet.doColorCode(self.attachColor[self.attColorNow])
+                #new_bullet.loadColor('blue')
                 bullets.add(new_bullet)
             global_var.get_value('enemyGun_sound2').play()
         if self.touchFrame>=270:
@@ -2481,16 +2486,16 @@ class big_Bullet_tracing_test(big_Bullet):
                 angle=random.random()*360
                 speed=0.1
                 for i in range(0,1):
-                    new_bullet=orb_bullet_delay()
+                    new_bullet=scale_bullet_delay()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(angle-i*(360/3),speed)
                     new_bullet.startSpeed=speed
                     new_bullet.loadColor('green')
                     bullets.add(new_bullet)
 
-class orb_bullet_delay(orb_Bullet):
+class scale_bullet_delay(scale_Bullet):
     def __init__(self):
-        super(orb_bullet_delay,self).__init__()
+        super(scale_bullet_delay,self).__init__()
         self.retainFrame=70
         self.startSpeed=0.1
         self.endSpeed=4.5
@@ -2625,6 +2630,7 @@ class big_star_Bullet_slave(big_star_Bullet):
         self.fireCount=0
         self.cancalable=False
         self.toggle=0
+        self.setRandom=random.random()*360
     def setSpeed(self,angle,speed):
         s=math.sin(math.radians(angle))
         c=math.cos(math.radians(angle))
@@ -2681,6 +2687,8 @@ class big_star_Bullet_slave(big_star_Bullet):
                 new_bullet.loadColor('blue')
             else:
                 new_bullet.loadColor('orange')
+            #new_bullet.setSpeed(self.angle+92*self.directAdj,0.000001)
+            #new_bullet.speed=4-(self.fireCount-1)*0.00
             new_bullet.setSpeed(self.angle+(100+self.fireCount*3)*self.directAdj,0.001)
             new_bullet.speed=4-(self.fireCount-1)*0.05
             bullets.add(new_bullet)
@@ -2804,7 +2812,7 @@ class circle_laser_slave(Bullet):
             self.countAngle()
             new_bullet=laser_line()
             new_bullet.initial(self.tx,self.ty,1)
-            new_bullet.setFeature(self.angle-self.fireAngleAdj+self.direction*60,8,150,60,48,10,10,50)
+            new_bullet.setFeature(self.angle-self.fireAngleAdj+self.direction*60,8,150,60,48,15,15,-1)
             new_bullet.ifSimplifiedMode=True
             new_bullet.warnLineColored=True
             new_bullet.doColorCode(self.colorNum)

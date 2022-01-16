@@ -12,6 +12,130 @@ import Effect
 import Item
 import gameRule
 
+class titleStar(pygame.sprite.Sprite):
+    def __init__(self):
+        super(titleStar,self).__init__()
+        self.tx=0.0
+        self.ty=0.0
+        self.speedx=0
+        self.speedy=0
+        self.image=pygame.Surface((64,64)).convert_alpha()
+        self.image.fill((0,0,0,0))
+        self.image.blit(global_var.get_value('titleStar'),(0,0),(0,0,64,64))
+        self.lastFrame=0
+        self.angle=random.random()*360
+        self.rDirection=random.randint(0,1)
+        if self.rDirection==0:
+            self.rDirection=-1
+        self.rotation=(random.random()*1.5+1.2)*self.rDirection
+        self.maxFrame=250+random.randint(0,60)
+        self.shadowInt=4
+        self.voidifyFrame=30
+    def initial(self,posx,posy):
+        self.tx=posx
+        self.ty=posy
+    
+    def movement(self):
+        tick=global_var.get_value('DELTA_T')
+        self.tx+=self.speedx*60/1000*tick
+        self.ty+=self.speedy*60/1000*tick
+    
+    def speedAlter(self,speedx,speedy):
+        self.speedx=speedx
+        self.speedy=speedy
+    
+    def countAngle(self):
+        if self.speedx!=0:
+            t=self.speedy/self.speedx
+            deg=math.atan(t)*180/math.pi
+        else: 
+            if self.speedy>0:
+                deg=90
+            if self.speedy<0:
+                deg=270
+        if deg<0:
+            deg+=360
+        if self.speedy>0 and deg>=180:
+            deg=deg-180
+        if self.speedy<0 and deg<=180:
+            deg=deg+180
+        if self.speedy==0 and self.speedx<0:
+            deg=180
+        self.angle=deg
+
+    def setSpeed(self,angle,speed):
+        s=math.sin(math.radians(angle))
+        c=math.cos(math.radians(angle))
+        self.speedy=s*speed
+        self.speedx=c*speed
+
+    def checkValid(self):
+        if self.lastFrame>self.maxFrame:
+            self.kill()
+    def update(self,screen,titleDec):
+        self.lastFrame+=1
+        self.angle+=self.rotation
+        self.movement()
+        self.draw(screen)
+        if self.lastFrame%self.shadowInt==0:
+            self.newShadow(titleDec)
+        self.checkValid()
+    
+    def newShadow(self,titleDec):
+        new_shadow=starShadow((self.tx,self.ty),80,self.angle)
+        titleDec.add(new_shadow)
+
+    def draw(self,screen):
+        pos=(round(self.tx)-32,round(self.ty)-32)
+        if self.lastFrame<=self.voidifyFrame:
+            tempImg=self.image
+            alpha=round((256-56)*self.lastFrame/self.voidifyFrame+56)
+            tempImg.set_alpha(alpha)
+            gF.drawRotation(tempImg,pos,self.angle,screen)
+        elif (self.maxFrame-self.lastFrame)<=self.voidifyFrame:
+            tempImg=self.image
+            alpha=round((256-56)*(self.maxFrame-self.lastFrame)/self.voidifyFrame+56)
+            tempImg.set_alpha(alpha)
+            gF.drawRotation(tempImg,pos,self.angle,screen)
+        else:
+            #pos=(round(self.tx)-32,round(self.ty)-32)
+            gF.drawRotation(self.image,pos,self.angle,screen)
+            #screen.blit(self.image,pos)
+
+class starShadow(pygame.sprite.Sprite):
+    def __init__(self,pos,length=20,angle=0):
+        super(starShadow,self).__init__()
+        self.maxFrame=length
+        self.angle=angle
+        self.pos=pos
+        self.image=pygame.Surface((64,64)).convert_alpha()
+        self.image.fill((0,0,0,0))
+        self.image.blit(global_var.get_value('titleStar'),(0,0),(0,0,64,64))
+        self.lastFrame=0
+        
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
+    
+    def update(self,screen,*arg):
+        self.lastFrame+=1
+        self.draw(screen)
+        self.checkValid()
+    
+    def draw(self,screen):
+        self.percentage=self.lastFrame/self.maxFrame
+        self.alpha=round((120-0)*(1-self.percentage)+0)
+        self.size=round(33*(1-self.percentage))+1
+        tempImg=pygame.Surface((64,64)).convert_alpha()
+        tempImg.fill((0,0,0,0))
+        tempImg.blit(self.image,(0,0),(0,0,64,64))
+        tempImg=pygame.transform.smoothscale(tempImg,(self.size,self.size))
+        tempImg.set_alpha(self.alpha)  
+        x,y=self.pos
+        pos=(round(x-self.size/2),round(y-self.size/2))
+        gF.drawRotation(tempImg,pos,self.angle,screen)
+
+
 class Menu():
     def __init__(self):
         super(Menu,self).__init__()
@@ -37,14 +161,26 @@ class Menu():
         self.ifSpell=False
         self.substract=False
         self.plus=False
-    def update(self,screen,pressed_keys,pressed_keys_last,player):
+        self.starInt=40
+    def update(self,screen,pressed_keys,pressed_keys_last,player,titleDec):
         self.lastFrame+=1
+        self.addTitleStar(titleDec)
         if self.lastFrame>360:
             self.lastFrame=self.lastFrame%360
         screen.blit(self.image,(0,0))
         self.alterSelect(pressed_keys,pressed_keys_last)
-        self.drawSign(screen)
+        self.drawSign(screen,titleDec)
         self.doSelection(pressed_keys,pressed_keys_last,player)
+    
+    def addTitleStar(self,titleDec):
+        if self.lastFrame%self.starInt==0:
+            new_star=titleStar()
+            i_x=100+random.random()*860
+            i_y=random.random()*5+10
+            new_star.initial(i_x,i_y)
+            new_star.setSpeed(105+random.random()*10,1.8+0.6*random.random())
+            titleDec.add(new_star)
+
     def alterSelect(self,pressed_keys,pressed_keys_last):
         if self.menuStair!=2 and self.menuStair!=3:
             if not (pressed_keys[K_UP] and pressed_keys_last[K_UP]):
@@ -119,8 +255,16 @@ class Menu():
             self.selectNum[self.menuStair]=0
         elif self.selectNum[self.menuStair]<0:
             self.selectNum[self.menuStair]=self.stairMax[self.menuStair]
-    def drawSign(self,screen):
+    def drawSign(self,screen,titleDec):
+        #stars
+        if self.menuStair!=0:
+            for entity in titleDec:
+                entity.update(screen,titleDec)
+
         if self.menuStair==0:
+            screen.blit(self.tachie,(600,90))
+            for entity in titleDec:
+                entity.update(screen,titleDec)
             self.logoPosAdj=[math.sin(self.lastFrame*math.pi/180)*20,math.sin(self.lastFrame*0.5*math.pi/180)*5]
             screen.blit(self.kanjiLogo,(100+self.logoPosAdj[0],30+self.logoPosAdj[1]))
             self.lightStrength=0.5*math.sin(self.lastFrame*2*math.pi/180)+0.5
@@ -128,7 +272,6 @@ class Menu():
             self.lightLogo.set_alpha(alpha)
             screen.blit(self.lightLogo,(100-5,164))
             screen.blit(self.engLogo,(100,164))
-            screen.blit(self.tachie,(600,90))
             for i in range(0,8):
                 if i!=self.selectNum[self.menuStair]:
                     screen.blit(self.shadow[i],(100,250+i*48))
@@ -155,7 +298,7 @@ class Menu():
                 else:
                     pracText=self.font.render('Test: Start From non-Spell No.'+str(self.testSpellNum),True,(255,255,255))
                 screen.blit(pracText,(200,300))
-        
+
     def doSelection(self,pressed_keys,pressed_keys_last,player):
         if pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z]:
             if self.menuStair==0:

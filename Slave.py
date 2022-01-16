@@ -262,14 +262,21 @@ class bulletCancelLasting(pygame.sprite.Sprite):
         self.maxRadius=900
         self.lastFrame=0
         self.doBonus=False
-    def initial(self,tx,ty,maxFrame=12,maxRadius=900,doBonus=False,harsh=False):
+        self.cancelType=0
+        self.ySign=0
+        self.screenHeight=690-30
+    def initial(self,tx,ty,maxFrame=12,maxRadius=900,doBonus=False,harsh=False,cancelType=0):
         self.tx=tx
         self.ty=ty
         self.maxFrame=maxFrame
         self.maxRadius=maxRadius
         self.doBonus=doBonus
         self.harsh=harsh
-
+        self.cancelType=cancelType#0:central,1:vertical(down->up),2:vertical(up->down)
+        if self.cancelType==1:
+            self.ySign=690
+        elif self.cancelType==2:
+            self.ySign=30        
     def checkValid(self):
         if self.lastFrame>=self.maxFrame:
             self.kill()
@@ -281,7 +288,17 @@ class bulletCancelLasting(pygame.sprite.Sprite):
 
     def cancelBullet(self,bullets,effects,items,radius):
         for bullet in bullets:
-            if self.getDistance(bullet.tx,bullet.ty)<radius:
+            cancel=False
+            if self.cancelType==0:
+                if self.getDistance(bullet.tx,bullet.ty)<radius:
+                    cancel=True
+            elif self.cancelType==1:
+                if bullet.ty>=self.ySign:
+                    cancel=True
+            elif self.cancelType==2:
+                if bullet.ty<=self.ySign:
+                    cancel=True
+            if cancel:
                 if (bullet.cancalable or self.harsh) and bullet.type!=15:
                     new_effect=Effect.bulletVanish()
                     exception=(5,7,10,11,12,13,15,16)
@@ -304,6 +321,12 @@ class bulletCancelLasting(pygame.sprite.Sprite):
 
     def update(self,screen,frame,bullets,effects,items):
         self.lastFrame+=1
-        radius=self.maxRadius*(self.lastFrame/self.maxFrame)
+        radius=0
+        if self.cancelType==0:
+            radius=self.maxRadius*(self.lastFrame/self.maxFrame)
+        elif self.cancelType==1:
+            self.ySign-=self.screenHeight/self.maxFrame
+        elif self.cancelType==2:
+            self.ySign+=self.screenHeight/self.maxFrame
         self.cancelBullet(bullets,effects,items,radius)
         self.checkValid()

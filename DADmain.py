@@ -122,6 +122,7 @@ stars=pygame.sprite.Group()
 items=pygame.sprite.Group()
 backgrounds=pygame.sprite.Group()
 bosses=pygame.sprite.Group()
+titleDec=pygame.sprite.Group()#for decoration of title frame, updated in menu.Menu()
 gameRule.addStars(screen,stars)
 gF.doBackground(screen,backgrounds)
 
@@ -532,7 +533,7 @@ while running:
         global_var.set_value('enemySum',enemySum)
         global_var.set_value('bulletSum',bulletSum)
     else:
-        mainMenu.update(screen,pressed_keys,pressed_keys_last,player)
+        mainMenu.update(screen,pressed_keys,pressed_keys_last,player,titleDec)
         if mainMenu.playerReset:
             if global_var.get_value('playerNum')==0:
                 player=DADcharacter.Reimu()
