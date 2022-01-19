@@ -23,14 +23,16 @@ class titleStar(pygame.sprite.Sprite):
         self.image.fill((0,0,0,0))
         self.image.blit(global_var.get_value('titleStar'),(0,0),(0,0,64,64))
         self.lastFrame=0
-        self.angle=random.random()*360
+        self.rAngle=random.random()*360
         self.rDirection=random.randint(0,1)
         if self.rDirection==0:
             self.rDirection=-1
         self.rotation=(random.random()*1.5+1.2)*self.rDirection
-        self.maxFrame=250+random.randint(0,60)
+        self.maxFrame=270+random.randint(0,80)
         self.shadowInt=4
         self.voidifyFrame=30
+        self.speed=0
+        self.dDeg=-0.07*random.random()-0.07
     def initial(self,posx,posy):
         self.tx=posx
         self.ty=posy
@@ -68,21 +70,29 @@ class titleStar(pygame.sprite.Sprite):
         c=math.cos(math.radians(angle))
         self.speedy=s*speed
         self.speedx=c*speed
+        self.speed=speed
 
+    def arc(self):
+        if self.angle>95:
+            angle=self.angle+self.dDeg
+            self.setSpeed(angle,self.speed)
+       
     def checkValid(self):
         if self.lastFrame>self.maxFrame:
             self.kill()
     def update(self,screen,titleDec):
         self.lastFrame+=1
-        self.angle+=self.rotation
+        self.rAngle+=self.rotation
         self.movement()
+        self.countAngle()
+        self.arc()
         self.draw(screen)
         if self.lastFrame%self.shadowInt==0:
             self.newShadow(titleDec)
         self.checkValid()
     
     def newShadow(self,titleDec):
-        new_shadow=starShadow((self.tx,self.ty),80,self.angle)
+        new_shadow=starShadow((self.tx,self.ty),80,self.rAngle)
         titleDec.add(new_shadow)
 
     def draw(self,screen):
@@ -91,15 +101,15 @@ class titleStar(pygame.sprite.Sprite):
             tempImg=self.image
             alpha=round((256-56)*self.lastFrame/self.voidifyFrame+56)
             tempImg.set_alpha(alpha)
-            gF.drawRotation(tempImg,pos,self.angle,screen)
+            gF.drawRotation(tempImg,pos,self.rAngle,screen)
         elif (self.maxFrame-self.lastFrame)<=self.voidifyFrame:
             tempImg=self.image
             alpha=round((256-56)*(self.maxFrame-self.lastFrame)/self.voidifyFrame+56)
             tempImg.set_alpha(alpha)
-            gF.drawRotation(tempImg,pos,self.angle,screen)
+            gF.drawRotation(tempImg,pos,self.rAngle,screen)
         else:
             #pos=(round(self.tx)-32,round(self.ty)-32)
-            gF.drawRotation(self.image,pos,self.angle,screen)
+            gF.drawRotation(self.image,pos,self.rAngle,screen)
             #screen.blit(self.image,pos)
 
 class starShadow(pygame.sprite.Sprite):
@@ -161,7 +171,7 @@ class Menu():
         self.ifSpell=False
         self.substract=False
         self.plus=False
-        self.starInt=40
+        self.starInt=180
     def update(self,screen,pressed_keys,pressed_keys_last,player,titleDec):
         self.lastFrame+=1
         self.addTitleStar(titleDec)
@@ -175,10 +185,10 @@ class Menu():
     def addTitleStar(self,titleDec):
         if self.lastFrame%self.starInt==0:
             new_star=titleStar()
-            i_x=100+random.random()*860
+            i_x=300+random.random()*660
             i_y=random.random()*5+10
             new_star.initial(i_x,i_y)
-            new_star.setSpeed(105+random.random()*10,1.8+0.6*random.random())
+            new_star.setSpeed(135+random.random()*10,1.8+0.6*random.random())
             titleDec.add(new_star)
 
     def alterSelect(self,pressed_keys,pressed_keys_last):
