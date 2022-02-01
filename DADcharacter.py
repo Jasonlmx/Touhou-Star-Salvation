@@ -581,7 +581,7 @@ class butterfly_part4_1(butterfly):
         self.health=6000
         self.lastFrame=0
         self.fireAngle=random.random()*60
-
+        self.fireCount=0
     def ai_move(self):
         if self.lastFrame<=80:
             self.speedy=1.6
@@ -592,7 +592,6 @@ class butterfly_part4_1(butterfly):
     
     def fire(self,frame,bullets,effects):
         if self.lastFrame>=80 and self.lastFrame%8==0:
-            self.fireAngle-=6
             '''
             new_effect=Effect.bulletCreate(3)
             new_effect.initial(self.tx,self.ty,256,128,8)
@@ -602,16 +601,21 @@ class butterfly_part4_1(butterfly):
                 global_var.get_value('kira_sound').stop()
                 global_var.get_value('kira_sound').play()
                 global_var.set_value('kiraing',True)
+            self.fireCount+=1
+            if self.fireCount%20<10:
+                rotationAdj=-1
+            else:
+                rotationAdj=1
             for i in range(0,10):
                 new_bullet=Bullet.star_Bullet_Part4_Hex()
                 new_bullet.initial(self.tx,self.ty,self.occupy)
-                new_bullet.direction=1
+                new_bullet.direction=-rotationAdj
                 new_bullet.setSpeed(self.fireAngle-i*36,5)
                 new_bullet.speed=5
                 new_bullet.rotationAngle=0.8
                 new_bullet.loadColor('purple')
                 bullets.add(new_bullet)
-    
+            self.fireAngle+=6*rotationAdj
     def dropItem(self,items):
         self.createItem(items,3,1)
         self.createItem(items,1,8)
@@ -742,6 +746,7 @@ class spirit_part6_1(spirit):
         if self.positive==0:
             self.positive=-1
         self.fireFrame=random.randint(0,40)
+        self.fireAngle=random.random()*360
     def ai_move(self):
         if self.lastFrame<=40:
             if self.num==0:
@@ -759,20 +764,25 @@ class spirit_part6_1(spirit):
     def fire(self,frame,bullets,effects):
         self.fireFrame+=1
         if frame>=3000:
-            interval=18
+            interval=5
             code=0
-            intense=round(30*(3300-frame)/300+30)
-            changeSpeed=4
-        else:
-            interval=25
-            code=2
-            intense=12
+            intense=5
             changeSpeed=6
-        if self.fireFrame%interval==0 and self.ty<=500:
-            angle=random.random()*360
+            rotation=9.3
+        else:
+            interval=8
+            code=2
+            intense=3
+            changeSpeed=5
+            rotation=13
+        if self.fireFrame%interval==0 and self.ty<=300:
+            self.fireAngle+=rotation*self.positive
             if not global_var.get_value('enemyFiring2'):
+                global_var.get_value('enemyGun_sound2').stop()
                 global_var.get_value('enemyGun_sound2').play()
                 global_var.set_value('enemyFiring2',True)
+
+            '''
             if code==2:
                 new_effect=Effect.bulletCreate(5)
             else:
@@ -781,18 +791,19 @@ class spirit_part6_1(spirit):
             effects.add(new_effect)
             new_effect.initial(self.tx,self.ty,128,64,6)
             effects.add(new_effect)
+            '''
             for i in range(0,intense):
-                new_bullet=Bullet.orb_Bullet_Part6_delay()
+                new_bullet=Bullet.scale_Bullet()
                 new_bullet.initial(self.rect.centerx,self.rect.centery,self.occupy)
-                new_bullet.setSpeed(angle+i*(360/intense),15)
+                new_bullet.setSpeed(self.fireAngle+i*(360/intense),changeSpeed)
                 #new_bullet.doColorCode(code)
                 if code==0:
                     new_bullet.loadColor('blue')
                 else:
                     new_bullet.loadColor('red')
-                new_bullet.changeAngle=self.positive*90                    
-                new_bullet.speed=0.5
-                new_bullet.changeSpeed=changeSpeed
+                #new_bullet.changeAngle=self.positive*90                    
+                #new_bullet.speed=0.5
+                #new_bullet.changeSpeed=changeSpeed
                 bullets.add(new_bullet)
 
     def dropItem(self,items):

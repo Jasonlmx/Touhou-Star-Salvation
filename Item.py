@@ -96,8 +96,8 @@ class item(pygame.sprite.Sprite):
                 px=global_var.get_value('player1x')
                 py=global_var.get_value('player1y')
                 self.selfTarget(px,py,self.followSpeed)
-                self.followSpeed+=0.1
-        elif self.followPlayer==1 and self.lastFrame>=20:
+                self.followSpeed+=0.2
+        elif self.followPlayer==1 and self.lastFrame>=40:
             px=global_var.get_value('player1x')
             py=global_var.get_value('player1y')
             self.selfTarget(px,py,self.followSpeed)

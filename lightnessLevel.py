@@ -78,18 +78,22 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
 
     #part6 F2500~3250
     if frame>=2500 and frame<=3250:
+        adj=1
         if frame%50==0:
             if frame%250==0:
                 new_enemy=DADcharacter.spirit_part6_1()
                 new_enemy.initialize(460,20,1,-1)
+                new_enemy.positive=adj*1
                 enemys.add(new_enemy)
             elif frame%200==0:
                 new_enemy=DADcharacter.spirit_part6_1()
                 new_enemy.initialize(260,20,1,-1)
+                new_enemy.positive=adj*-1
                 enemys.add(new_enemy)
             elif frame%150==0:
                 new_enemy=DADcharacter.spirit_part6_1()
                 new_enemy.initialize(510,20,1,-1)
+                new_enemy.positive=adj*1
                 new_enemy.num=1
                 enemys.add(new_enemy)
             elif frame%100==0:
@@ -100,6 +104,7 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
             else:
                 new_enemy=DADcharacter.spirit_part6_1()
                 new_enemy.initialize(210,20,1,-1)
+                new_enemy.positive=adj*-1
                 new_enemy.num=1
                 enemys.add(new_enemy)
     #part7 mid-path boss F3300~8000

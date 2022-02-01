@@ -53,7 +53,7 @@ class fire_effect_reimu_main(pygame.sprite.Sprite):
         self.frame=0
         self.part=0
         self.interval=5
-        self.speed=3
+        self.speed=4
         self.temp=[]
         for i in range(0,4):
             temp=pygame.Surface((24,24)).convert_alpha()
@@ -93,7 +93,7 @@ class fire_effect_reimu_target(pygame.sprite.Sprite):
         self.frame=0
         self.part=0
         self.interval=5
-        self.speed=3
+        self.speed=4
         self.temp=[]
         for i in range(0,4):
             temp=pygame.Surface((24,24)).convert_alpha()
