@@ -266,8 +266,10 @@ while running:
     global_var.set_value('hitting',False)
     for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                pygame.quit()
                 sys.exit()
     if pressed_keys[K_F11]:
+            pygame.quit()
             sys.exit()
 
     if not global_var.get_value('menu'):

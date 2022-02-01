@@ -320,6 +320,7 @@ class Menu():
                     self.menuStair+=1
                 elif self.selectNum[self.menuStair]==7:
                     global_var.get_value('ok_sound').play()
+                    pygame.quit()
                     sys.exit()
                 else:
                     global_var.get_value('invalid_sound').stop()

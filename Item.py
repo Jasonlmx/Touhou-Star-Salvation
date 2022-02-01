@@ -140,8 +140,8 @@ class item(pygame.sprite.Sprite):
             screen.blit(self.alias,(self.rect.centerx-12,30))
         else:
             if self.type!=7:
-                if self.lastFrame<=27:
-                    if self.lastFrame%3==0:
+                if self.lastFrame<=48:
+                    if self.lastFrame%2==0:
                         self.rotationAngle-=45
                     gF.drawRotation(self.image,(self.rect.centerx-12,self.rect.centery-12),self.rotationAngle,screen)
                 else:
