@@ -1668,26 +1668,48 @@ class Marisa(Player):
             playerGuns.add(new_fire)
             shift_down=global_var.get_value('shift_down')
 
+        if frame%8==0:
             #incline angle control:
             if not shift_down:
-                self.inclineAngle1+=5/2
+                self.inclineAngle1+=5/4
                 self.inclineAngle2+=10.625/2
             else:
-                self.inclineAngle1-=5/2
+                self.inclineAngle1-=5/4
                 self.inclineAngle2-=10.625/2
-            if self.inclineAngle1>=10:
-                self.inclineAngle1=10
-            if self.inclineAngle1<=2:
-                self.inclineAngle1=2
+            if self.inclineAngle1>=25/7:
+                self.inclineAngle1=25/7
+            if self.inclineAngle1<=8/7:
+                self.inclineAngle1=8/7
             if self.inclineAngle2>=25:
                 self.inclineAngle2=25
             if self.inclineAngle2<=8:
                 self.inclineAngle2=8
             
-            
+            difference=self.inclineAngle2-self.inclineAngle1
+            self.inclineAngleV_1=self.inclineAngle1+difference/3*1
+            self.inclineAngleV_2=self.inclineAngle1+difference/3*2
+            self.angleSet=[self.inclineAngle1,self.inclineAngleV_1,self.inclineAngleV_2,self.inclineAngle2]
             #create fire
-            if not shift_down:
-                
+            #if not shift_down:
+            if shift_down:
+                color='red'
+            else:
+                color='blue'
+
+            for i in range(0,self.powerLevel):
+                #if i%4//2==(frame%8/4):
+                new_fire=Bullet.inclineGun()
+                new_fire.image=global_var.get_value('playerFire_'+color)
+                new_fire.color=color
+                new_fire.initial(270-self.angleSet[i],self.cx+self.gunAdj[0],self.cy+self.gunAdj[1],self.inclineSpeed)
+                playerGuns.add(new_fire)
+                new_fire=Bullet.inclineGun()
+                new_fire.image=global_var.get_value('playerFire_'+color)
+                new_fire.color=color
+                new_fire.initial(270+self.angleSet[i],self.cx+self.gunAdj[0],self.cy+self.gunAdj[1],self.inclineSpeed)
+                playerGuns.add(new_fire)
+
+                '''
                 if self.powerLevel>=2 or frame%8==0:
                     new_fire=Bullet.inclineGun()
                     new_fire.color='blue'
@@ -1744,6 +1766,7 @@ class Marisa(Player):
                         new_fire.hit=hit
                         new_fire.initial(270+self.inclineAngle2,self.cx+self.gunAdj[0],self.cy+self.gunAdj[1],self.inclineSpeed)
                         playerGuns.add(new_fire)
+                '''
 
     def draw(self,screen):
         gunMax=50
@@ -3030,7 +3053,7 @@ class Dumbledore(Boss):
         
         if self.health<=0 or self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=True
             self.health=20000
@@ -3126,7 +3149,7 @@ class Dumbledore(Boss):
 
         if self.health<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3144,7 +3167,7 @@ class Dumbledore(Boss):
         
         if self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3212,7 +3235,7 @@ class Dumbledore(Boss):
                 
         if self.health<=0 or self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=True
             self.health=20000
@@ -3305,7 +3328,7 @@ class Dumbledore(Boss):
 
         if self.health<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,30,True,cancelType=2)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=2)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3324,7 +3347,7 @@ class Dumbledore(Boss):
         
         if self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,30,True,cancelType=2)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=2)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3388,7 +3411,7 @@ class Dumbledore(Boss):
 
         if self.health<=0 or self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=True
             self.health=20000
@@ -3499,7 +3522,7 @@ class Dumbledore(Boss):
 
         if self.health<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3518,7 +3541,7 @@ class Dumbledore(Boss):
         
         if self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3573,7 +3596,7 @@ class Dumbledore(Boss):
 
         if self.health<=0 or self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=True
             self.health=20000
@@ -3646,7 +3669,7 @@ class Dumbledore(Boss):
 
         if self.health<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3665,7 +3688,7 @@ class Dumbledore(Boss):
         
         if self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3715,7 +3738,7 @@ class Dumbledore(Boss):
         
         if self.health<=0 or self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=True
             self.health=20000
@@ -3771,7 +3794,7 @@ class Dumbledore(Boss):
 
         if self.health<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3792,7 +3815,7 @@ class Dumbledore(Boss):
         
         if self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3844,7 +3867,7 @@ class Dumbledore(Boss):
 
         if self.health<=0 or self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=True
             self.health=20000
@@ -3909,7 +3932,7 @@ class Dumbledore(Boss):
 
         if self.health<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,90,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -3928,7 +3951,7 @@ class Dumbledore(Boss):
         
         if self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,90,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -4010,7 +4033,7 @@ class Dumbledore(Boss):
                  
         if self.health<=0 or self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,60,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=True
             self.health=20000
@@ -4083,7 +4106,7 @@ class Dumbledore(Boss):
 
         if self.health<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -4102,7 +4125,7 @@ class Dumbledore(Boss):
         
         if self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
@@ -4248,7 +4271,7 @@ class Dumbledore(Boss):
         '''
         if self.health<=0 or self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
-            self.addLastingCancel(self.tx,self.ty,slaves,70,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=True
             self.health=20000

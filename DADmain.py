@@ -27,7 +27,7 @@ pygame.font.init() #initialize font
 pygame.mixer.init()
 pygame.mixer.set_num_channels(30)
 size = width,height = 960,720
-fullscreen = False
+fullscreen = True
 screen = pygame.display.set_mode(size,RESIZABLE|DOUBLEBUF)
 #size = width, height =  pygame.display.list_modes()[0]
 if fullscreen:
@@ -387,7 +387,7 @@ while running:
                     item.initial(item.tx,item.ty)
                     if player.lastLevel==3:
                         new_effect=Effect.wave()
-                        new_effect.initial((item.tx,item.ty),25,8,(67,247,17),5)
+                        new_effect.initial((item.tx,item.ty),25,8,(67,247,17),5)  
                         effects.add(new_effect)
             
             #watchers & effect generator

@@ -101,7 +101,7 @@ class item(pygame.sprite.Sprite):
             px=global_var.get_value('player1x')
             py=global_var.get_value('player1y')
             self.selfTarget(px,py,self.followSpeed)
-            self.followSpeed+=0.12
+            self.followSpeed+=0.40
         #screen.blit(self.image,(self.rect.centerx-6,self.rect.centery-6))
         #screen.blit(self.surf,self.rect)
         self.draw(screen)
