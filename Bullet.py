@@ -81,6 +81,7 @@ class playerGun(pygame.sprite.Sprite):
         self.speed=40
         self.color='green'
         self.hit=60
+        self.ifAdjSign=False
     def countAngle(self):
         if self.speedx!=0:
             t=self.speedy/self.speedx
@@ -118,8 +119,12 @@ class playerGun(pygame.sprite.Sprite):
 
     def movement(self):
         tick=global_var.get_value('DELTA_T')
-        self.tx+=self.speedx*60/1000*tick
-        self.ty+=self.speedy*60/1000*tick
+        if self.ifAdjSign:
+            self.tx+=self.speedx*60/1000*tick
+            self.ty+=self.speedy*60/1000*tick
+        else:
+            self.tx+=self.speedx
+            self.ty+=self.speedy
         self.truePos()
 
     def setSpeed(self,angle,speed):
@@ -488,6 +493,7 @@ class Bullet(pygame.sprite.Sprite):
         self.anmStay=False
         self.createMax=0
         self.lastFrame=0
+        self.ifAdjustSign=False
     def genEffect(self,effects):
         pass
 
@@ -522,8 +528,12 @@ class Bullet(pygame.sprite.Sprite):
     def movement(self):
         if not self.anmStay or self.lastFrame>=self.createMax:
             tick=global_var.get_value('DELTA_T')
-            self.tx+=self.speedx*60/1000*tick
-            self.ty+=self.speedy*60/1000*tick
+            if self.ifAdjustSign:
+                self.tx+=self.speedx*60/1000*tick
+                self.ty+=self.speedy*60/1000*tick
+            else:
+                self.tx+=self.speedx
+                self.ty+=self.speedy
         self.truePos()
     
     def speedAlter(self,speedx,speedy):

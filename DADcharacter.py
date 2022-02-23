@@ -1,4 +1,5 @@
 from typing import NewType
+from xxlimited import new
 import pygame,sys
 import random
 import math
@@ -1986,6 +1987,7 @@ class Boss(pygame.sprite.Sprite):
         self.frameLimit=1200
         self.ifSpell=False
         self.spellName=''
+        self.chSpellName=''
         self.cardBonus=10000000
         self.framePunishment=3700
         self.maxSpell=0
@@ -1999,7 +2001,13 @@ class Boss(pygame.sprite.Sprite):
         self.tempy=0
         self.deadImage=pygame.image.load('resource/sprite/sprite_dead.png').convert_alpha()
         self.percentHealth=0
+        self.if_chSpellName=False
     
+    def doSpellCardAttack(self,effects):
+        new_effect=Effect.spellAttackImage()
+        new_effect.initial(360,380)
+        effects.add(new_effect)
+
     def doShaking(self,num):
         global_var.set_value('shakeFrame',num)
     def setSpeed(self,angle,speed):
@@ -2090,8 +2098,12 @@ class Boss(pygame.sprite.Sprite):
     
     def drawSpellName(self,screen,myfont,player):
         if self.ifSpell:
-            spellText=myfont.render(self.spellName, True, (255, 255, 255))
-            shadowText=myfont.render(self.spellName, True, (100, 0, 0))
+            if self.if_chSpellName:
+                spellName=self.chSpellName
+            else:
+                spellName=self.spellName
+            spellText=myfont.render(spellName, True, (255, 255, 255))
+            shadowText=myfont.render(spellName, True, (100, 0, 0))
             w, h = spellText.get_size()
             if player.cx>=660-w and player.cy<=60+h and self.lastFrame>=70:
                 self.ifBlock=True
@@ -2312,6 +2324,7 @@ class satori(Boss):
         self.speedNum=0
         self.maxSpell=3
         self.boomImmune=False
+        self.if_chSpellName=True
     def draw(self,screen):
         image=pygame.Surface((72,99))
         image.set_alpha(256)
@@ -2434,6 +2447,7 @@ class satori(Boss):
             self.frameLimit=1800
             self.cardBonus=10000000
             self.spellName='Wand Sign[Shocking Magic]'
+            self.chSpellName='杖符「眩晕咒」'
             global_var.get_value('spell_sound').play()
             for background in backgrounds:
                 background.surf=global_var.get_value('star_bg')
@@ -2442,6 +2456,7 @@ class satori(Boss):
                 background.cardBg=True
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)
+            self.doSpellCardAttack(effects)
         self.cardBonus-=self.framePunishment
 
         if self.lastFrame%240>=120:
@@ -2541,8 +2556,10 @@ class satori(Boss):
             self.powerUp=False
             global_var.get_value('spell_sound').play()
             self.spellName='Star light[Milky Star Shower]'
+            self.chSpellName='星光「银河恒星雨」'
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)
+            self.doSpellCardAttack(effects)
         self.cardBonus-=self.framePunishment
         if not self.powerUp:
             randomBulletInterval=5
@@ -2664,6 +2681,7 @@ class Dumbledore(Boss):
         self.eventNum=0
         self.callNum=0
         self.maxSpell=10
+        self.chSpellName=''
         self.powerUp=False
         self.bossName=pygame.image.load('resource/boss/dumbledoreName.png')
         self.spell10_color=['red','blue','yellow','green']
@@ -2675,6 +2693,7 @@ class Dumbledore(Boss):
         self.alpha=0
         self.deadFrame=0
         self.boomImmune=True
+        self.if_chSpellName=True
     def drawBossName(self,screen):
         screen.blit(self.bossName,(60,692))
     def draw(self,screen):
@@ -2898,13 +2917,14 @@ class Dumbledore(Boss):
             self.frameLimit=3600
             self.cardBonus=10000000
             self.spellName='Glaring Star[Comets]'
+            self.chSpellName='耀星「彗星」'
             self.gotoPosition(360,120,50)
             self.framePunishment=1700
             self.bulletSpeed=3
             global_var.get_value('spell_sound').play()
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)
-        
+            self.doSpellCardAttack(effects)
         self.cardBonus-=self.framePunishment
         if  (self.lastFrame-50)%40==25:
             self.randomPos=(random.random()*400+160,random.random()*30+30)
@@ -3071,12 +3091,13 @@ class Dumbledore(Boss):
             self.frameLimit=3600
             self.cardBonus=10000000
             self.spellName='Star Rain[Star of hometown]'
+            self.chSpellName='星雨「故乡之星」'
             self.gotoPosition(360,120,50)
             self.framePunishment=1700
             global_var.get_value('spell_sound').play()
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)
-
+            self.doSpellCardAttack(effects)
         self.cardBonus-=self.framePunishment
         if self.lastFrame>=80:
             if self.lastFrame%10==0:
@@ -3254,11 +3275,12 @@ class Dumbledore(Boss):
             self.cardBonus=10000000
             self.framePunishment=1700
             self.spellName='Milky Way[Path of magic stardust]'
+            self.chSpellName='银河「星辰闪耀之路」'
             self.gotoPosition(360,120,50)
             global_var.get_value('spell_sound').play()
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)
-
+            self.doSpellCardAttack(effects)
         self.cardBonus-=self.framePunishment
         if self.lastFrame%10==0 and self.lastFrame>=80:
                 global_var.get_value('kira_sound').stop()
@@ -3430,6 +3452,7 @@ class Dumbledore(Boss):
             self.cardBonus=10000000
             self.framePunishment=300
             self.spellName='Crossing-over[Moon rise Sun dawn]'
+            self.chSpellName='联汇「月升日落」'
             self.gotoPosition(360,240,50)
             self.randomAngle=random.random()*360
             global_var.get_value('spell_sound').play()
@@ -3437,6 +3460,7 @@ class Dumbledore(Boss):
             self.fireCount=0
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)
+            self.doSpellCardAttack(effects)
         self.cardBonus-=self.framePunishment
         if self.lastFrame>=80:
             if (self.lastFrame-80)%250==0:
@@ -3615,11 +3639,13 @@ class Dumbledore(Boss):
             self.cardBonus=10000000
             self.framePunishment=1300
             self.spellName='Star Fountain[Enchanted Fragments]'
+            self.chSpellName='星之源泉「魔法碎片」'
             self.gotoPosition(360,240,50)
             self.randomAngle=random.random()*360
             global_var.get_value('spell_sound').play()
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)
+            self.doSpellCardAttack(effects)
         self.cardBonus-=self.framePunishment
         if self.lastFrame>=70:
             if (self.lastFrame-70)%700<=400 or (self.lastFrame-70)%700==690:
@@ -3757,12 +3783,14 @@ class Dumbledore(Boss):
             self.cardBonus=10000000
             self.framePunishment=1300
             self.spellName='Light-shade[FireFly and DarkStar]'
+            self.chSpellName='光暗「萤火与暗星」'
             self.gotoPosition(360,240,50)
             self.randomAngle=random.random()*360
             self.randomAngle2=random.random()*360
             global_var.get_value('spell_sound').play()
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)
+            self.doSpellCardAttack(effects)
         self.cardBonus-=self.framePunishment
 
         if self.lastFrame>=80:
@@ -3886,12 +3914,14 @@ class Dumbledore(Boss):
             self.cardBonus=10000000
             self.framePunishment=1300
             self.spellName='Summon[Star Duplication Curse]'
+            self.chSpellName='召唤「恒星复制诅咒」'
             self.gotoPosition(360,240,50)
             self.randomAngle=random.random()*360
             self.randomAngle2=random.random()*360
             global_var.get_value('spell_sound').play()
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)
+            self.doSpellCardAttack(effects)
         self.cardBonus-=self.framePunishment
         if (self.lastFrame-60)%300==0:
             self.eventNum+=1
@@ -4052,11 +4082,13 @@ class Dumbledore(Boss):
             self.cardBonus=10000000
             self.framePunishment=1300
             self.spellName='Light track[Mind confusing star]'
+            self.chSpellName='光轨「迷惑之星」'
             self.gotoPosition(360,250,50)
             self.randomAngle=random.random()*360
             global_var.get_value('spell_sound').play()
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)
+            self.doSpellCardAttack(effects)
         self.cardBonus-=self.framePunishment
 
         if not self.powerUp:
@@ -4291,12 +4323,14 @@ class Dumbledore(Boss):
             self.cardBonus=10000000
             self.fireCount=0
             self.framePunishment=1300
-            self.spellName=u"想起 [虹彩陆离乱舞]"
+            self.spellName="Remind[Dance of Rainbow Outland]"
+            self.chSpellName=u"想起 「虹彩陆离乱舞」]"
             self.gotoPosition(360,220,50)
             self.randomAngle=random.random()*360
             global_var.get_value('spell_sound').play()
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)
+            self.doSpellCardAttack(effects)
             #self.spell9_colorList=[2,4,6,8,10]
         self.cardBonus-=self.framePunishment
 
@@ -4393,11 +4427,12 @@ class Dumbledore(Boss):
             self.cardBonus=10000000
             self.framePunishment=300
             self.spellName="[Hogwarts Four Spirits]" 
+            self.chSpellName='「霍格沃茨之魂灵」'
             self.gotoPosition(360,250,50)
             self.randomAngle=random.random()*360
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)
-
+            self.doSpellCardAttack(effects)
         if self.lastFrame==1 or self.lastFrame==40 or self.lastFrame==80:
             global_var.get_value('ch00_sound').stop()
             global_var.get_value('ch00_sound').play()

@@ -52,9 +52,10 @@ point2=pygame.image.load('resource/point2.png').convert_alpha()
 point=pygame.transform.smoothscale(point,(96,96))
 point2=pygame.transform.smoothscale(point2,(96,96))
 point2.set_alpha(128)
-myfont = pygame.font.SysFont('arial', 12)
-bigfont= pygame.font.SysFont('arial', 24)
-midfont=pygame.font.SysFont('arial', 20)
+engFontPath='./resource/font/open-sans/OpenSans-Regular.ttf'
+myfont=pygame.font.Font(engFontPath, 12)
+bigfont= pygame.font.Font(engFontPath, 24)
+midfont=pygame.font.Font(engFontPath, 20)
 chfont=pygame.font.Font('./resource/font/FeiHuaSongTi-2.ttf', 20)
 smallfont=pygame.font.SysFont('arial', 16)
 levelText1 = myfont.render('Level 1', True, (0, 0, 0))
@@ -525,7 +526,10 @@ while running:
             boss.drawHealthBar(screen)
             boss.drawTimer(screen,midfont)
             if not global_var.get_value('pause'):
-                boss.drawSpellName(screen,chfont,player)
+                if not boss.if_chSpellName:
+                    boss.drawSpellName(screen,midfont,player)
+                else:
+                    boss.drawSpellName(screen,chfont,player)
                 boss.drawCardBonus(screen,smallfont,player)
             boss.drawBossName(screen)
             boss.drawSpellNum(screen)

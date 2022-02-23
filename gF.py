@@ -370,6 +370,10 @@ def loadImage():
     titleStar=pygame.transform.smoothscale(titleStar,(64,64)).convert_alpha()
     global_var.set_value('titleStar',titleStar)
     
+    effectBar=pygame.image.load('resource/boss/etama3.png')
+    effectBar=pygame.transform.smoothscale(effectBar,(192,192)).convert_alpha()
+    global_var.set_value('effectBar',effectBar)
+
 class star_effect(pygame.sprite.Sprite):
     def __init__(self):
         super(star_effect,self).__init__()

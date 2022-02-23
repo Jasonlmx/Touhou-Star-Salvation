@@ -598,8 +598,8 @@ class bossFaceSpell(pygame.sprite.Sprite):
         self.lx=660
         self.ly=-20
         self.lastFrame=0
-        self.upper=False
-        self.lower=True
+        self.upper=True
+        self.lower=False
     def update(self,screen):
         self.lastFrame+=1
         self.movement()
@@ -616,3 +616,64 @@ class bossFaceSpell(pygame.sprite.Sprite):
         else:
             self.lx-=20
             self.ly+=15
+
+class spellAttackImage(pygame.sprite.Sprite):
+    def __init__(self):
+        super(spellAttackImage,self).__init__()
+        self.length=900
+        self.width=640-96
+        self.Image=pygame.Surface((self.length,self.width)).convert_alpha()
+        self.Image.fill((0,0,0,0))
+        self.subImage=pygame.Surface((128*1.5,16*1.5)).convert_alpha()
+        self.subImage.fill((0,0,0,0))
+        self.subImage.blit(global_var.get_value('effectBar'),(0,0),(0,96*1.5,128*1.5,16*1.5))
+        self.lastFrame=0
+        self.maxFrame=80
+        self.movingSpeed=4
+        self.midSign=600
+        self.transFrame=30
+        self.transAlpha=3
+        self.x=0
+        self.y=0
+        self.upper=False
+        self.lower=False
+        self.alpha=256
+        self.midAlphaSign=180
+    def initial(self,x,y):
+        self.x=x
+        self.y=y
+    
+    def imageAlpha(self):
+        if self.lastFrame<self.transFrame:
+            self.alpha=self.midAlphaSign-(self.transFrame-self.lastFrame)*self.transAlpha
+        elif self.lastFrame>self.maxFrame-self.transFrame:
+            self.alpha=self.midAlphaSign-(self.lastFrame-(self.maxFrame-self.transFrame))*self.transAlpha
+        else:
+            self.alpha=self.midAlphaSign
+        self.Image.set_alpha(self.alpha)
+    def update(self,screen):
+        self.checkValid()
+        self.Image.fill((0,0,0,0))
+        self.lastFrame+=1
+        self.midSign+=self.movingSpeed
+        for i in range(0,20):
+            for j in range(0,17):
+                if i%2==1:
+                    x=1000+128*1.5*j-self.midSign
+                    y=i*32
+                    if x<1000:
+                        self.Image.blit(self.subImage,(x,y))
+                else:
+                    x=0-128*1.5*j+self.midSign
+                    y=i*32
+                    if x+128*1.5>0:
+                        self.Image.blit(self.subImage,(x,y))
+        self.imageAlpha()
+        self.draw(screen)
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
+    
+    def draw(self,screen):
+        gF.drawRotation(self.Image,(self.x-self.length/2,self.y-self.width/2),30,screen)
+        #screen.blit(self.Image,(self.x,self.y))
