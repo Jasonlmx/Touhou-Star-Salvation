@@ -620,7 +620,7 @@ class bossFaceSpell(pygame.sprite.Sprite):
 class spellAttackImage(pygame.sprite.Sprite):
     def __init__(self):
         super(spellAttackImage,self).__init__()
-        self.length=900
+        self.length=800
         self.width=640-96
         self.Image=pygame.Surface((self.length,self.width)).convert_alpha()
         self.Image.fill((0,0,0,0))
@@ -630,15 +630,15 @@ class spellAttackImage(pygame.sprite.Sprite):
         self.lastFrame=0
         self.maxFrame=80
         self.movingSpeed=4
-        self.midSign=600
-        self.transFrame=30
-        self.transAlpha=3
+        self.midSign=900
+        self.transFrame=20
+        self.transAlpha=7
         self.x=0
         self.y=0
         self.upper=False
-        self.lower=False
+        self.lower=True
         self.alpha=256
-        self.midAlphaSign=180
+        self.midAlphaSign=200
     def initial(self,x,y):
         self.x=x
         self.y=y
@@ -656,8 +656,8 @@ class spellAttackImage(pygame.sprite.Sprite):
         self.Image.fill((0,0,0,0))
         self.lastFrame+=1
         self.midSign+=self.movingSpeed
-        for i in range(0,20):
-            for j in range(0,17):
+        for i in range(0,17):
+            for j in range(0,20):
                 if i%2==1:
                     x=1000+128*1.5*j-self.midSign
                     y=i*32
@@ -675,5 +675,5 @@ class spellAttackImage(pygame.sprite.Sprite):
             self.kill()
     
     def draw(self,screen):
-        gF.drawRotation(self.Image,(self.x-self.length/2,self.y-self.width/2),30,screen)
+        gF.drawRotation(self.Image,(self.x-self.length/2,self.y-self.width/2),20,screen)
         #screen.blit(self.Image,(self.x,self.y))

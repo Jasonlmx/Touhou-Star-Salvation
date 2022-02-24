@@ -362,9 +362,9 @@ def displayUi(screen,player,myfont):
 def itemAllGet(items,player,effects):
     if player.ty<=player.itemGetLine:
         for item in items:
-            if item.lastFrame>=5:
+            if item.lastFrame>=30 and item.type!=7:
                 item.followPlayer=1
-                item.followSpeed=9
+                #item.followSpeed=9
                 #if not global_var.get_value('item_getting'):
                  #   global_var.get_value('item_get').play()
                 #new_effect=Effect.itemFade()
