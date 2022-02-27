@@ -1,5 +1,3 @@
-from typing import NewType
-from xxlimited import new
 import pygame,sys
 import random
 import math
@@ -2835,7 +2833,8 @@ class Dumbledore(Boss):
                         global_var.get_value('enemyGun_sound2').stop()
                         global_var.get_value('enemyGun_sound2').play()
                         global_var.set_value('enemyFiring2',True)
-                    new_bullet=Bullet.satsu_Bullet()
+                    new_bullet=Bullet.scale_Bullet()
+                    new_bullet.ifDrawCreate=False
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle+i*(360/5),5.3)
                     new_bullet.loadColor('lightGreen')
@@ -2846,7 +2845,8 @@ class Dumbledore(Boss):
                         global_var.get_value('enemyGun_sound2').play()
                         global_var.set_value('enemyFiring2',True)
                 for j in range(0,5):
-                    new_bullet=Bullet.satsu_Bullet()
+                    new_bullet=Bullet.scale_Bullet()
+                    new_bullet.ifDrawCreate=True
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle2+j*(360/5),5.3)
                     new_bullet.loadColor('lightGreen')
@@ -2887,7 +2887,8 @@ class Dumbledore(Boss):
                         global_var.get_value('enemyGun_sound1').play()
                         global_var.set_value('enemyFiring1',True)
                 for i in range(0,30):
-                    new_bullet=Bullet.bact_Bullet()
+                    new_bullet=Bullet.scale_Bullet()
+                    new_bullet.ifDrawCreate=False
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle3+i*(360/30),4-0.1*n)
                     new_bullet.loadColor('lightBlue')
@@ -2956,6 +2957,7 @@ class Dumbledore(Boss):
                     self.bulletSpeed=3
                 for i in range(-1,2):
                     new_bullet=Bullet.big_star_Bullet()
+                    new_bullet.anmStay=False
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.selfTarget(player.cx,player.cy,8)
                     new_bullet.countAngle()
@@ -3055,6 +3057,7 @@ class Dumbledore(Boss):
                         global_var.get_value('enemyGun_sound1').play()
                         global_var.set_value('enemyFiring1',True)
                     new_bullet=Bullet.satsu_Bullet()
+                    new_bullet.ifDrawCreate=False
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.setSpeed(self.randomAngle+i*(360/7),4)
                     new_bullet.loadColor('blue')
@@ -4433,6 +4436,7 @@ class Dumbledore(Boss):
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)
             self.doSpellCardAttack(effects)
+            self.doShaking(150)
         if self.lastFrame==1 or self.lastFrame==40 or self.lastFrame==80:
             global_var.get_value('ch00_sound').stop()
             global_var.get_value('ch00_sound').play()

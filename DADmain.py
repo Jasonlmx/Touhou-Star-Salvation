@@ -42,6 +42,12 @@ global_var.set_value('spellNum',1)
 global_var.set_value('ifSpellTest',True)
 testFire=400
  
+#settings init
+if_highQuality_effect=True
+if_speedAdjusting=False
+global_var.set_value('if_highQuality_effect',if_highQuality_effect)
+global_var.set_value('if_speedAdjusting',if_speedAdjusting)
+
 #screen=pygame.display.set_mode((640,480))
 icon_img=pygame.image.load("star_salvation_enUS.ico")
 pygame.display.set_caption("Touhou Star Salvation")
@@ -505,9 +511,17 @@ while running:
             gF.shakeScreen()
             #drawStage
             if global_var.get_value('ifShaking'):
-                if frame%4==0:
-                    d_x=random.randint(-4,4)
-                    d_y=random.randint(-4,4)
+                if frame%2==0:
+                    d_x=random.randint(2,5)
+                    d_y=random.randint(2,8)
+                    d_x_sign=random.randint(0,1)
+                    d_y_sign=random.randint(0,1)
+                    if d_x_sign==0:
+                        d_x_sign=-1
+                    if d_y_sign==0:
+                        d_x_sign=-1
+                    d_x=d_x*d_x_sign
+                    d_y=d_y*d_y_sign
                 screen.blit(stage,(0+d_x,0+d_y))
             else:
                 screen.blit(stage,(60,30),(60,30,600,660))
