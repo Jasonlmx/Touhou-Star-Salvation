@@ -49,7 +49,7 @@ class fire_effect_reimu_main(pygame.sprite.Sprite):
         self.image=pygame.Surface((96,24)).convert_alpha()
         self.image.fill((0,0,0,0))
         self.image.blit(global_var.get_value('reimu_fire'),(0,0),(0,0,96,24))
-        self.image.set_alpha(180)
+        #self.image.set_alpha(180)
         self.frame=0
         self.part=0
         self.interval=5
@@ -80,8 +80,9 @@ class fire_effect_reimu_main(pygame.sprite.Sprite):
         if self.part==4:
             self.kill()
         if self.part<=3:
-            gF.drawRotation(self.temp[self.part],(round(self.tx-12),round(self.ty-12)),self.frame*-25-90,screen)
-            #screen.blit(self.image[self.part],(self.tx-12,self.ty-24))
+            #angle=self.frame*-25-90
+            gF.drawRotation(self.temp[self.part],(round(self.tx-12),round(self.ty-12)),-90,screen)
+            #screen.blit(self.temp[self.part],(round(self.tx-12),round(self.ty-12)))
 
 class fire_effect_reimu_target(pygame.sprite.Sprite):
     def __init__(self):
@@ -89,7 +90,7 @@ class fire_effect_reimu_target(pygame.sprite.Sprite):
         self.image=pygame.Surface((96,24)).convert_alpha()
         self.image.fill((0,0,0,0))
         self.image.blit(global_var.get_value('reimu_fire'),(0,0),(0,24,96,24))
-        self.image.set_alpha(180)
+        #self.image.set_alpha(180)
         self.frame=0
         self.part=0
         self.interval=5
