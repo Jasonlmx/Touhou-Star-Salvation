@@ -31,7 +31,7 @@ fullscreen = True
 screen = pygame.display.set_mode(size,RESIZABLE|DOUBLEBUF)
 #size = width, height =  pygame.display.list_modes()[0]
 if fullscreen:
-    screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE| DOUBLEBUF)
+    screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE| DOUBLEBUF,16)
 stage=pygame.Surface((960,720)).convert_alpha()
 stage.set_clip(Rect(60,30,600,660))
 global_var._init()
@@ -249,7 +249,7 @@ global_var.set_value('restarting',False)
 d_x=random.randint(-2,2)
 d_y=random.randint(-8,8)
 pygame.mouse.set_visible(False)
-
+pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP])
 # Main loop
 while running:
     #check keys

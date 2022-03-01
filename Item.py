@@ -35,8 +35,8 @@ class item(pygame.sprite.Sprite):
         image.fill((0,0,0,0))
         #image.set_colorkey((0, 0, 0))
         image.blit(global_var.get_value('itemImage'), (0, 0), (24*self.type,0, 24,24))
-        if self.type==7:
-            image.set_alpha(150)
+        #if self.type==7:
+            #image.set_alpha(150)
         alias=pygame.Surface((24,24))
         alias=alias.convert_alpha()
         alias.fill((0,0,0,0))

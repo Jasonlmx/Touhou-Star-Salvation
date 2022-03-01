@@ -9,7 +9,7 @@ class background(pygame.sprite.Sprite):
     def __init__(self):
         super(background,self).__init__()
         self.surf = global_var.get_value('lake_bg')
-        self.surf.set_alpha(200)
+        self.surf.set_alpha(256)
         self.surf.convert()
         self.rect = self.surf.get_rect()
         self.tx=0.0

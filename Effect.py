@@ -128,7 +128,7 @@ class bulletVanish(pygame.sprite.Sprite):
     def __init__(self):
         super(bulletVanish,self).__init__()
         self.frame=0
-        self.image=pygame.image.load('resource/bullet/small_bullet_grey.png')
+        #self.image=pygame.image.load('resource/bullet/small_bullet_grey.png')
         self.dx=0
         self.dy=0
         self.cx=0
@@ -148,11 +148,12 @@ class bulletVanish(pygame.sprite.Sprite):
         self.frame+=1
         self.part=math.floor(self.frame/self.interval)
         w,h=self.image.get_size()
-        w_now=round(w*(1+0.2*self.part))
-        h_now=round(h*(1+0.2*self.part))
-        cR=1+0.2*self.part
-        tempImage=pygame.transform.scale(self.image,(w_now,h_now))
-        tempImage.set_alpha(256-40*self.part)
+        n=1-0.12*self.part
+        w_now=round(w*n)
+        h_now=round(h*n)
+        cR=n
+        tempImage=pygame.transform.scale(self.image,(w_now,h_now)).convert_alpha()
+        #tempImage.set_alpha(256-40*self.part)
         screen.blit(tempImage,(self.cx-round(self.dx*cR),self.cy-round(self.dy*cR)))
         if self.part>=6:
             self.kill()
@@ -493,7 +494,7 @@ class bulletCreate(pygame.sprite.Sprite):
         self.upper=True
         self.lower=False
         self.angle=random.random()*360
-        self.alpha=200
+        self.alpha=256
         self.lowestAlpha=200
         self.getImage()
     def getImage(self):
@@ -517,7 +518,7 @@ class bulletCreate(pygame.sprite.Sprite):
         size=round(self.max-(self.lastFrame/self.maxFrame)*(self.max-self.min))
         self.alpha=round((self.lastFrame/self.maxFrame)*(256-self.lowestAlpha)+self.lowestAlpha)
         self.temp=pygame.transform.scale(self.image,(size,size))
-        self.temp.set_alpha(self.alpha)
+        #self.temp.set_alpha(self.alpha)
         self.draw(size,screen)
         self.lastFrame+=1
         self.checkValid()
@@ -595,7 +596,7 @@ class bossFaceSpell(pygame.sprite.Sprite):
     def __init__(self):
         super(bossFaceSpell,self).__init__()
         self.image=global_var.get_value('satoriImg')
-        self.image.set_alpha(200)
+        #self.image.set_alpha(200)
         self.lx=660
         self.ly=-20
         self.lastFrame=0

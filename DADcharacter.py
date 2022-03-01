@@ -2369,7 +2369,7 @@ class satori(Boss):
             for background in backgrounds:
                 background.surf=global_var.get_value('lake_bg')
                 background.surf.convert()
-                background.surf.set_alpha(200)
+                background.surf.set_alpha(256)
                 background.cardBg=False
             player.midPath=True
             new_effect=Effect.enemyDead()
@@ -2450,7 +2450,7 @@ class satori(Boss):
             for background in backgrounds:
                 background.surf=global_var.get_value('star_bg')
                 background.surf.convert()
-                background.surf.set_alpha(180)
+                background.surf.set_alpha(256)
                 background.cardBg=True
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)
