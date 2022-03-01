@@ -14,6 +14,7 @@ import lightnessLevel
 import menu
 
 #define background
+#branch test
 
 angle = 0
 FPS = 60 # 帧率 
