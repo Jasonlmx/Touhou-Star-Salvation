@@ -215,6 +215,8 @@ class reimuBoomOrb(playerGun):
         self.expDamage=4500
         self.accSpeed=0.2
         self.colorNum=colorCode
+        self.colorDict=[(247,246,245),(223,151,147),(208,110,191),(133,118,211),(147,206,223),(167,221,130),(217,212,134),(148,148,148)]
+        self.if_highQuality_effect=False#global_var.get_value('if_highQuality_effect')
         self.getImage()
     def update(self,screen,effects):
         self.lastFrame+=1
@@ -231,7 +233,8 @@ class reimuBoomOrb(playerGun):
             self.setSpeed(self.angle,self.speed)
         self.movement()
         self.truePos()
-        self.doShadow(effects)
+        if self.if_highQuality_effect:
+            self.doShadow(effects)
         self.checkValid()
         self.draw(screen)
     
@@ -279,11 +282,14 @@ class reimuBoomOrb(playerGun):
 
         
     def draw(self,screen):
-        if self.lastFrame%2==0:
-            self.tempImage=self.filpedImage
+        if self.if_highQuality_effect:
+            if self.lastFrame%2==0:
+                self.tempImage=self.filpedImage
+            else:
+                self.tempImage=self.image
+            screen.blit(self.tempImage,(self.tx-160/2,self.ty-160/2))
         else:
-            self.tempImage=self.image
-        screen.blit(self.tempImage,(self.tx-160/2,self.ty-160/2))
+            pygame.draw.circle(screen,self.colorDict[self.colorNum],(self.tx,self.ty),50,50)
         #screen.blit(self.surf,self.rect)
     def doKill(self):
         #global_var.get_value("nep_sound").stop()
@@ -325,7 +331,7 @@ class reimuBoomAoe(playerGun):
         self.rect=self.surf.get_rect()
         self.lastFrame=0
         self.hit=1000
-
+        #self.if_highQuality_effect=False#global_var.get_value('if_highQuality_effect')
     def initial(self,tx,ty):
         self.tx=tx
         self.ty=ty

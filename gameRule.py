@@ -60,23 +60,23 @@ def missDetect(player,bullets,enemys,effects,miss_sound,items,slaves):
             playerDeathEffect(player,effects)
         player.deadStatu=1
         player.bulletSurpress=60
+        if miss.type!=15:
+            new_effect=Effect.bulletVanish()
+            exception=(5,7,10,11,12,13,14,15,16)
+            if not miss.type in exception:
+                new_effect.initial(miss.image,miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
+            elif miss.type==5:
+                new_effect.initial(miss.tempImage,miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
+            elif miss.type==7:
+                if miss.color=='red':
+                    new_effect.initial(miss.red[0],miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
+                else:
+                    new_effect.initial(miss.blue[0],miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
+            elif miss.type==10 or miss.type==11 or miss.type==12 or miss.type==13:
+                new_effect.initial(miss.tempImage,miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
 
-        new_effect=Effect.bulletVanish()
-        exception=(5,7,10,11,12,13,15,16)
-        if not miss.type in exception:
-            new_effect.initial(miss.image,miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
-        elif miss.type==5:
-            new_effect.initial(miss.tempImage,miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
-        elif miss.type==7:
-            if miss.color=='red':
-                new_effect.initial(miss.red[0],miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
-            else:
-                new_effect.initial(miss.blue[0],miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
-        elif miss.type==10 or miss.type==11 or miss.type==12 or miss.type==13:
-            new_effect.initial(miss.tempImage,miss.rect.centerx,miss.rect.centery,miss.dx,miss.dy)
-
-        effects.add(new_effect)
-        miss.kill()
+            effects.add(new_effect)
+            miss.kill()
 
     if player.deadStatu==1 and player.deadFrame<=0 and player.immune!=1:
         player.life-=1

@@ -223,12 +223,13 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
                     alpha=256-round(lastFrame*(256/128))
                 else:
                     alpha=0
-        
+        #if not alpha==256:
         back_image.set_alpha(alpha)
         moon=global_var.get_value('moon')
         rev_alpha=256-alpha
-        moon.set_alpha(rev_alpha)
         hog=global_var.get_value('hogwarts_background')
+        #if not rev_alpha==256:
+        moon.set_alpha(rev_alpha)
         hog.set_alpha(rev_alpha)
 
         #screen.blit(back_image,(60,30))
@@ -248,9 +249,12 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         dy2=round(math.sin(angle*3*math.pi/180)*10)
         #print(dx,'',dy)
         if alpha>0:
-            screen.blit(back_image,(360-365+dx,360-540+dy))
+            #screen.blit(back_image,(360-365+dx,360-540+dy))
+            screen.blit(back_image,(60,30),(60+dx,180+dy,600,660))
         if rev_alpha>0:
-            screen.blit(moon,(dx2-10,dy2+20))
+        
+            #screen.blit(moon,(dx2-10,dy2+20))
+            screen.blit(moon,(60,30),(25+dx2,10+dy2,600,500))
             screen.blit(hog,(30,184))
         
     if frame==10900:
