@@ -4,6 +4,7 @@ from pygame.locals import *
 from pygame.sprite import Group
 import global_var
 import background
+from screenSettings import screen_settings
 
 def shakeScreen():
     shakeFrame=global_var.get_value('shakeFrame')
@@ -82,6 +83,7 @@ def displayMenu(screen,stars):
 
 def loadImage():
     gunAlpha=150
+    amplified_times=global_var.get_value('amplified_times')
     green=pygame.image.load('resource/playerFire/mainFire_green.png').convert_alpha()
     green=pygame.transform.scale(green,(48,48))
     green.set_alpha(gunAlpha)
@@ -241,17 +243,20 @@ def loadImage():
     kanjiLogo=pygame.Surface((610,144)).convert_alpha()
     kanjiLogo.fill((0,0,0,0))
     kanjiLogo.blit(titleLogo,(0,0),(0,0,610,144))
+    kanjiLogo=pygame.transform.smoothscale(kanjiLogo,(round(405*amplified_times),round(96*amplified_times)))
     global_var.set_value('kanjiLogo',kanjiLogo)
     engLogo=pygame.Surface((500,96)).convert_alpha()
     engLogo.fill((0,0,0,0))
     engLogo.blit(titleLogo,(0,0),(500,160,500,96))
+    engLogo=pygame.transform.smoothscale(engLogo,(round(333*amplified_times),round(64*amplified_times)))
     global_var.set_value('engLogo',engLogo)
     lightLogo=pygame.Surface((500,96)).convert_alpha()
     lightLogo.fill((0,0,0,0))
-    lightLogo.blit(titleLogo,(0,0),(0,160,500,96))
+    lightLogo.blit(titleLogo,(0,0),(0+5,160,500,96))
+    lightLogo=pygame.transform.smoothscale(lightLogo,(round(333*amplified_times),round(64*amplified_times)))
     global_var.set_value('lightLogo',lightLogo)
     reimuLogo=pygame.image.load('resource/title/tachie.png').convert_alpha()
-    reimuLogo=pygame.transform.smoothscale(reimuLogo,(360,640))
+    reimuLogo=pygame.transform.smoothscale(reimuLogo,(round(240*amplified_times),round(426*amplified_times)))
     global_var.set_value('reimuLogo',reimuLogo)
     pauseSign=[]
     pauseLim=[315,240,168,192,300,300]
@@ -279,18 +284,18 @@ def loadImage():
     levelImg=[]
     for i in range(1,2):
         new_image=pygame.image.load('resource/title/level0'+str(i)+'.png')
-        new_image=pygame.transform.smoothscale(new_image,(384,192))
+        new_image=pygame.transform.smoothscale(new_image,(round(256*amplified_times),round(128*amplified_times)))
         levelImg.append(new_image)
     global_var.set_value('levelImg',levelImg)
     menuImg=pygame.image.load('resource/title/title01.png')
-    menuImg=pygame.transform.smoothscale(menuImg,(768,768))
+    menuImg=pygame.transform.smoothscale(menuImg,(round(512*amplified_times),round(512*amplified_times)))
     menuSign=[]
     menuShadow=[]
     for i in range(0,8):
         for j in range(0,2):
-            new_image=pygame.Surface((192,48)).convert_alpha()
+            new_image=pygame.Surface((round(128*amplified_times),round(32*amplified_times))).convert_alpha()
             new_image.fill((0,0,0,0))
-            new_image.blit(menuImg,(0,0),(j*192,i*48,192,48))
+            new_image.blit(menuImg,(0,0),(round(j*128*amplified_times),round(i*32*amplified_times),round(128*amplified_times),round(32*amplified_times)))
             if j==0:
                 menuSign.append(new_image)
             else:
@@ -301,21 +306,21 @@ def loadImage():
         new_image=pygame.Surface((256,49)).convert_alpha()
         new_image.fill((0,0,0,0))
         new_image.blit(selectImg,(0,0),(0,i*49,256,49))
-        new_image=pygame.transform.smoothscale(new_image,(384,74))
+        new_image=pygame.transform.smoothscale(new_image,(round(256*amplified_times),round(49*amplified_times)))
         menuSelectImg.append(new_image)
     global_var.set_value('menuSelectImg',menuSelectImg)
     global_var.set_value('menuSign',menuSign)
     global_var.set_value('menuShadow',menuShadow)
     playerTitle=pygame.image.load('resource/title/sl_pl00.png')
-    playerTitle=pygame.transform.smoothscale(playerTitle,(768,768))
+    playerTitle=pygame.transform.smoothscale(playerTitle,(round(512*amplified_times),round(512*amplified_times)))
     playerTitleImg=[]
-    new_image=pygame.Surface((450,768)).convert_alpha()
+    new_image=pygame.Surface((round(300*amplified_times),round(512*amplified_times))).convert_alpha()
     new_image.fill((0,0,0,0))
-    new_image.blit(playerTitle,(0,0),(0,0,450,768))
+    new_image.blit(playerTitle,(0,0),(0,0,round(300*amplified_times),round(512*amplified_times)))
     playerTitleImg.append(new_image)
-    new_image=pygame.Surface((318,768)).convert_alpha()
+    new_image=pygame.Surface((round(212*amplified_times),round(512*amplified_times))).convert_alpha()
     new_image.fill((0,0,0,0))
-    new_image.blit(playerTitle,(0,0),(450,0,318,768))
+    new_image.blit(playerTitle,(0,0),(round(300*amplified_times),0,round(212*amplified_times),round(512*amplified_times)))
     playerTitleImg.append(new_image)
     global_var.set_value('playerTitleImg',playerTitleImg)
     effFlameImg=pygame.Surface((72,72)).convert_alpha()

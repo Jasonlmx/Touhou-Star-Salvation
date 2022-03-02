@@ -11,6 +11,8 @@ import global_var
 import Effect
 import Item
 import gameRule
+from screenSettings import screen_settings
+
 
 class titleStar(pygame.sprite.Sprite):
     def __init__(self):
@@ -149,7 +151,8 @@ class starShadow(pygame.sprite.Sprite):
 class Menu():
     def __init__(self):
         super(Menu,self).__init__()
-        self.image=pygame.image.load('resource/title/menu.png').convert()
+        self.image=pygame.image.load('resource/title/menu0.png').convert()
+        self.image=pygame.transform.smoothscale(self.image,(global_var.get_value('screen_width'),global_var.get_value('screen_height')))
         self.sign=global_var.get_value('menuSign')
         self.shadow=global_var.get_value('menuShadow')
         self.playerTitleImg=global_var.get_value('playerTitleImg')
@@ -172,6 +175,7 @@ class Menu():
         self.substract=False
         self.plus=False
         self.starInt=180
+        self.amplified_times=global_var.get_value('amplified_times')
     def update(self,screen,pressed_keys,pressed_keys_last,player,titleDec):
         self.lastFrame+=1
         self.addTitleStar(titleDec)
@@ -272,27 +276,27 @@ class Menu():
                 entity.update(screen,titleDec)
 
         if self.menuStair==0:
-            screen.blit(self.tachie,(600,90))
+            screen.blit(self.tachie,(round(400*self.amplified_times),round(60*self.amplified_times)))
             for entity in titleDec:
                 entity.update(screen,titleDec)
-            self.logoPosAdj=[math.sin(self.lastFrame*math.pi/180)*20,math.sin(self.lastFrame*0.5*math.pi/180)*5]
-            screen.blit(self.kanjiLogo,(100+self.logoPosAdj[0],30+self.logoPosAdj[1]))
+            self.logoPosAdj=[math.sin(self.lastFrame*math.pi/180)*20,math.sin(self.lastFrame*0.5*math.pi/180)*3*self.amplified_times]
+            screen.blit(self.kanjiLogo,(round(66*self.amplified_times+self.logoPosAdj[0]),round(20*self.amplified_times+self.logoPosAdj[1])))
             self.lightStrength=0.5*math.sin(self.lastFrame*2*math.pi/180)+0.5
             alpha=round(self.lightStrength*256)
             self.lightLogo.set_alpha(alpha)
-            screen.blit(self.lightLogo,(100-5,164))
-            screen.blit(self.engLogo,(100,164))
+            screen.blit(self.lightLogo,(round(66*self.amplified_times),round(110*self.amplified_times)))
+            screen.blit(self.engLogo,(round(66*self.amplified_times),round(110*self.amplified_times)))
             for i in range(0,8):
                 if i!=self.selectNum[self.menuStair]:
-                    screen.blit(self.shadow[i],(100,250+i*48))
+                    screen.blit(self.shadow[i],(round(66*self.amplified_times),round((166+i*32)*self.amplified_times)))
                 else:
-                    screen.blit(self.sign[i],(100,250+i*48))
+                    screen.blit(self.sign[i],(round(66*self.amplified_times),round((166+i*32)*self.amplified_times)))
         elif self.menuStair==1:
-            screen.blit(self.selectImg[0],(40,10))
-            screen.blit(self.levelImg[0],(288,264))
+            screen.blit(self.selectImg[0],(round(26*self.amplified_times),(round(6.6*self.amplified_times))))
+            screen.blit(self.levelImg[0],(round(192*self.amplified_times),round(176*self.amplified_times)))
         elif self.menuStair==2:
             if self.selectNum[0]==0 or self.selectNum[0]==2:
-                screen.blit(self.selectImg[1],(40,10))
+                screen.blit(self.selectImg[1],(round(26*self.amplified_times),(round(6.6*self.amplified_times))))
                 for i in range(0,2):
                     self.playerTitleImg[i].set_alpha(256)
                 if self.selectNum[2]==0:
@@ -300,7 +304,7 @@ class Menu():
                 elif self.selectNum[2]==1:
                     self.playerTitleImg[0].set_alpha(100)
                 for i in range(0,2):
-                    screen.blit(self.playerTitleImg[i],(450*i,120))
+                    screen.blit(self.playerTitleImg[i],(round(300*i*self.amplified_times),round(80*self.amplified_times)))
         elif self.menuStair==3:
             if self.selectNum[0]==2:
                 if self.ifSpell:

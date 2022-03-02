@@ -32,7 +32,7 @@ fullscreen = True
 screen = pygame.display.set_mode(size,RESIZABLE|DOUBLEBUF)
 #size = width, height =  pygame.display.list_modes()[0]
 if fullscreen:
-    screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE| DOUBLEBUF,16)
+    screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE| DOUBLEBUF)
 stage=pygame.Surface((960,720)).convert_alpha()
 stage.set_clip(Rect(60,30,600,660))
 global_var._init()
@@ -48,6 +48,17 @@ if_highQuality_effect=True
 if_speedAdjusting=False
 global_var.set_value('if_highQuality_effect',if_highQuality_effect)
 global_var.set_value('if_speedAdjusting',if_speedAdjusting)
+
+#screen settings
+global_var.set_value('screen_width',width)
+global_var.set_value('screen_height',height)
+amplified_times=width/640
+global_var.set_value('amplified_times',amplified_times)
+global_var.set_value('stage_left',round(30*amplified_times))
+global_var.set_value('stage_width',round(384*amplified_times))
+global_var.set_value('stage_height',round(448*amplified_times))
+global_var.set_value('stage_vSlit',round(16*amplified_times))
+
 
 #screen=pygame.display.set_mode((640,480))
 icon_img=pygame.image.load("star_salvation_enUS.ico")
