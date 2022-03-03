@@ -290,7 +290,7 @@ while running:
     if pressed_keys[K_F11]:
             pygame.quit()
             sys.exit()
-
+            
     if not global_var.get_value('menu'):
         bulletSum=0
         enemySum=0

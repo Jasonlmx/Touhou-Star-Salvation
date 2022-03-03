@@ -1,3 +1,5 @@
+from email.mime import application
+from sys import api_version
 import pygame
 import math
 from pygame.locals import *
@@ -42,10 +44,14 @@ def returnPosition(w,h,pos,angle):
 
 
 def drawBackground(screen):
+    
     screen.blit(global_var.get_value('left'),(0,0))
     screen.blit(global_var.get_value('up'),(60,0))
     screen.blit(global_var.get_value('down'),(60,690))
     screen.blit(global_var.get_value('right'),(660,30))
+    
+
+    #screen.blit(global_var.get_value('stage_background'),(0,0))
 
 def fill(surface, color):
     """Fill all pixels of the surface with color, preserve transparency."""
@@ -84,6 +90,11 @@ def displayMenu(screen,stars):
 def loadImage():
     gunAlpha=150
     amplified_times=global_var.get_value('amplified_times')
+
+    stage_background=pygame.image.load('resource/mainback.jpeg').convert_alpha()
+    stage_background=pygame.transform.smoothscale(stage_background,(round(640*amplified_times),round(480*amplified_times)))
+    global_var.set_value('stage_background',stage_background)
+
     green=pygame.image.load('resource/playerFire/mainFire_green.png').convert_alpha()
     green=pygame.transform.scale(green,(48,48))
     green.set_alpha(gunAlpha)
@@ -372,7 +383,7 @@ def loadImage():
     global_var.set_value('small_bullet_img',small_bullet_img)
 
     titleStar=pygame.image.load('resource/title/titleStar.png')
-    titleStar=pygame.transform.smoothscale(titleStar,(64,64)).convert_alpha()
+    titleStar=pygame.transform.smoothscale(titleStar,(round(42*amplified_times),round(42*amplified_times))).convert_alpha()
     global_var.set_value('titleStar',titleStar)
     
     effectBar=pygame.image.load('resource/boss/etama3.png')

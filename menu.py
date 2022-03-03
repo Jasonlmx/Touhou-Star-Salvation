@@ -17,13 +17,14 @@ from screenSettings import screen_settings
 class titleStar(pygame.sprite.Sprite):
     def __init__(self):
         super(titleStar,self).__init__()
+        self.amplified_times=global_var.get_value('amplified_times')
         self.tx=0.0
         self.ty=0.0
         self.speedx=0
         self.speedy=0
-        self.image=pygame.Surface((64,64)).convert_alpha()
+        self.image=pygame.Surface((round(42*self.amplified_times),round(42*self.amplified_times))).convert_alpha()
         self.image.fill((0,0,0,0))
-        self.image.blit(global_var.get_value('titleStar'),(0,0),(0,0,64,64))
+        self.image.blit(global_var.get_value('titleStar'),(0,0),(0,0,round(42*self.amplified_times),round(42*self.amplified_times)))
         self.lastFrame=0
         self.rAngle=random.random()*360
         self.rDirection=random.randint(0,1)
@@ -98,7 +99,8 @@ class titleStar(pygame.sprite.Sprite):
         titleDec.add(new_shadow)
 
     def draw(self,screen):
-        pos=(round(self.tx)-32,round(self.ty)-32)
+        w,h=self.image.get_size()
+        pos=(round(self.tx-w/2),round(self.ty-h/2))
         if self.lastFrame<=self.voidifyFrame:
             tempImg=self.image
             alpha=round((256-56)*self.lastFrame/self.voidifyFrame+56)
@@ -117,12 +119,13 @@ class titleStar(pygame.sprite.Sprite):
 class starShadow(pygame.sprite.Sprite):
     def __init__(self,pos,length=20,angle=0):
         super(starShadow,self).__init__()
+        self.amplified_times=global_var.get_value('amplified_times')
         self.maxFrame=length
         self.angle=angle
         self.pos=pos
-        self.image=pygame.Surface((64,64)).convert_alpha()
+        self.image=pygame.Surface((round(42*self.amplified_times),round(42*self.amplified_times))).convert_alpha()
         self.image.fill((0,0,0,0))
-        self.image.blit(global_var.get_value('titleStar'),(0,0),(0,0,64,64))
+        self.image.blit(global_var.get_value('titleStar'),(0,0),(0,0,round(42*self.amplified_times),round(42*self.amplified_times)))
         self.lastFrame=0
         
     def checkValid(self):
@@ -137,10 +140,10 @@ class starShadow(pygame.sprite.Sprite):
     def draw(self,screen):
         self.percentage=self.lastFrame/self.maxFrame
         self.alpha=round((120-0)*(1-self.percentage)+0)
-        self.size=round(33*(1-self.percentage))+1
-        tempImg=pygame.Surface((64,64)).convert_alpha()
+        self.size=round(22*(1-self.percentage)*self.amplified_times)+1
+        tempImg=pygame.Surface((round(42*self.amplified_times),round(42*self.amplified_times))).convert_alpha()
         tempImg.fill((0,0,0,0))
-        tempImg.blit(self.image,(0,0),(0,0,64,64))
+        tempImg.blit(self.image,(0,0),(0,0,round(42*self.amplified_times),round(42*self.amplified_times)))
         tempImg=pygame.transform.smoothscale(tempImg,(self.size,self.size))
         tempImg.set_alpha(self.alpha)  
         x,y=self.pos
@@ -189,10 +192,10 @@ class Menu():
     def addTitleStar(self,titleDec):
         if self.lastFrame%self.starInt==0:
             new_star=titleStar()
-            i_x=300+random.random()*660
-            i_y=random.random()*5+10
+            i_x=(300+random.random()*660)*self.amplified_times/1.5
+            i_y=(random.random()*5+10)*self.amplified_times/1.5
             new_star.initial(i_x,i_y)
-            new_star.setSpeed(135+random.random()*10,1.8+0.6*random.random())
+            new_star.setSpeed(135+random.random()*10,(1.8+0.6*random.random())*self.amplified_times/1.5)
             titleDec.add(new_star)
 
     def alterSelect(self,pressed_keys,pressed_keys_last):
