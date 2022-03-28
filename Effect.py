@@ -128,7 +128,7 @@ class bulletVanish(pygame.sprite.Sprite):
     def __init__(self):
         super(bulletVanish,self).__init__()
         self.frame=0
-        #self.image=pygame.image.load('resource/bullet/small_bullet_grey.png')
+        self.image=global_var.get_value("watcher")
         self.dx=0
         self.dy=0
         self.cx=0

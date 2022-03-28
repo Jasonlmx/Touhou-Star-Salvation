@@ -216,7 +216,7 @@ class reimuBoomOrb(playerGun):
         self.accSpeed=0.2
         self.colorNum=colorCode
         self.colorDict=[(247,246,245),(223,151,147),(208,110,191),(133,118,211),(147,206,223),(167,221,130),(217,212,134),(148,148,148)]
-        self.if_highQuality_effect=False#global_var.get_value('if_highQuality_effect')
+        self.if_highQuality_effect=True#global_var.get_value('if_highQuality_effect')
         self.getImage()
     def update(self,screen,effects):
         self.lastFrame+=1
@@ -1698,6 +1698,7 @@ class laser_line(Bullet):
         self.decoImage.blit(global_var.get_value('bullet_create_image').convert_alpha(), (0, 0), (32*code,0, 32, 32))
         self.decoImage=pygame.transform.smoothscale(self.decoImage,(self.centerWidth,self.centerWidth))
         self.flipImage=pygame.transform.flip(self.decoImage,False,True)
+        #self.image=self.decoImage
     def doColorCode(self,code):
         self.colorNum=code
         if not self.ifSimplifiedMode:
@@ -2054,7 +2055,10 @@ class star_Bullet_fountain(big_star_Bullet):
         self.randomAngle=random.random()*360
         self.eruptRandomAngle=16
         self.attachColor=[0,1,4,5,6,9,12,15]
+        self.laserColor=0
+        self.starColor=0
         self.attColorNow=0
+        self.cancalable=False
         #[0,1,1,3,2,3,4,4,4,5,5,5,6,6,6,7]
 
     def update(self,screen,bullets,effects):
@@ -2109,11 +2113,13 @@ class star_Bullet_fountain(big_star_Bullet):
                 dg=0
             elif self.touch_direction==4:
                 dg=90
-            new_laser.setFeature(dg,9,80,20,40,10,10,70)
-            new_laser.warnLineColored=True
-            new_laser.furryCollide=7
-            new_laser.doColorCode(self.attachColor[self.attColorNow])
+            incline=random.random()*14-7
+            new_laser.setFeature(dg+incline,8,115,40,40,10,10,-1)
+            new_laser.warnLineColored=False
+            new_laser.furryCollide=4
+            new_laser.doColorCode(self.laserColor)
             bullets.add(new_laser)
+        '''
         if self.touched and self.touchFrame%8==0 and self.touchFrame<=90:
             new_bullet=orb_Bullet_gravity()
             new_bullet.setGravity(0.05)
@@ -2137,20 +2143,20 @@ class star_Bullet_fountain(big_star_Bullet):
             #new_bullet.loadColor('blue')
             new_bullet.doColorCode(random.randint(0,6))
             bullets.add(new_bullet)
-        if self.touched and self.touchFrame%90==0 and self.touchFrame!=0:
+        '''
+        if self.touched and self.touchFrame==1: # and self.touchFrame!=0:
             new_effect=Effect.bulletCreate(3)
             new_effect.initial(self.tx,self.ty,84,32,25)
             effects.add(new_effect)
             self.randomAngle=random.random()*360
-            for i in range(0,18):
+            for i in range(0,26):
                 new_bullet=star_Bullet()
                 new_bullet.initial(self.tx,self.ty,1)
-                new_bullet.setSpeed(self.randomAngle+i*(360/18),2.5)
-                new_bullet.doColorCode(self.attachColor[self.attColorNow])
+                new_bullet.setSpeed(self.randomAngle+i*(360/18),4.6)
+                new_bullet.doColorCode(self.starColor)
                 #new_bullet.loadColor('blue')
                 bullets.add(new_bullet)
-            global_var.get_value('enemyGun_sound2').play()
-        if self.touchFrame>=270:
+        if self.touchFrame>=3:
             self.kill()
 
 
@@ -2388,10 +2394,11 @@ class orb_Bullet_split_sub(rice_Bullet):
             self.setSpeed(self.moveAngle,self.speed)
         
 class orb_Bullet_bouncing_5(rice_Bullet):
-    def __init__(self):
+    def __init__(self,radColor=0):
         super(orb_Bullet_bouncing_5,self).__init__()
         self.bounceMax=1
         self.lastFrame=0
+        self.radColor=radColor
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
@@ -2408,7 +2415,8 @@ class orb_Bullet_bouncing_5(rice_Bullet):
             if self.tx<=60 or self.tx>=660:
                 self.speedx=-self.speedx
                 self.bounceMax-=1
-                self.loadColor('blue')
+                #self.loadColor('blue')
+                self.doColorCode(self.radColor)
                 if not global_var.get_value('kiraing'):
                     global_var.get_value('kira_sound').stop()
                     global_var.get_value('kira_sound').play()
@@ -2421,6 +2429,16 @@ class orb_Bullet_bouncing_5(rice_Bullet):
                     global_var.get_value('kira_sound').stop()
                     global_var.get_value('kira_sound').play()
                     global_var.set_value('kiraing',True)
+
+    def checkValid(self):
+        if self.rect.top>=720-30:
+            self.kill()
+        if self.rect.bottom<=0+20:
+            self.kill()
+        if self.rect.right<=0+50:
+            self.kill()
+        if self.rect.left>=670:
+            self.kill()
 
 class big_Bullet_tracing_test(big_Bullet):
     def __init__(self):

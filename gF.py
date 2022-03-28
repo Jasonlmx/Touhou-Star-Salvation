@@ -170,7 +170,7 @@ def loadImage():
     powerText=pygame.image.load('resource/text/powerText.png')
     powerText=pygame.transform.scale(powerText,(99,24))
     global_var.set_value('powerText',powerText)
-    hogwarts_background=pygame.image.load('resource/background/hogwarts.png').convert()#_alpha()
+    hogwarts_background=pygame.image.load('resource/background/hogwarts.png').convert_alpha()
     global_var.set_value('hogwarts_background',hogwarts_background)
     stars_background=pygame.image.load('resource/background/stars.jpg').convert()#_alpha()
     global_var.set_value('stars_background',stars_background)
@@ -389,6 +389,9 @@ def loadImage():
     effectBar=pygame.image.load('resource/boss/etama3.png')
     effectBar=pygame.transform.smoothscale(effectBar,(192,192)).convert_alpha()
     global_var.set_value('effectBar',effectBar)
+
+    watcher=pygame.image.load('resource/bullet/small_bullet_grey.png')
+    global_var.set_value('watcher',watcher)
 
 class star_effect(pygame.sprite.Sprite):
     def __init__(self):

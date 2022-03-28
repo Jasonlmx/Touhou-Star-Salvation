@@ -3637,13 +3637,13 @@ class Dumbledore(Boss):
             player.spellBonus=True
             self.maxHealth=50000
             self.health=self.maxHealth
-            self.gotoPosition(360,200,80)
+            self.gotoPosition(360,100,80)
             self.frameLimit=4800
             self.cardBonus=10000000
             self.framePunishment=1300
             self.spellName='Star Fountain[Enchanted Fragments]'
             self.chSpellName='星之源泉「魔法碎片」'
-            self.gotoPosition(360,240,50)
+            self.gotoPosition(360,160,50)
             self.randomAngle=random.random()*360
             global_var.get_value('spell_sound').play()
             new_effect=Effect.bossFaceSpell()
@@ -3661,16 +3661,71 @@ class Dumbledore(Boss):
                 new_effect=Effect.bulletCreate(3)
                 new_effect.initial(self.tx,self.ty,144,64,10)
                 effects.add(new_effect)
-            if (self.lastFrame-70)%700<=400:
+            if (self.lastFrame-70)%700<=300:
                 if (self.lastFrame-70)%700%200==0:
                     new_bullet=Bullet.star_Bullet_fountain()
                     new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.selfTarget(player.cx,player.cy,5)
+                    new_bullet.selfTarget(player.cx,30,5)
                     new_bullet.doColorCode(3)
-                    new_bullet.attColorNow=3
+                    new_bullet.attColorNow=3    
+                    new_bullet.laserColor=4
+                    new_bullet.starColor=13
+                    new_bullet.countAngle()
+                    angle=new_bullet.angle
+                    new_bullet.setSpeed(angle,7)
                     bullets.add(new_bullet)
-                    global_var.get_value('enemyGun_sound1').play()
-            elif (self.lastFrame-70)%700==550:
+                    if not global_var.get_value('enemyFiring1'):
+                        global_var.get_value('enemyGun_sound1').stop()
+                        global_var.get_value('enemyGun_sound1').play()
+                        global_var.set_value('enemyFiring1',True)
+                    for i in range(-3,4):
+                        if i!=0:
+                            new_bullet=Bullet.star_Bullet_fountain()
+                            new_bullet.initial(self.tx,self.ty,1)
+                            new_bullet.doColorCode(3)
+                            #new_bullet.attColorNow=3 
+                            new_bullet.laserColor=4
+                            new_bullet.starColor=13
+                            new_bullet.setSpeed(angle+i*15,7)
+                            bullets.add(new_bullet)
+                    new_bullet=Bullet.star_Bullet()
+                    new_bullet.initial(self.tx,self.ty,1)
+                    new_bullet.selfTarget(player.cx,player.cy,5)
+                    new_bullet.countAngle()
+                    angle=new_bullet.angle
+                    for i in range(-1,2):
+                        for j in range(0,6):
+                            new_bullet=Bullet.star_Bullet()
+                            new_bullet.initial(self.tx,self.ty,1)
+                            new_bullet.setSpeed(angle+i*1.5,5-j*0.35)
+                            new_bullet.doColorCode(13)
+                            bullets.add(new_bullet)
+
+            elif (self.lastFrame-70)%700>=400:
+                if (self.lastFrame-70)%700==400:
+                    new_bullet=Bullet.star_Bullet_fountain()
+                    new_bullet.initial(self.tx,self.ty,1)
+                    new_bullet.selfTarget(player.cx,player.cy,6)
+                    new_bullet.countAngle()
+                    angle=new_bullet.angle
+                    self.spell_5_angle=angle
+                frameSign=(self.lastFrame-70)%700-400
+                if frameSign<=120:
+                    if frameSign%8==0:
+                        times=frameSign/8
+                        new_bullet=Bullet.star_Bullet_fountain()
+                        new_bullet.initial(self.tx,self.ty,1)
+                        new_bullet.setSpeed(self.spell_5_angle-times*30,7)
+                        new_bullet.doColorCode(3)
+                        new_bullet.attColorNow=2
+                        new_bullet.laserColor=4
+                        new_bullet.starColor=13
+                        bullets.add(new_bullet)
+                        if not global_var.get_value('enemyFiring1'):
+                            global_var.get_value('enemyGun_sound1').stop()
+                            global_var.get_value('enemyGun_sound1').play()
+                            global_var.set_value('enemyFiring1',True)
+                '''
                 new_bullet=Bullet.star_Bullet_fountain()
                 new_bullet.initial(self.tx,self.ty,1)
                 new_bullet.selfTarget(player.cx,player.cy,5)
@@ -3689,12 +3744,16 @@ class Dumbledore(Boss):
                         new_bullet.doColorCode(2)
                         new_bullet.attColorNow=2
                         bullets.add(new_bullet)
+                '''
 
-        if (self.lastFrame-70)%700==450:
+        if (self.lastFrame-70)%700==350:
             global_var.get_value('ch00_sound').play()
-        
+            new_effect=Effect.powerUp()
+            new_effect.initial((self.tx,self.ty),500,40,(255,255,255),5,3,20)
+            effects.add(new_effect)
         if (self.lastFrame-70)%200==50:
-            self.gotoPosition(random.random()*380+170,random.random()*180+100,50)
+            pass
+            #self.gotoPosition(random.random()*60+330,random.random()*40+100,50)
 
         if self.health<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
@@ -4110,9 +4169,10 @@ class Dumbledore(Boss):
                 new_effect=Effect.bulletCreate(4)
                 new_effect.initial(sx,sy,128,64,7)
                 #effects.add(new_effect)
-                '''
-                danmaku.polyByLength(bullets,Bullet.orb_Bullet_bouncing_5,intense//6,3,2.3,self.randomAngle,[sx,sy],color)
-                danmaku.polyByLength(bullets,Bullet.orb_Bullet_bouncing_5,intense//6,3,2.3,self.randomAngle-60,[sx,sy],color)
+                rad=random.randint(1,14)
+                sides=random.randint(3,8)
+                danmaku.polyByLength(bullets,Bullet.orb_Bullet_bouncing_5,intense//sides,sides,3,self.randomAngle,[sx,sy],color,False,rad)
+                #danmaku.polyByLength(bullets,Bullet.orb_Bullet_bouncing_5,intense//6,3,2.3,self.randomAngle-60,[sx,sy],color)
                 '''
                 for i in range(0,intense):
                     new_bullet=Bullet.orb_Bullet_bouncing_5()
@@ -4124,6 +4184,7 @@ class Dumbledore(Boss):
                         new_bullet.loadColor('grey')
                     bullets.add(new_bullet)
                 self.randomAngle=random.random()*360
+                '''
 
                 if not global_var.get_value('enemyFiring1'):
                     global_var.get_value('enemyGun_sound1').stop()
@@ -4363,8 +4424,8 @@ class Dumbledore(Boss):
         '''
 
         #test card 9 光彩陆离乱舞
-        if self.lastFrame>=0:
-            if self.lastFrame%300==0:
+        if self.lastFrame>=50:
+            if (self.lastFrame-50)%300==0:
                 global_var.get_value('enemyBigGun_sound').stop()
                 global_var.get_value('enemyBigGun_sound').play()
                 if self.fireCount%2==0:
@@ -4379,7 +4440,7 @@ class Dumbledore(Boss):
                     bullets.add(new_bullet)
                 self.randomAngle=random.random()*360
                 self.fireCount+=1
-        if self.lastFrame%300==260:
+        if (self.lastFrame-50)%300==260:
             global_var.get_value('ch00_sound').play()
             new_effect=Effect.powerUp()
             new_effect.initial((self.tx,self.ty),500,40,(255,255,255),5,3,20)
