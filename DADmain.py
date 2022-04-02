@@ -89,7 +89,7 @@ global_var.set_value('left', back_left)
 back_right=pygame.image.load('resource/right.jpg').convert_alpha()
 global_var.set_value('right', back_right)
 
-global_var.set_value('boomStatu',0)
+
 global_var.set_value('grazeNum',0)
 global_var.set_value('fpSec',0)
 global_var.set_value('enemyPos',(0,0,10000))
@@ -102,11 +102,12 @@ global_var.set_value('menu',True)
 global_var.set_value('ifGameOver',False)
 global_var.set_value('bgmPauseFlag',0)
 global_var.set_value('bgmContinuePos',[0,0])#[0]->for mid stage,[1]->for boss fight
+global_var.set_value('boomStatu',0)
 log = open("./log.csv", 'w+')
 #main loop controller 
 running = True
 
-##back.image=pygame.image.load("resource/background.jpg")
+##back.image=pygame.image.load("resource/background.jpg") 
 #create class
 
 #init player position

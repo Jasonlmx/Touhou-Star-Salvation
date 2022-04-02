@@ -7,6 +7,7 @@ from pygame.sprite import Sprite
 import global_var
 import Effect
 import Item
+import pygame.gfxdraw
 
 def createItem(tx,ty,items):
     new_item=Item.item()
@@ -501,6 +502,7 @@ class Bullet(pygame.sprite.Sprite):
         self.lastFrame=0
         self.ifAdjustSign=global_var.get_value('if_speedAdjusting')
         self.ifDrawCreate=global_var.get_value('if_highQuality_effect')
+        self.validAccuracy=(0,0,0,0)
     def genEffect(self,effects):
         pass
 
@@ -584,13 +586,13 @@ class Bullet(pygame.sprite.Sprite):
     #def update(self):
 
     def checkValid(self):
-        if self.rect.top>=720-30:
+        if self.rect.top>=720-30+self.validAccuracy[1]:
             self.kill()
-        if self.rect.bottom<=0+30:
+        if self.rect.bottom<=0+30-self.validAccuracy[0]:
             self.kill()
-        if self.rect.right<=0+60:
+        if self.rect.right<=0+60-self.validAccuracy[3]:
             self.kill()
-        if self.rect.left>=660:
+        if self.rect.left>=660+self.validAccuracy[2]:
             self.kill()
 
 class small_Bullet(Bullet):
@@ -1797,7 +1799,7 @@ class laser_line(Bullet):
             color=self.colorRGB[self.colorNum]
         else:
             color=(255,255,255)
-        pygame.draw.line(screen,color,(self.tx,self.ty),self.endPoint,1)
+        pygame.draw.aaline(screen,color,(self.tx,self.ty),self.endPoint,1)
     
     def drawLaser(self,screen):
         if self.lastFrame-self.warnFrame<=self.changeFrame:
@@ -1810,6 +1812,31 @@ class laser_line(Bullet):
             pygame.draw.line(screen,self.colorRGB[self.colorNum],(self.tx,self.ty),self.endPoint,width)
             if width>=3:
                 pygame.draw.line(screen,(255,255,255),(self.tx,self.ty),self.endPoint,round(width/2.5))
+            '''X0=self.tx,self.ty
+            X1=self.endPoint[0],self.endPoint[1]
+            center_L1 = ((X0[0]+X1[0])/2,(X0[1]+X1[1])/2)
+            length = math.sqrt((X0[0]-X1[0])**2+(X0[1]-X1[1])**2) # Line size
+            thickness = round(width/2)
+            angle = math.atan2(X0[1] - X1[1], X0[0] - X1[0])
+            UL = (center_L1[0] + (length / 2.) * math.cos(angle) - (thickness / 2.) * math.sin(angle),center_L1[1] + (thickness / 2.) * math.cos(angle) + (length / 2.) * math.sin(angle))
+            UR = (center_L1[0] - (length / 2.) * math.cos(angle) - (thickness / 2.) * math.sin(angle),center_L1[1] + (thickness / 2.) * math.cos(angle) - (length / 2.) * math.sin(angle))
+            BL = (center_L1[0] + (length / 2.) * math.cos(angle) + (thickness / 2.) * math.sin(angle),center_L1[1] - (thickness / 2.) * math.cos(angle) + (length / 2.) * math.sin(angle))
+            BR = (center_L1[0] - (length / 2.) * math.cos(angle) + (thickness / 2.) * math.sin(angle),center_L1[1] - (thickness / 2.) * math.cos(angle) - (length / 2.) * math.sin(angle))
+            pygame.gfxdraw.aapolygon(screen, (UL, UR, BR, BL), self.colorRGB[self.colorNum])
+            pygame.gfxdraw.filled_polygon(screen, (UL, UR, BR, BL), self.colorRGB[self.colorNum])
+
+            thickness = round(width/5)
+            angle = math.atan2(X0[1] - X1[1], X0[0] - X1[0])
+            UL = (center_L1[0] + (length / 2.) * math.cos(angle) - (thickness / 2.) * math.sin(angle),center_L1[1] + (thickness / 2.) * math.cos(angle) + (length / 2.) * math.sin(angle))
+            UR = (center_L1[0] - (length / 2.) * math.cos(angle) - (thickness / 2.) * math.sin(angle),center_L1[1] + (thickness / 2.) * math.cos(angle) - (length / 2.) * math.sin(angle))
+            BL = (center_L1[0] + (length / 2.) * math.cos(angle) + (thickness / 2.) * math.sin(angle),center_L1[1] - (thickness / 2.) * math.cos(angle) + (length / 2.) * math.sin(angle))
+            BR = (center_L1[0] - (length / 2.) * math.cos(angle) + (thickness / 2.) * math.sin(angle),center_L1[1] - (thickness / 2.) * math.cos(angle) - (length / 2.) * math.sin(angle))
+            pygame.gfxdraw.aapolygon(screen, (UL, UR, BR, BL), (255,255,255))
+            pygame.gfxdraw.filled_polygon(screen, (UL, UR, BR, BL), (255,255,255))'''
+
+
+
+
         else:
             length=round(math.sqrt((self.tx-self.endPoint[0])**2+(self.ty-self.endPoint[1])**2))
             
@@ -2874,3 +2901,36 @@ class circle_laser_slave(Bullet):
             new_bullet.furryCollide=9
             bullets.add(new_bullet)
             self.fireAngleAdj+=80/36*self.direction
+
+class scale_bullet_midpath_ns1(scale_Bullet):
+    def __init__(self):
+        super(scale_bullet_midpath_ns1,self).__init__()
+        self.homingSpeed=4
+        self.ifHoming=False
+        self.validAccuracy=(10,0,10,10)
+    def movement(self):
+        tick=global_var.get_value('DELTA_T')
+        if self.ifAdjustSign:
+            self.tx+=self.speedx*60/1000*tick
+            self.ty+=self.speedy*60/1000*tick
+        else:
+            self.tx+=self.speedx
+            self.ty+=self.speedy
+        self.truePos()
+        if self.tx<=60 or self.tx>=660:
+            self.speedx=-self.speedx
+            self.loadColor('lightBlue')
+        if self.ty<=30 and not self.ifHoming:
+            px=global_var.get_value('player1x')
+            py=global_var.get_value('player1y')
+            #self.selfTarget(px,py,self.homingSpeed)
+            self.speedx=random.random()*0.3-0.15
+            self.speedy=-self.speedy+random.random()*1-0.5+1
+            self.ifHoming=True
+            self.loadColor('red')
+
+class small_bullet_midpath_sp1(small_Bullet):
+    def __init__(self):
+        super(small_bullet_midpath_sp1,self).__init__()
+    
+    

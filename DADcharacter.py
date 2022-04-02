@@ -1,3 +1,4 @@
+from hashlib import new
 import pygame,sys
 import random
 import math
@@ -1832,8 +1833,8 @@ class Reimu(Player):
         self.frame=0
         self.itemGetLine=300
         self.fireInterval=4
-        self.inclineAngle1=10
-        self.inclineAngle2=25
+        self.inclineAngle1=30
+        self.inclineAngle2=15
         self.inclineSpeed=14
         self.distTimes=1.5
         self.highSpeed=6.8
@@ -1872,6 +1873,17 @@ class Reimu(Player):
             shift_down=global_var.get_value('shift_down')
             
             #create fire
+            '''if self.inclineAngle1>=30:
+                self.inclineAngle1=30
+            if self.inclineAngle1<=5:
+                self.inclineAngle1=5
+            if self.in'''
+            if not shift_down:
+                inclineAngle1=30
+                inclineAngle2=10
+            else:
+                inclineAngle1=5
+                inclineAngle2=3
             if frame%8==0:
                 if self.powerLevel==1:
                     new_fire=Bullet.reimuTargetSatsu()
@@ -1880,21 +1892,21 @@ class Reimu(Player):
                     playerGuns.add(new_fire)
                 elif self.powerLevel==2:
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx+30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
-                    new_fire.angle=270
+                    new_fire.initial(270+inclineAngle1,self.cx+30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
+                    new_fire.angle=270+inclineAngle1
                     playerGuns.add(new_fire)
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx-30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
-                    new_fire.angle=270
+                    new_fire.initial(270-inclineAngle1,self.cx-30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
+                    new_fire.angle=270-inclineAngle1
                     playerGuns.add(new_fire)
                 elif self.powerLevel==3:
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx+30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
-                    new_fire.angle=270
+                    new_fire.initial(270+inclineAngle1,self.cx+30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
+                    new_fire.angle=270+inclineAngle1
                     playerGuns.add(new_fire)
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx-30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
-                    new_fire.angle=270
+                    new_fire.initial(270-inclineAngle1,self.cx-30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
+                    new_fire.angle=270-inclineAngle1
                     playerGuns.add(new_fire)
                     new_fire=Bullet.reimuTargetSatsu()
                     new_fire.initial(270,self.cx+0*self.distTimes,self.cy+50+30*self.distTimes-45,self.inclineSpeed)
@@ -1902,20 +1914,20 @@ class Reimu(Player):
                     playerGuns.add(new_fire)
                 elif self.powerLevel==4:
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx+30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
-                    new_fire.angle=270
+                    new_fire.initial(270+inclineAngle1,self.cx+30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
+                    new_fire.angle=270+inclineAngle1
                     playerGuns.add(new_fire)
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx-30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
-                    new_fire.angle=270
+                    new_fire.initial(270-inclineAngle1,self.cx-30*self.distTimes,self.cy-30*(self.distTimes)+45,self.inclineSpeed)
+                    new_fire.angle=270-inclineAngle1
                     playerGuns.add(new_fire)
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx-15*self.distTimes,self.cy+50+30*self.distTimes-45,self.inclineSpeed)
-                    new_fire.angle=270
+                    new_fire.initial(270-inclineAngle2,self.cx-15*self.distTimes,self.cy+50+30*self.distTimes-45,self.inclineSpeed)
+                    new_fire.angle=270-inclineAngle2
                     playerGuns.add(new_fire)
                     new_fire=Bullet.reimuTargetSatsu()
-                    new_fire.initial(270,self.cx+15*self.distTimes,self.cy+50+30*self.distTimes-45,self.inclineSpeed)
-                    new_fire.angle=270
+                    new_fire.initial(270+inclineAngle2,self.cx+15*self.distTimes,self.cy+50+30*self.distTimes-45,self.inclineSpeed)
+                    new_fire.angle=270+inclineAngle2
                     playerGuns.add(new_fire)
             
     def draw(self,screen):
@@ -2270,7 +2282,7 @@ class Boss(pygame.sprite.Sprite):
     
     
     def cancalAllBullet(self,bullets,items,effects,doBonus):
-        exception=(5,7,10,11,12,13)
+        exception=(5,7,10,11,12,13,14,15)
         for bullet in bullets:
             new_effect=Effect.bulletVanish()
             if not bullet.type in exception:
@@ -2409,6 +2421,7 @@ class satori(Boss):
             self.gotoPosition(360,210,30)
             self.randomAngle=random.random()*360
             self.frameLimit=1200
+        '''
         if self.lastFrame%240>=0:
             if self.lastFrame%9==0:
                 for i in range(0,8):
@@ -2426,7 +2439,21 @@ class satori(Boss):
                     self.randomAngle-=6
         else:
             self.randomAngle=random.random()*360
-        
+        '''
+        if self.lastFrame%100<24 and self.lastFrame%8==0:
+            if not global_var.get_value('enemyFiring2'):
+                global_var.get_value('enemyGun_sound2').play()
+                global_var.set_value('enemyFiring2',True)
+            if self.lastFrame%90==0:
+                self.randomAngle=random.random()*360
+            for i in range(0,30):
+                for j in range(0,1):
+                    new_bullet=Bullet.scale_bullet_midpath_ns1()
+                    new_bullet.initial(self.tx,self.ty,1)
+                    new_bullet.setSpeed(self.randomAngle+i*(360/30),4)
+                    new_bullet.homingSpeed=6
+                    new_bullet.loadColor('blue')
+                    bullets.add(new_bullet)
         if self.health<=0 or self.frameLimit<=0:
             self.cancalAllBullet(bullets,items,effects,True)
             self.reset=True
@@ -2458,42 +2485,54 @@ class satori(Boss):
         self.cardBonus-=self.framePunishment
 
         if self.lastFrame%240>=120:
-            if self.lastFrame%6==0:
-                for i in range(0,9):
-                    if not global_var.get_value('enemyFiring2'):
-                        global_var.get_value('enemyGun_sound2').stop()
-                        global_var.get_value('enemyGun_sound2').play()
-                        global_var.set_value('enemyFiring2',True)
-                    if not global_var.get_value('kiraing'):
-                        global_var.get_value('kira_sound').stop()
-                        global_var.get_value('kira_sound').play()
-                        global_var.set_value('kiraing',True)
-                    new_bullet=Bullet.scale_Bullet()
-                    new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.setSpeed(self.randomAngle+i*(360/9),7)
-                    new_bullet.loadColor('green')
-                    bullets.add(new_bullet)
+            if self.lastFrame%4==0:
+                for i in range(0,5):
+                    for j in range(0,3):
+                        if not global_var.get_value('enemyFiring2'):
+                            global_var.get_value('enemyGun_sound2').stop()
+                            global_var.get_value('enemyGun_sound2').play()
+                            global_var.set_value('enemyFiring2',True)
+                        if not global_var.get_value('kiraing'):
+                            global_var.get_value('kira_sound').stop()
+                            global_var.get_value('kira_sound').play()
+                            global_var.set_value('kiraing',True)
+                        new_bullet=Bullet.scale_Bullet()
+                        new_bullet.initial(self.tx,self.ty,1)
+                        new_bullet.setSpeed(self.randomAngle+i*(360/5),7-0.6*j)
+                        new_bullet.loadColor('green')
+                        bullets.add(new_bullet)
                 self.randomAngle-=11
         else:
             self.randomAngle=random.random()*360
-        if self.lastFrame%9==0:
-            for i in range(0,12):
-                if not global_var.get_value('enemyFiring3'):
-                    global_var.get_value('enemyGun_sound3').stop()
-                    global_var.get_value('enemyGun_sound3').play()
-                    global_var.set_value('enemyFiring3',True)
-                new_bullet=Bullet.small_Bullet()
+        
+        if self.lastFrame%1==0:
+            if not global_var.get_value('enemyFiring3') and self.lastFrame%3==0:
+                global_var.get_value('enemyGun_sound3').stop()
+                global_var.get_value('enemyGun_sound3').play()
+                global_var.set_value('enemyFiring3',True)
+            for i in range(0,4):
+                new_bullet=Bullet.small_bullet_midpath_sp1()
                 new_bullet.initial(self.tx,self.ty,1)
-                new_bullet.setSpeed(self.randomAngle2+i*(360/12),4)
+                new_bullet.setSpeed(self.randomAngle2-0.3*i,5-0.5*i)
                 new_bullet.loadColor('purple')
                 bullets.add(new_bullet)
-            self.randomAngle2+=8.3
+            self.randomAngle2+=8.2
 
         if self.lastFrame%240==60:
-            new_effect=Effect.bulletCreate(5)
+            '''new_effect=Effect.bulletCreate(5)
             new_effect.initial(self.tx,self.ty,200,84,20)
-            effects.add(new_effect)
-        if self.lastFrame%240==80:
+            effects.add(new_effect)'''
+            new_bullet=Bullet.laser_line()
+            new_bullet.initial(self.tx,self.ty,1)
+            new_bullet.selfTarget(player.cx,player.cy,2)
+            new_bullet.countAngle()
+            angle=new_bullet.angle
+            new_bullet.setFeature(angle,10,60,20,64,10,5,50)
+            new_bullet.furryCollide=6
+            new_bullet.doColorCode(10)
+            new_bullet.dDegree=0
+            bullets.add(new_bullet)
+        '''if self.lastFrame%240==80:
             if not global_var.get_value('enemyFiring1'):
                 global_var.get_value('enemyGun_sound1').stop()
                 global_var.get_value('enemyGun_sound1').play()
@@ -2505,14 +2544,16 @@ class satori(Boss):
             new_bullet.selfTarget(px,py,6)
             new_bullet.countAngle()
             angle=new_bullet.angle
-            for i in range(0,30):
-                new_bullet=Bullet.scale_Bullet()
-                new_bullet.initial(self.tx,self.ty,1)
-                randAngle=random.random()*5-2.5
-                randSpeed=random.random()*0.4+6
-                new_bullet.setSpeed(angle+randAngle,randSpeed-0.1*i)
-                new_bullet.loadColor('lightGreen')
-                bullets.add(new_bullet)
+            for i in range(0,10):
+                for j in (-1,1):
+                    new_bullet=Bullet.scale_Bullet()
+                    new_bullet.anmStay=True
+                    new_bullet.initial(self.tx,self.ty,1)
+                    randAngle=random.random()*4-2
+                    randSpeed=random.random()*0.4+6
+                    new_bullet.setSpeed(angle+randAngle+j*40,randSpeed-0.3*i)
+                    new_bullet.loadColor('lightGreen')
+                    bullets.add(new_bullet)'''
 
         if self.health<=0:
             self.cancalAllBullet(bullets,items,effects,True)
@@ -2564,11 +2605,13 @@ class satori(Boss):
             targetBulletInterval=9
             randomBulletISpeed=5
             targetBulletISpeed=5
+            tense=1
         else:
             randomBulletInterval=4
             targetBulletInterval=7
             randomBulletISpeed=6
             targetBulletISpeed=7
+            tense=3
         if self.lastFrame>=80:
             if self.lastFrame%10==0:
                 global_var.get_value('kira_sound').stop()
@@ -2593,7 +2636,7 @@ class satori(Boss):
                 ry=random.random()*20+30
                 new_effect.initial(rx,ry,82,48,targetBulletInterval)
                 #effects.add(new_effect)
-                new_bullet=Bullet.rice_Bullet()
+                new_bullet=Bullet.star_Bullet()
                 new_bullet.anmStay=True
                 new_bullet.initial(rx,ry,1)
                 new_bullet.selfTarget(player.cx,player.cy,targetBulletISpeed)
@@ -2606,7 +2649,7 @@ class satori(Boss):
                         global_var.get_value('enemyGun_sound2').stop()
                         global_var.get_value('enemyGun_sound2').play()
                         global_var.set_value('enemyFiring2',True)
-                    new_bullet=Bullet.satsu_Bullet()
+                    new_bullet=Bullet.scale_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
                     new_bullet.selfTarget(player.cx,player.cy,2.5+0.4*(self.lastFrame%180-160))
                     new_bullet.countAngle()
@@ -2616,12 +2659,21 @@ class satori(Boss):
                     if self.health<=15000 or self.frameLimit<=600:
                         for i in range(-1,2):
                             if i!=0:
-                                new_bullet=Bullet.satsu_Bullet()
+                                new_bullet=Bullet.scale_Bullet()
                                 new_bullet.anmStay=True
                                 new_bullet.initial(self.tx,self.ty,1)
                                 new_bullet.setSpeed(angle+i*30,2.5+0.4*(self.lastFrame%180-160))
                                 new_bullet.loadColor('blue')
                                 bullets.add(new_bullet)
+            if self.lastFrame%180==80:
+                self.randomAngle=random.random()*360
+                for i in range(0,28):
+                    for j in range(0,tense):
+                        new_bullet=Bullet.orb_Bullet()
+                        new_bullet.initial(self.tx,self.ty,1)
+                        new_bullet.setSpeed(self.randomAngle+i*360/28,3-0.7*j)
+                        new_bullet.loadColor('purple')
+                        bullets.add(new_bullet)
             if self.health<=15000 or self.frameLimit<=600:
                 if self.lastFrame%180==150 and not self.powerUp:
                     global_var.get_value('ch00_sound').play()
