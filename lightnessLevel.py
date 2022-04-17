@@ -196,7 +196,7 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
     
     if frame>=10800:
         screen.fill((0,0,0))
-        back_image=global_var.get_value('spell_background')
+        back_image=global_var.get_value('lightnessBossBack')
         #temp_image=pygame.Surface((900,900))
         #temp_image.fill((0,0,0,0))
         #back_image.set_alpha(round(math.sin(((frame-300)/3)/180*math.pi)*128+128))
@@ -215,6 +215,8 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
             else:
                 #alpha=round(180+76*math.sin((lastFrame+180-128)*math.pi/180*0.5))
                 alpha=256
+            if lastFrame==1:
+                gF.doBossCardBackground(screen,backgrounds)
         else:
             if cardNum==1:
                 alpha=0
@@ -223,6 +225,9 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
                     alpha=256-round(lastFrame*(256/128))
                 else:
                     alpha=0
+            if lastFrame==1:
+                for obj in backgrounds:
+                    obj.kill()
         #if not alpha==256:
         back_image.set_alpha(alpha)
         moon=global_var.get_value('moon')
@@ -232,16 +237,6 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         moon.set_alpha(rev_alpha)
         hog.set_alpha(rev_alpha)
 
-        #screen.blit(back_image,(60,30))
-        #gF.drawRotation(global_var.get_value('spell_background'),(360-425,300-425),(frame%10800)/10800*360*5,screen)
-        '''
-        if frame%3==0:
-            gF.drawRotation(back_image,(360-425,300-425),-(frame%10800)/10800*360*5,temp_image)
-            global_var.set_value('temp_image',temp_image)
-        else:
-            temp_image=global_var.get_value('temp_image')
-        '''
-        #temp_image=pygame.transform.smoothscale(temp_image,(900,900))
         angle=frame/3
         dx=round(math.cos(angle*math.pi/180)*60)
         dy=round(math.sin(angle*math.pi/180)*180)
@@ -250,9 +245,9 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         #print(dx,'',dy)
         if alpha>0:
             #screen.blit(back_image,(360-365+dx,360-540+dy))
-            screen.blit(back_image,(60,30),(60+dx,180+dy,600,660))
-        if rev_alpha>0:
+            screen.blit(back_image,(60,30))
         
+        if rev_alpha>0:
             #screen.blit(moon,(dx2-10,dy2+20))
             screen.blit(moon,(60,30),(25+dx2,10+dy2,600,500))
             screen.blit(hog,(30,184))

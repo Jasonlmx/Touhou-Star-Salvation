@@ -47,8 +47,8 @@ class background(pygame.sprite.Sprite):
         if self.cardBg:
             self.x_adj=0
         else:
-            self.x_adj=round(math.sin(self.frame*math.pi/180)*10)
-        screen.blit(self.surf,(round(self.tx+self.x_adj)-128,round(self.ty)-128))
+            self.x_adj=int(math.sin(self.frame*math.pi/180)*10)
+        screen.blit(self.surf,(int(self.tx+self.x_adj)-128,int(self.ty)-128))
         self.checkValid()
 
 class lake_bg(background):
@@ -61,3 +61,32 @@ class cloud_bg(background):
         self.surf = global_var.get_value('cloud_bg')
         self.surf.set_alpha(200)
         self.speedy=2.0
+
+class bossCardPattern(background):
+    def __init__(self):
+        super(bossCardPattern,self).__init__()
+        self.image=global_var.get_value('bossCardPatternPic')
+        self.index=0
+        self.speedy=-1.3
+
+    def checkValid(self):
+        if self.rect.bottom<=30:
+            self.ty+=1200
+    
+    def inStage(self):
+        ifIn=False
+        if self.rect.top<=690 or self.rect.bottom>=30:
+            ifIn=True
+        return ifIn
+
+    def update(self,screen):
+        self.frame+=1
+        self.movement()
+        if self.frame%12==0:
+            self.index+=1
+        self.index=self.index%60
+        self.surf=self.image[self.index]
+        if self.inStage():
+            screen.blit(self.surf,(int(self.tx)-150,int(self.ty)-150))
+        self.checkValid()
+        

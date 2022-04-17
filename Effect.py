@@ -679,3 +679,8 @@ class spellAttackImage(pygame.sprite.Sprite):
     def draw(self,screen):
         gF.drawRotation(self.Image,(self.x-self.length/2,self.y-self.width/2),20,screen)
         #screen.blit(self.Image,(self.x,self.y))
+
+class scoreImage(pygame.sprite.Sprite):
+    def __init__(self):
+        super(scoreImage,self).__init__()
+        font=pygame.font.Font('./resource/font/FeiHuaSongTi-2.ttf', 14)

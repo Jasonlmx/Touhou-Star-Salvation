@@ -7,6 +7,7 @@ from pygame.sprite import Group
 import global_var
 import background
 from screenSettings import screen_settings
+import pic
 
 def shakeScreen():
     shakeFrame=global_var.get_value('shakeFrame')
@@ -393,6 +394,13 @@ def loadImage():
     watcher=pygame.image.load('resource/bullet/small_bullet_grey.png')
     global_var.set_value('watcher',watcher)
 
+    lightnessBossBack=pygame.image.load('resource/background/lightnessBossBack.png').convert()
+    global_var.set_value('lightnessBossBack',lightnessBossBack)
+
+    originBossCardPattern=pygame.image.load('resource/background/bossCardBackPattern.png')
+    bossCardPatternPic=pic.doPic(originBossCardPattern)
+    global_var.set_value('bossCardPatternPic',bossCardPatternPic)
+
 class star_effect(pygame.sprite.Sprite):
     def __init__(self):
         super(star_effect,self).__init__()
@@ -441,6 +449,13 @@ def doBackground(screen,backgrounds):
         for j in range(0,4):
             new_background=background.lake_bg()
             new_background.initial(128+i*256,128+j*256)
+            backgrounds.add(new_background)
+
+def doBossCardBackground(screen,backgrounds):
+    for i in range(0,2):
+        for j in range(0,4):
+            new_background=background.bossCardPattern()
+            new_background.initial(60+150+i*300,30+150+j*300)
             backgrounds.add(new_background)
     
 def drawBlinder(screen,surf):

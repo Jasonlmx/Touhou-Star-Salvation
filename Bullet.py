@@ -1692,6 +1692,10 @@ class laser_line(Bullet):
         self.forwardNow=0
         self.furryCollide=0
         self.warnLineColored=False
+        self.posList=[]
+        self.widenUnit=6
+        self.widenSign=0
+        self.widenProperty=False
     def getDecoImage(self):
         self.decoImage=pygame.Surface((32,32)).convert_alpha()
         self.decoImage.fill((0,0,0,0))
@@ -1747,6 +1751,8 @@ class laser_line(Bullet):
         self.forwardNow=0
         if self.lastFrame>self.warnFrame:
             self.goForward()
+            self.posList=[(self.bx,self.by)]
+            self.widenSign=0
             self.doLaser(screen,bullets,effects)
             self.drawLaser(screen)
             #self.drawWarnLine(screen)
@@ -1777,6 +1783,9 @@ class laser_line(Bullet):
             forward=self.widthNow+3
             self.bx+=math.cos(self.degree/180*math.pi)*(forward)
             self.by+=math.sin(self.degree/180*math.pi)*(forward)
+            if self.widenSign<=self.widenUnit:
+                self.posList.append((self.bx,self.by))
+                self.widenSign+=1
             self.forwardNow+=forward
         self.endPoint=[self.bx,self.by]
     
@@ -1809,9 +1818,21 @@ class laser_line(Bullet):
         else:
             width=self.width+self.furryCollide
         if self.ifSimplifiedMode:
-            pygame.draw.line(screen,self.colorRGB[self.colorNum],(self.tx,self.ty),self.endPoint,width)
-            if width>=3:
-                pygame.draw.line(screen,(255,255,255),(self.tx,self.ty),self.endPoint,round(width/2.5))
+            if self.widenProperty:
+                length=len(self.posList)
+                #print(self.posList)
+                for i in range(length-1):
+                    pygame.draw.line(screen,self.colorRGB[self.colorNum],self.posList[i],self.posList[i+1],1+round(width/length*i-1))
+                pygame.draw.line(screen,self.colorRGB[self.colorNum],self.posList[length-1],self.endPoint,width)
+                for i in range(length-1):
+                    whiteWidth=round(width/length*i/2.5)
+                    if whiteWidth>=1:
+                        pygame.draw.line(screen,(255,255,255),self.posList[i],self.posList[i+1],whiteWidth)
+                pygame.draw.line(screen,(255,255,255),self.posList[length-1],self.endPoint,round(width/2.5))
+            else:
+                pygame.draw.line(screen,self.colorRGB[self.colorNum],(self.tx,self.ty),self.endPoint,width)
+                if width>3:
+                    pygame.draw.line(screen,(255,255,255),(self.tx,self.ty),self.endPoint,round(width/2.5))
             '''X0=self.tx,self.ty
             X1=self.endPoint[0],self.endPoint[1]
             center_L1 = ((X0[0]+X1[0])/2,(X0[1]+X1[1])/2)
@@ -2924,7 +2945,7 @@ class scale_bullet_midpath_ns1(scale_Bullet):
             px=global_var.get_value('player1x')
             py=global_var.get_value('player1y')
             #self.selfTarget(px,py,self.homingSpeed)
-            self.speedx=random.random()*0.3-0.15
+            self.speedx=0
             self.speedy=-self.speedy+random.random()*1-0.5+1
             self.ifHoming=True
             self.loadColor('red')
