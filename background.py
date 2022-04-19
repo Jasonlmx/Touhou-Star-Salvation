@@ -66,12 +66,14 @@ class bossCardPattern(background):
     def __init__(self):
         super(bossCardPattern,self).__init__()
         self.image=global_var.get_value('bossCardPatternPic')
+        self.surf=self.image[0]
+        self.rect = self.surf.get_rect()
         self.index=0
         self.speedy=-1.3
 
     def checkValid(self):
         if self.rect.bottom<=30:
-            self.ty+=1200
+            self.ty+=384*3
     
     def inStage(self):
         ifIn=False
@@ -87,6 +89,6 @@ class bossCardPattern(background):
         self.index=self.index%60
         self.surf=self.image[self.index]
         if self.inStage():
-            screen.blit(self.surf,(int(self.tx)-150,int(self.ty)-150))
+            screen.blit(self.surf,(int(self.tx)-192,int(self.ty)-192))
         self.checkValid()
         

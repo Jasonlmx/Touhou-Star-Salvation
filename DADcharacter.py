@@ -3335,6 +3335,7 @@ class Dumbledore(Boss):
             self.framePunishment=1700
             self.spellName='Milky Way[Path of magic stardust]'
             self.chSpellName='银河「星辰闪耀之路」'
+            self.hmSpeed=6
             self.gotoPosition(360,120,50)
             global_var.get_value('spell_sound').play()
             new_effect=Effect.bossFaceSpell()
@@ -3346,10 +3347,10 @@ class Dumbledore(Boss):
                 global_var.get_value('kira_sound').play()
 
         if self.lastFrame>=80:
-            if self.lastFrame%3==0:
+            if self.lastFrame%4==0:
                 new_effect=Effect.bulletCreate(1)
                 path=math.sin(frame/1.3/180*math.pi)*170+360
-                width=100
+                width=100+math.sin((frame+30)*1.5/180*math.pi)*10
                 n=1
                 for i in (-1,1):
                     new_bullet=Bullet.star_Bullet()
@@ -3377,18 +3378,18 @@ class Dumbledore(Boss):
                         new_effect.initial(rx,30,128,64,3)
                     bullets.add(new_bullet)
                     #effects.add(new_effect)'''
-        if (self.lastFrame-40)%60==50 and self.lastFrame>=80:
-            new_effect=Effect.bulletCreate(1)
-            new_effect.initial(self.tx,self.ty,192,48,10)
-            #effects.add(new_effect)
+        if (self.lastFrame-100)%90==0:
+            self.hmSpeed=4
+        elif (self.lastFrame-100)%90<=20 and (self.lastFrame-100)%10==0:
+            self.hmSpeed+=3
         if (self.lastFrame-100)%90<=20 and self.lastFrame>=80 and (self.lastFrame-100)%10==0:
-            if not global_var.get_value('enemyFiring1'):
-                global_var.get_value('enemyGun_sound1').stop()
-                global_var.get_value('enemyGun_sound1').play()
-                global_var.set_value('enemyFiring1',True)
+            if not global_var.get_value('enemyFiring3'):
+                global_var.get_value('enemyGun_sound3').stop()
+                global_var.get_value('enemyGun_sound3').play()
+                global_var.set_value('enemyFiring3',True)
             new_bullet=Bullet.butterfly_Bullet()
             new_bullet.initial(self.tx,self.ty,1)
-            new_bullet.selfTarget(player.cx,player.cy,5)
+            new_bullet.selfTarget(player.cx,player.cy,self.hmSpeed)
             new_bullet.countAngle()
             angle=new_bullet.angle
             new_bullet.doColorCode(1)
@@ -3398,18 +3399,35 @@ class Dumbledore(Boss):
                 if i!=0:
                     new_bullet=Bullet.butterfly_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.setSpeed(angle+i*40,5)
+                    new_bullet.setSpeed(angle+i*40,self.hmSpeed)
                     new_bullet.doColorCode(1)
                     #new_bullet.doColorCode(1)
                     bullets.add(new_bullet)
-            for i in range(1,6):
+            for i in range(1,3):
                 for j in range(-2,3):
                     new_bullet=Bullet.butterfly_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.setSpeed(angle+j*40,5-i*0.7)
+                    new_bullet.setSpeed(angle+j*40,self.hmSpeed-i*self.hmSpeed/4)
                     new_bullet.doColorCode(1)
                     bullets.add(new_bullet)
-
+        if (self.lastFrame-100)%90==50:
+            if not global_var.get_value('enemyFiring2'):
+                global_var.get_value('enemyGun_sound2').stop()
+                global_var.get_value('enemyGun_sound2').play()
+                global_var.set_value('enemyFiring2',True)
+            angle=random.random()*360
+            for i in range(30):
+                new_bullet=Bullet.orb_Bullet()
+                new_bullet.initial(self.tx,self.ty,1)
+                new_bullet.setSpeed(angle+i*(360/30),4)
+                new_bullet.loadColor('purple')
+                bullets.add(new_bullet)
+            for j in range(30):
+                new_bullet=Bullet.orb_Bullet()
+                new_bullet.initial(self.tx,self.ty,1)
+                new_bullet.setSpeed(angle+j*(360/30)-6,3.4)
+                new_bullet.loadColor('pink')
+                bullets.add(new_bullet)
         if self.lastFrame>=100 and (self.lastFrame-100)%120==0:
             self.gotoPosition(player.cx+random.random()*40-20,random.random()*60+100,50)
 

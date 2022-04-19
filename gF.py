@@ -439,7 +439,7 @@ def showFpsBullet(screen,myfont,frame,bulletSum,log):
         global_var.set_value('fpSec',0)
         #log recording  
         
-        #print(str(round((frame-1)/60))+','+str(avgFp)+','+str(bulletSum),file=log)
+        print(str(round((frame-1)/60))+','+str(avgFp)+','+str(bulletSum),file=log)
     screen.blit(global_var.get_value('fpText'),(820,692))
     bulletText=myfont.render('Bullets: '+str(bulletSum), True, (255, 255, 255))
     screen.blit(bulletText,(820,672))
@@ -453,9 +453,9 @@ def doBackground(screen,backgrounds):
 
 def doBossCardBackground(screen,backgrounds):
     for i in range(0,2):
-        for j in range(0,4):
+        for j in range(0,3):
             new_background=background.bossCardPattern()
-            new_background.initial(60+150+i*300,30+150+j*300)
+            new_background.initial(30+192+i*384,30+192+j*384)
             backgrounds.add(new_background)
     
 def drawBlinder(screen,surf):

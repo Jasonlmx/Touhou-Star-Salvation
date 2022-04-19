@@ -46,7 +46,7 @@ def doPic(pic):
                 #tSurf.set_at((i,j),pygame.Color(int(color[0]*fadeRate),int(color[1]*fadeRate),int(color[2]*fadeRate),int(temp[3]*0.5)))
         del tArray
         del pArray
-        tSurf=pygame.transform.smoothscale(tSurf,(300,300))
+        tSurf=pygame.transform.smoothscale(tSurf,(384,384))
         picList.append(tSurf)
     return picList
     

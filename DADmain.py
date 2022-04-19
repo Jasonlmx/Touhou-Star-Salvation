@@ -448,6 +448,7 @@ while running:
                 #star.update(screen)
 
             #collide detectž
+            
             gameRule.missDetect(player,bullets,enemys,effects,miss_sound,items,slaves)
             
 
@@ -565,7 +566,7 @@ while running:
         gF.showFpsBullet(screen,bigfont,frame,bulletSum,log)
         gameRule.displayUi(screen,player,bigfont)
         screen.blit(frameText,(0,0))
-        gF.drawBlinder(screen,blinder)
+        #gF.drawBlinder(screen,blinder)
 
         global_var.set_value('enemySum',enemySum)
         global_var.set_value('bulletSum',bulletSum)
