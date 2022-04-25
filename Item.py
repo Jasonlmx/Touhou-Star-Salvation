@@ -1,3 +1,4 @@
+from venv import create
 import pygame,sys
 import random
 import math
@@ -5,6 +6,7 @@ from pygame.locals import *
 from pygame.sprite import Group
 import gF 
 import global_var
+import Effect
 
 class item(pygame.sprite.Sprite):
     def __init__(self):
@@ -66,7 +68,7 @@ class item(pygame.sprite.Sprite):
         speedy=(playercy-mycy)/times
         self.speedAlter(speedx,speedy)
 
-    def checkValid(self,player):
+    def checkValid(self,player,effects):
         if self.rect.top>=720-30:
             self.kill()
         if self.rect.right<=0+60:
@@ -74,7 +76,7 @@ class item(pygame.sprite.Sprite):
         if self.rect.left>=660:
             self.kill()
         if self.distance<=10:
-            self.doBonus(player)
+            self.doBonus(player,effects)
             self.kill()
     
     def countDistance(self):
@@ -84,7 +86,7 @@ class item(pygame.sprite.Sprite):
         dy=abs(py-self.ty)
         self.distance=math.sqrt(math.pow(dx,2)+math.pow(dy,2))
 
-    def update(self,screen,player):
+    def update(self,screen,player,effects):
         self.lastFrame+=1
         if self.lastFrame<=60:
             if self.followPlayer!=1 or self.lastFrame<=30:
@@ -107,25 +109,36 @@ class item(pygame.sprite.Sprite):
         #screen.blit(self.image,(self.rect.centerx-6,self.rect.centery-6))
         #screen.blit(self.surf,self.rect)
         self.draw(screen)
-        self.checkValid(player)
+        self.checkValid(player,effects)
+
+    def createSubtitle(self,player,effects,score,colorType):
+        new_effect=Effect.scoreImage()
+        new_effect.initial(player.cx,player.cy,score,colorType)
+        effects.add(new_effect)
     
-    def doBonus(self,player):
+    def doBonus(self,player,effects):
         if self.type==0:
             if player.power<400:
                 player.power+=2
+            self.createSubtitle(player,effects,player.power,1)
         if self.type==1:
             player.score+=10000
+            self.createSubtitle(player,effects,player.score,3)
         if self.type==2:
             player.score+=150000
+            self.createSubtitle(player,effects,player.score,2)
         if self.type==3:
             if player.power<=300:
                 player.power+=100
             else:
                 player.power=400
+            self.createSubtitle(player,effects,player.power,1)
         if self.type==4:
             player.score+=20000
+            self.createSubtitle(player,effects,player.score,0)
         if self.type==5:
             player.power=400
+            self.createSubtitle(player,effects,player.power,1)
         if self.type==6:
             player.life+=1
             global_var.get_value('life_get').play()

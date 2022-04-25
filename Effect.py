@@ -1,9 +1,13 @@
+from re import U
 import pygame,sys
 import random
 import math
 import gF
 from pygame.sprite import Sprite
 import global_var
+
+
+pygame.font.init()
 
 class fire_effect_player(pygame.sprite.Sprite):
     def __init__(self):
@@ -681,6 +685,60 @@ class spellAttackImage(pygame.sprite.Sprite):
         #screen.blit(self.Image,(self.x,self.y))
 
 class scoreImage(pygame.sprite.Sprite):
-    def __init__(self):
+    font=pygame.font.Font('./resource/font/AaBanRuoKaiShu-2.ttf', 12)
+    def __init__(self,size=12):
         super(scoreImage,self).__init__()
-        font=pygame.font.Font('./resource/font/FeiHuaSongTi-2.ttf', 14)
+        self.speed=1.7
+        self.randPos=random.random()*8-4
+        self.tx=0
+        self.ty=0
+        self.upper=False
+        self.lower=True
+        self.score=0
+        self.colorDict=[(225,225,55),(223,0,38),(78,200,175),(244,244,244)]   
+        self.wordDict=[u'〇',u'一',u'二',u'三',u'四',u'五',u'六',u'七',u'八',u'九']
+        self.color=(255,255,255)    
+        self.surf=0
+        self.lastFrame=0
+        self.maxFrame=50
+
+    def initial(self,tx,ty,score,colorType=0):
+        self.tx=tx+self.randPos
+        self.ty=ty
+        self.score=score
+        self.color=self.colorDict[colorType]
+        self.makeWord(score)
+
+    def makeWord(self,score):
+        strScore=str(score)
+        digit=len(strScore)
+        if digit>=8:
+            strScore=strScore[0:9]
+        word=''
+        for char in strScore:
+            index=int(char)
+            word=word+self.wordDict[index]
+        self.surf=self.font.render(word,True,self.color)
+        self.rect=self.surf.get_rect()
+    
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
+    
+    def movement(self):
+        self.ty-=self.speed
+        self.rect.centerx=round(self.tx)
+        self.rect.centery=round(self.ty)
+    
+    def draw(self,screen):
+        screen.blit(self.surf,self.rect)
+
+    def update(self,screen):
+        self.lastFrame+=1
+        self.checkValid()
+        self.movement()
+        self.draw(screen)
+
+
+
+    

@@ -392,7 +392,7 @@ while running:
             
 
             for item in items:
-                item.update(stage,player)
+                item.update(stage,player,effects)
                 if item.distance<=player.itemCollectDistance:
                     item.followPlayer=1
                 if item.type==0 and player.power==400:
