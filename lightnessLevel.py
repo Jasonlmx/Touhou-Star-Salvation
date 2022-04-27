@@ -205,10 +205,12 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         ifSpell=False
         alpha=0
         cardNum=0
+        ifBoss=False
         for boss in bosses:
             lastFrame=boss.lastFrame
             ifSpell=boss.ifSpell
             cardNum=boss.cardNum
+            ifBoss=True
         if ifSpell:
             if lastFrame<=128:
                 alpha=0+round(2*lastFrame)
@@ -228,6 +230,8 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
             if lastFrame==1:
                 for obj in backgrounds:
                     obj.kill()
+        if not ifBoss:
+            alpha=0
         #if not alpha==256:
         back_image.set_alpha(alpha)
         moon=global_var.get_value('moon')

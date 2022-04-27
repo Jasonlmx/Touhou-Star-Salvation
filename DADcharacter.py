@@ -2391,7 +2391,8 @@ class satori(Boss):
             effects.add(new_effect)
             width=60
             maxFrame=150
-            new_effect=Effect.wave()
+            Effect.bossBruster(self.tx,self.ty,effects,Effect.bossBrustMomiji,30)
+            '''new_effect=Effect.wave()
             new_effect.initial([self.tx+width*1,self.ty],900,maxFrame,(160,160,160),10)
             effects.add(new_effect)
             new_effect=Effect.wave()
@@ -2402,7 +2403,7 @@ class satori(Boss):
             effects.add(new_effect)
             new_effect=Effect.wave()
             new_effect.initial([self.tx,self.ty+width*-1],900,maxFrame,(160,160,160),10)
-            effects.add(new_effect)
+            effects.add(new_effect)'''
             self.doShaking(64)
             self.kill()
     
@@ -2842,7 +2843,8 @@ class Dumbledore(Boss):
                 self.doShaking(60)
                 width=60
                 maxFrame=150
-                new_effect=Effect.wave()
+                Effect.bossBruster(self.tx,self.ty,effects,Effect.bossBrustMomiji,30)
+                '''new_effect=Effect.wave()
                 new_effect.initial([self.tx+width*1,self.ty],900,maxFrame,(160,160,160),10)
                 effects.add(new_effect)
                 new_effect=Effect.wave()
@@ -2853,7 +2855,7 @@ class Dumbledore(Boss):
                 effects.add(new_effect)
                 new_effect=Effect.wave()
                 new_effect.initial([self.tx,self.ty+width*-1],900,maxFrame,(160,160,160),10)
-                effects.add(new_effect)
+                effects.add(new_effect)'''
                 self.kill()
 
     def noneSpell_0(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
@@ -4599,9 +4601,10 @@ class Dumbledore(Boss):
         if self.powerRank>self.lastRank:
             self.actionFrame=-1
             global_var.get_value('ch00_sound').play()
-            new_effect=Effect.powerUp()
+            '''new_effect=Effect.powerUp()
             new_effect.initial([self.tx,self.ty],600,50,(255,255,255),2,3,10)
-            effects.add(new_effect)
+            effects.add(new_effect)'''
+            Effect.bossPower(self.tx,self.ty,effects,Effect.bossPowerMomiji,40)
         
         density=self.powerRank*4+12
         speed=self.powerRank*0.3+3
@@ -4685,9 +4688,9 @@ class Dumbledore(Boss):
 
         self.lastRank=self.powerRank
         if self.health<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,120,True)
             self.reset=True
-            self.ifSpell=True
+            self.ifSpell=False
             self.health=20000
             self.cardNum+=1
             self.lastFrame=0
@@ -4706,7 +4709,7 @@ class Dumbledore(Boss):
             #self.cancalAllBullet(bullets,items,effects,True)
             self.addLastingCancel(self.tx,self.ty,slaves,120,True)
             self.reset=True
-            self.ifSpell=True
+            self.ifSpell=False
             self.health=20000
             self.cardNum+=1
             self.lastFrame=0

@@ -401,6 +401,9 @@ def loadImage():
     bossCardPatternPic=pic.doPic(originBossCardPattern)
     global_var.set_value('bossCardPatternPic',bossCardPatternPic)
 
+    etama2=pygame.image.load('resource/bullet/etama2.png')
+    global_var.set_value('etama2',etama2)
+
 class star_effect(pygame.sprite.Sprite):
     def __init__(self):
         super(star_effect,self).__init__()

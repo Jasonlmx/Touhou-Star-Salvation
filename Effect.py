@@ -9,6 +9,105 @@ import global_var
 
 pygame.font.init()
 
+class flyingObj(pygame.sprite.Sprite):
+    def __init__(self):
+        super(flyingObj,self).__init__()
+        self.surf = pygame.Surface((5,5))
+        self.surf.fill((255,255,255))
+        self.rect = self.surf.get_rect()
+        self.tx=0.0
+        self.ty=0.0
+        self.type=0
+        self.speedx=0
+        self.speedy=0
+        self.startFrame=-1
+        self.angle=0
+        self.fro=0 #determine where the bullet is from
+        self.dx=0
+        self.dy=0
+        self.distance=10000
+        self.graze=1
+        self.cancalable=True
+        self.speed=0
+        self.anmStay=False
+        self.createMax=0
+        self.lastFrame=0
+        self.ifAdjustSign=global_var.get_value('if_speedAdjusting')
+        self.ifDrawCreate=global_var.get_value('if_highQuality_effect')
+        self.validAccuracy=(0,0,0,0)
+    def genEffect(self,effects):
+        pass
+
+    def initial(self,posx,posy,occupy):
+        self.tx=posx
+        self.ty=posy
+        self.fro=occupy
+
+    def truePos(self):
+        self.rect.centerx=self.tx
+        self.rect.centery=self.ty
+
+    def movement(self):
+        if not self.anmStay or self.lastFrame>=self.createMax:
+            tick=global_var.get_value('DELTA_T')
+            if self.ifAdjustSign:
+                self.tx+=self.speedx*60/1000*tick
+                self.ty+=self.speedy*60/1000*tick
+            else:
+                self.tx+=self.speedx
+                self.ty+=self.speedy
+        self.truePos()
+    
+    def speedAlter(self,speedx,speedy):
+        self.speedx=speedx
+        self.speedy=speedy
+    
+    def selfTarget(self,playercx,playercy,speed):
+        mycx=self.tx
+        mycy=self.ty
+        dif=math.sqrt(math.pow(playercx-mycx,2)+math.pow(playercy-mycy,2))
+        times=dif/speed
+        speedx=(playercx-mycx)/times
+        speedy=(playercy-mycy)/times
+        self.speedAlter(speedx,speedy)
+    
+    def countAngle(self):
+        if self.speedx!=0:
+            t=self.speedy/self.speedx
+            deg=math.atan(t)*180/math.pi
+        else: 
+            if self.speedy>0:
+                deg=90
+            if self.speedy<0:
+                deg=270
+        if deg<0:
+            deg+=360
+        if self.speedy>0 and deg>=180:
+            deg=deg-180
+        if self.speedy<0 and deg<=180:
+            deg=deg+180
+        if self.speedy==0 and self.speedx<0:
+            deg=180
+        self.angle=deg
+    
+    def setSpeed(self,angle,speed):
+        s=math.sin(math.radians(angle))
+        c=math.cos(math.radians(angle))
+        self.speedy=s*speed
+        self.speedx=c*speed
+        #self.speed=speed
+    #def update(self):
+
+    def checkValid(self):
+        if self.rect.top>=720-30+self.validAccuracy[1]:
+            self.kill()
+        if self.rect.bottom<=0+30-self.validAccuracy[0]:
+            self.kill()
+        if self.rect.right<=0+60-self.validAccuracy[3]:
+            self.kill()
+        if self.rect.left>=660+self.validAccuracy[2]:
+            self.kill()
+
 class fire_effect_player(pygame.sprite.Sprite):
     def __init__(self):
         super(fire_effect_player,self).__init__()
@@ -739,6 +838,94 @@ class scoreImage(pygame.sprite.Sprite):
         self.movement()
         self.draw(screen)
 
+class bossBrusterTestObj(flyingObj):
+    def __init__(self):
+        super(bossBrusterTestObj,self).__init__()
+        self.maxFrame=80
+        self.upper=False
+        self.lower=True
 
+    def update(self,screen):
+        self.lastFrame+=1
+        self.movement()
+        self.draw(screen)
+        self.checkValid()
+
+    def draw(self,screen):
+        pygame.draw.circle(screen,(253,43,124),(round(self.tx),round(self.ty)),30,6)
+
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
+
+class bossBrustMomiji(bossBrusterTestObj):
+    def __init__(self):
+        super(bossBrustMomiji,self).__init__()
+        self.maxFrame=80
+        self.surf=pygame.Surface((32,32)).convert_alpha()
+        self.surf.blit(global_var.get_value('etama2'),(0,0),(32,224,32,32))
+        self.angle=random.random()*360
+        self.randR=[-1,1]
+        self.angleInc=(3+random.random()*2)*self.randR[random.randint(0,1)]
+        self.width=32
+        self.widthInc=1.6
+        self.alpha=256
+        self.alphaInc=-0.8
+        self.alphaMinor=-(256+self.alphaInc*(self.maxFrame-20))/20
+    
+    def update(self, screen):
+        self.lastFrame+=1
+        self.angle+=self.angleInc
+        self.width+=self.widthInc
+        if self.lastFrame<=self.maxFrame-20:
+            self.alpha+=self.alphaInc
+        else:
+            self.alpha+=self.alphaMinor
+        self.movement()
+        self.draw(screen)
+        self.checkValid()
+
+    def draw(self,screen):
+        tempImage=pygame.transform.smoothscale(self.surf,(round(self.width),round(self.width))).convert_alpha()
+        tempImage.set_alpha(round(self.alpha))
+        gF.drawRotation(tempImage,(round(self.tx)-self.width/2,round(self.ty)-self.width/2),self.angle,screen)
+        #screen.blit(self.surf,(round(self.tx)-16,round(self.ty)-16))
+
+class bossPowerMomiji(bossBrustMomiji):
+    def __init__(self):
+        super(bossPowerMomiji,self).__init__()
+        self.maxFrame=60
+        self.surf=pygame.Surface((32,32)).convert_alpha()
+        self.surf.blit(global_var.get_value('etama2'),(0,0),(0,224,32,32))
+        self.angle=random.random()*360
+        self.randR=[-1,1]
+        self.angleInc=(4+random.random()*3)*self.randR[random.randint(0,1)]
+        self.width=64
+        self.widthInc=-0.3
+        self.alpha=100
+        self.alphaInc=2.8
+        self.alphaMinor=(256-(self.maxFrame-20)*self.alphaInc-100)/20
+    
+def bossBruster(tx,ty,effects,object,number):
+    for i in range(number):
+        angle=random.random()*360
+        speed=1+random.random()*3.4
+        new_effect=object()
+        new_effect.initial(tx,ty,1)
+        new_effect.setSpeed(angle,speed)
+        effects.add(new_effect)
+
+def bossPower(tx,ty,effects,object,number):
+    initialAngle=random.random()*360
+    for i in range(number):
+        angle=i*(360/number)+initialAngle
+        speed=6+random.random()*0.4
+        new_effect=object()
+        dist=speed*new_effect.maxFrame
+        nx=tx+dist*math.cos(angle*math.pi/180)
+        ny=ty+dist*math.sin(angle*math.pi/180)
+        new_effect.initial(nx,ny,1)
+        new_effect.setSpeed(angle-180,speed)
+        effects.add(new_effect)
 
     
