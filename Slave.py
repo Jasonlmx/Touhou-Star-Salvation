@@ -331,3 +331,42 @@ class bulletCancelLasting(pygame.sprite.Sprite):
             self.ySign+=self.screenHeight/self.maxFrame
         self.cancelBullet(bullets,effects,items,radius)
         self.checkValid()
+
+class lgtSpell6_bulletSlave(Bullet.Bullet):
+    def __init__ (self):
+        super(lgtSpell6_bulletSlave,self).__init__()
+        self.unpdatePs=3
+        self.fireAngle=0
+        self.fireAngleInc=23
+        self.stayFrame=0
+        self.count=0
+        self.bulletStay=0
+        self.adjAngle=+90
+        self.bulletInitialSpeed=0.2
+        self.bulletBasicSpeed=1.6
+    def truePos(self):
+        self.rect.centerx=self.tx
+        self.rect.centery=self.ty
+    
+    def fire(self,bullets):
+        new_bullet=Bullet.orb_bullet_lgtnsp6_stay_accelerate()
+        new_bullet.initial(self.tx,self.ty,0)
+        initialSpeed=self.bulletInitialSpeed
+        basicSpeed=self.bulletBasicSpeed
+        adjTimes=1+abs(0.2*math.sin(self.fireAngle/180*math.pi+0.5*math.pi-(self.angle+self.adjAngle)/180*math.pi))
+        new_bullet.setSpeed(self.fireAngle,initialSpeed*adjTimes)
+        new_bullet.setAccSpeed(self.fireAngle,initialSpeed*adjTimes,basicSpeed*adjTimes,120,self.bulletStay)
+        new_bullet.doColorCode(4)
+        bullets.add(new_bullet)
+        self.fireAngle+=self.fireAngleInc
+    
+    def update(self,screen,frame,bullets,effects,items):
+        self.lastFrame+=1
+        self.countAngle()
+        if self.lastFrame>=self.stayFrame:
+            for i in range(self.unpdatePs):
+                self.count+=1
+                self.movement()
+                self.fire(bullets)
+                self.checkValid()
+        

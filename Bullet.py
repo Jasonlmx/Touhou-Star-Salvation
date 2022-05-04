@@ -1349,6 +1349,8 @@ class laser_Bullet_sub(Bullet):
         self.numInf=5
         self.widthAdj=0
         self.angle=0
+        self.ifSimpified=False
+        self.colorList=[(151,151,151),(255,24,24),(255,127,127),(251,66,255),(253,109,242),(62,69,255),(105,137,255),(108,255,255),(63,249,255),(57,255,182),(114,255,192),(201,255,128),(255,255,128),(255,255,122),(255,255,122),(233,233,233)]
     def doColorCode(self,code):
         self.colorNum=code
         self.image=pygame.Surface((16,16))
@@ -1364,14 +1366,17 @@ class laser_Bullet_sub(Bullet):
         
         
         self.checkValid()
+
         if self.frame>=self.length:
             self.kill()
         if self.frame<=self.numInf:
             self.widthAdj=round(self.ratio*(self.frame/self.numInf))
-            self.tempImage=pygame.transform.smoothscale(self.image,(self.widthAdj+2,round(self.speed+2)))
+            if not self.ifSimpified:
+                self.tempImage=pygame.transform.smoothscale(self.image,(self.widthAdj+2,round(self.speed+2)))
         elif self.frame>=(self.length-self.numInf):
             self.widthAdj=round(self.ratio*(((self.length-self.frame)/self.numInf)))
-            self.tempImage=pygame.transform.smoothscale(self.image,(self.widthAdj+2,round(self.speed+2)))
+            if not self.ifSimpified:
+                self.tempImage=pygame.transform.smoothscale(self.image,(self.widthAdj+2,round(self.speed+2)))
         else:
             self.widthAdj=self.ratio
             self.tempImage=self.image
@@ -1379,7 +1384,21 @@ class laser_Bullet_sub(Bullet):
         #screen.blit(self.surf,self.rect)
     
     def draw(self,screen):
-        gF.drawRotation(self.tempImage,(self.rect.centerx-round((self.widthAdj+2)/2),self.rect.centery-round((self.speed+2)/2)),270-self.angle,screen)
+        width=self.widthAdj+2
+        length=self.speed+2
+        stx=self.tx+0.5*length*math.cos(self.angle/180*math.pi)
+        sty=self.ty+0.5*length*math.sin(self.angle/180*math.pi)
+        edx=self.tx+0.5*length*math.cos((self.angle-180)/180*math.pi)
+        edy=self.ty+0.5*length*math.sin((self.angle-180)/180*math.pi)
+        whiteWidth=round(width/2.5)
+        color=self.colorList[self.colorNum]
+        whiteNess=round(color[0]+color[1]+color[2])/3+50
+        if whiteNess>255:
+            whiteNess=255
+        pygame.draw.line(screen,self.colorList[self.colorNum],(round(stx),round(sty)),(round(edx),round(edy)),width)
+        if whiteWidth>=1:
+            pygame.draw.line(screen,(whiteNess,whiteNess,whiteNess),(round(stx),round(sty)),(round(edx),round(edy)),whiteWidth)
+        #gF.drawRotation(self.tempImage,(self.rect.centerx-round((self.widthAdj+2)/2),self.rect.centery-round((self.speed+2)/2)),270-self.angle,screen)
         #screen.blit(self.tempImage,(self.rect.centerx-round((self.widthAdj+2)/2),self.rect.centery-round((self.speed+4)/2)))
 
 class big_star_Bullet(Bullet):
@@ -1822,13 +1841,13 @@ class laser_line(Bullet):
                 length=len(self.posList)
                 #print(self.posList)
                 for i in range(length-1):
-                    pygame.draw.line(screen,self.colorRGB[self.colorNum],self.posList[i],self.posList[i+1],1+round(width/length*i-1))
+                    pygame.draw.line(screen,self.colorRGB[self.colorNum],self.posList[i],self.posList[i+1],1+round((-1/self.widenUnit**2)*width*i**2+(2/self.widenUnit*width*i)))
                 pygame.draw.line(screen,self.colorRGB[self.colorNum],self.posList[length-1],self.endPoint,width)
                 for i in range(length-1):
                     whiteWidth=round(width/length*i/2.5)
                     if whiteWidth>=1:
                         pygame.draw.line(screen,(255,255,255),self.posList[i],self.posList[i+1],whiteWidth)
-                pygame.draw.line(screen,(255,255,255),self.posList[length-1],self.endPoint,round(width/2.5))
+                pygame.draw.line(screen,(255,255,255),self.posList[length-1],self.endPoint,round(1+round((-1/self.widenUnit**2)*width*i**2+(2/self.widenUnit*width*i))/2.5))
             else:
                 pygame.draw.line(screen,self.colorRGB[self.colorNum],(self.tx,self.ty),self.endPoint,width)
                 if width>3:
@@ -1914,6 +1933,21 @@ class star_Bullet_Part4_Hex(star_Bullet):
         else:
             self.drawCreateImg(screen)
         self.checkValid()
+        '''self.lastFrame+=1
+        self.movement()
+        self.countAngle()
+        self.moving_strategy()
+        new_sub=laser_Bullet_sub(100,8)
+        new_sub.angle=self.angle
+        new_sub.speed=self.speed
+        new_sub.initial(self.tx,self.ty,self.fro)
+        new_sub.doColorCode(self.colorNum)
+        bullets.add(new_sub)
+        #screen.blit(self.image,(self.rect.centerx-6,self.rect.centery-6))
+        
+        #screen.blit(self.surf,self.rect)
+        #self.draw(screen)
+        self.checkValid()'''
     
     def moving_strategy(self):
         self.countAngle()
@@ -2165,6 +2199,7 @@ class star_Bullet_fountain(big_star_Bullet):
             new_laser.setFeature(dg+incline,8,115,40,40,10,10,-1)
             new_laser.warnLineColored=False
             new_laser.furryCollide=4
+            new_laser.widenProperty=True
             new_laser.doColorCode(self.laserColor)
             bullets.add(new_laser)
         '''
@@ -2950,8 +2985,39 @@ class scale_bullet_midpath_ns1(scale_Bullet):
             self.ifHoming=True
             self.loadColor('red')
 
+
 class small_bullet_midpath_sp1(small_Bullet):
     def __init__(self):
         super(small_bullet_midpath_sp1,self).__init__()
     
+class orb_bullet_lgtnsp6_stay_accelerate(orb_Bullet):
+    def __init__(self):
+        super(orb_bullet_lgtnsp6_stay_accelerate,self).__init__()
+        self.initialSpeed=0
+        self.speedNow=0
+        self.endSpeed=0
+        self.accFrame=20
+        self.accStart=40
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.movement()
+        self.motionStrate()
+        if self.lastFrame<=self.createMax and self.ifDrawCreate:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
+        self.checkValid()
     
+    def setAccSpeed(self,angle,initialSpeed,endSpeed,accFrame=20,accStart=40):
+        self.angle=angle
+        self.initialSpeed=initialSpeed
+        self.speedNow=initialSpeed
+        self.endSpeed=endSpeed
+
+    def motionStrate(self):
+        if self.lastFrame>=self.accStart and self.lastFrame<self.accStart+self.accFrame:
+            acc=(self.endSpeed-self.initialSpeed)/self.accFrame
+            self.speedNow+=acc
+            self.setSpeed(self.angle,self.speedNow)
+        
+

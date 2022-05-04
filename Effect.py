@@ -861,14 +861,15 @@ class bossBrusterTestObj(flyingObj):
 class bossBrustMomiji(bossBrusterTestObj):
     def __init__(self):
         super(bossBrustMomiji,self).__init__()
-        self.maxFrame=80
+        self.maxFrame=60
         self.surf=pygame.Surface((32,32)).convert_alpha()
         self.surf.blit(global_var.get_value('etama2'),(0,0),(32,224,32,32))
         self.angle=random.random()*360
         self.randR=[-1,1]
         self.angleInc=(3+random.random()*2)*self.randR[random.randint(0,1)]
         self.width=32
-        self.widthInc=1.6
+        self.widthInc=3
+        self.widthMinor=-(self.width+(self.widthInc*(self.maxFrame-20)))/20+1
         self.alpha=256
         self.alphaInc=-0.8
         self.alphaMinor=-(256+self.alphaInc*(self.maxFrame-20))/20
@@ -876,7 +877,10 @@ class bossBrustMomiji(bossBrusterTestObj):
     def update(self, screen):
         self.lastFrame+=1
         self.angle+=self.angleInc
-        self.width+=self.widthInc
+        if self.lastFrame<=self.maxFrame-20:
+            self.width+=self.widthInc
+        else:
+            self.width+=self.widthMinor
         if self.lastFrame<=self.maxFrame-20:
             self.alpha+=self.alphaInc
         else:
@@ -902,20 +906,21 @@ class bossPowerMomiji(bossBrustMomiji):
         self.angleInc=(4+random.random()*3)*self.randR[random.randint(0,1)]
         self.width=64
         self.widthInc=-0.3
+        self.widthMinor=self.widthInc
         self.alpha=100
         self.alphaInc=2.8
         self.alphaMinor=(256-(self.maxFrame-20)*self.alphaInc-100)/20
     
-def bossBruster(tx,ty,effects,object,number):
+def bossBruster(tx,ty,effects,object=bossBrustMomiji,number=40):
     for i in range(number):
         angle=random.random()*360
-        speed=1+random.random()*3.4
+        speed=2+random.random()*8
         new_effect=object()
         new_effect.initial(tx,ty,1)
         new_effect.setSpeed(angle,speed)
         effects.add(new_effect)
 
-def bossPower(tx,ty,effects,object,number):
+def bossPower(tx,ty,effects,object=bossPowerMomiji,number=40):
     initialAngle=random.random()*360
     for i in range(number):
         angle=i*(360/number)+initialAngle

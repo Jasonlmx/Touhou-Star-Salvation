@@ -1,3 +1,4 @@
+from hashlib import new
 import pygame,sys
 import random
 import math
@@ -37,6 +38,22 @@ def polyByLength(bullets,type,length,sideNum,standardSpeed,standardAngle,pos,col
             new_bullet.setSpeed(angle,speed)
             bullets.add(new_bullet)
             #print(i,' ',j)
+
+def ellipseByDeg(bullets,type,num,a,b,incline,speed,pos,color='white',doCode=False,*args):
+    interval=360/num
+    for i in range(num):
+        theta=i*interval+incline  #in degree
+        r=a*b/(math.sqrt(a**2*math.sin((theta+incline)*math.pi/180)**2+b**2*math.cos((theta+incline)*math.pi/180)**2))
+        new_bullet=type(*args)
+        nx=r*math.cos((theta)/180*math.pi)
+        ny=r*math.sin((theta)/180*math.pi)
+        new_bullet.initial(pos[0]+nx,pos[1]+ny,1)
+        new_bullet.setSpeed(theta,speed*r/b)
+        if not doCode:
+            new_bullet.loadColor(color)
+        else:
+            new_bullet.doColorCode(color)
+        bullets.add(new_bullet)
 
 
 

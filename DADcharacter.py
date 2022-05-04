@@ -2334,7 +2334,7 @@ class satori(Boss):
         self.speedNum=0
         self.maxSpell=3
         self.boomImmune=False
-        self.if_chSpellName=True
+        self.if_chSpellName=False
     def draw(self,screen):
         image=pygame.Surface((72,99))
         image.set_alpha(256)
@@ -2391,7 +2391,7 @@ class satori(Boss):
             effects.add(new_effect)
             width=60
             maxFrame=150
-            Effect.bossBruster(self.tx,self.ty,effects,Effect.bossBrustMomiji,30)
+            Effect.bossBruster(self.tx,self.ty,effects,Effect.bossBrustMomiji,50)
             '''new_effect=Effect.wave()
             new_effect.initial([self.tx+width*1,self.ty],900,maxFrame,(160,160,160),10)
             effects.add(new_effect)
@@ -2525,6 +2525,7 @@ class satori(Boss):
             effects.add(new_effect)'''
             new_bullet=Bullet.laser_line()
             new_bullet.ifSimplifiedMode=True
+            new_bullet.widenUnit=10
             new_bullet.initial(self.tx,self.ty,1)
             new_bullet.selfTarget(player.cx,player.cy,2)
             new_bullet.countAngle()
@@ -2681,9 +2682,7 @@ class satori(Boss):
                 if self.lastFrame%180==150 and not self.powerUp:
                     global_var.get_value('ch00_sound').play()
                     self.powerUp=True
-                    new_effect=Effect.powerUp()
-                    new_effect.initial([self.tx,self.ty],600,50,(255,255,255),2,3,10)
-                    effects.add(new_effect)
+                    Effect.bossPower(self.tx,self.ty,effects,Effect.bossPowerMomiji,40)
             if self.lastFrame%180==0:
                 if self.tx>player.cx:
                     x=random.randint(round(player.cx),round(self.tx))
@@ -2746,7 +2745,7 @@ class Dumbledore(Boss):
         self.alpha=0
         self.deadFrame=0
         self.boomImmune=True
-        self.if_chSpellName=True
+        self.if_chSpellName=False
     def drawBossName(self,screen):
         screen.blit(self.bossName,(60,692))
     def draw(self,screen):
@@ -2843,7 +2842,7 @@ class Dumbledore(Boss):
                 self.doShaking(60)
                 width=60
                 maxFrame=150
-                Effect.bossBruster(self.tx,self.ty,effects,Effect.bossBrustMomiji,30)
+                Effect.bossBruster(self.tx,self.ty,effects,Effect.bossBrustMomiji,50)
                 '''new_effect=Effect.wave()
                 new_effect.initial([self.tx+width*1,self.ty],900,maxFrame,(160,160,160),10)
                 effects.add(new_effect)
@@ -3170,7 +3169,7 @@ class Dumbledore(Boss):
                     angleInc=15*math.sin(frame/180*math.pi)
                     new_bullet=Bullet.laser_Bullet_immune(60,ratio=5)
                     new_bullet.length=28
-                    new_bullet.ratio=8
+                    new_bullet.ratio=7
                     area=random.randint(0,1)
                     if area==1:
                         rx=660+random.random()*10
@@ -3203,6 +3202,9 @@ class Dumbledore(Boss):
                     new_bullet.setSpeed(angleInc+43+random.random()*5,5+random.random()*2.5)
                     new_bullet.loadColor('purple')
                     bullets.add(new_bullet)
+            
+            if self.lastFrame%600==0 or self.lastFrame%600==300:
+                Effect.bossPower(self.tx,self.ty,effects)
 
             if self.lastFrame%300==0:
                 self.gotoPosition(player.cx+random.random()*60-30,random.random()*40+80,50)
@@ -3597,9 +3599,7 @@ class Dumbledore(Boss):
                 if time>7:
                     time=7
                 elif self.directToggle%2==0:
-                        new_effect=Effect.powerUp()
-                        new_effect.initial([self.tx,self.ty],600,50,(255,255,255),2,3,10)
-                        effects.add(new_effect)
+                        Effect.bossPower(self.tx,self.ty,effects)
                         global_var.get_value('ch00_sound').play()
                 if not global_var.get_value('enemyFiring1'):
                     global_var.get_value('enemyGun_sound1').stop()
@@ -3669,7 +3669,7 @@ class Dumbledore(Boss):
             self.gotoPosition(360,220,40)
             self.randomAngle=random.random()*360
             self.randomAngle2=0
-            self.frameLimit=1800
+            self.frameLimit=18000
 
 
         '''
@@ -3685,24 +3685,31 @@ class Dumbledore(Boss):
                 self.randomAngle+=5+self.randomAngle2
         '''
         if self.lastFrame>=60:
-            if (self.lastFrame-60)%4==0:
+            if (self.lastFrame-60)%1==0:
                 if not global_var.get_value('kiraing'):
                     global_var.get_value('kira_sound').stop()
                     global_var.get_value('kira_sound').play()
                     global_var.set_value('kiraing',True)
-                self.randomAngle2+=0.84
+                self.randomAngle2+=0.07
+                if self.randomAngle2>=360:
+                    self.randomAngle2-=360
                 '''
                 new_effect=Effect.bulletCreate(2)
                 new_effect.initial(self.tx,self.ty,100,24,4)
                 effects.add(new_effect)
                 '''
-                for i in range(0,8):
-                    new_bullet=Bullet.scale_Bullet()
+                lines=2
+                for i in range(0,lines):
+                    new_bullet=Bullet.rice_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.loadColor('purple')
-                    new_bullet.setSpeed(self.randomAngle+i*(360/8)+self.randomAngle2,5.7)
+                    #new_bullet.loadColor('purple')
+                    new_bullet.doColorCode(4)
+                    new_bullet.setSpeed(self.randomAngle+i*(360/lines),6.7)
                     bullets.add(new_bullet)
-                self.randomAngle+=6+self.randomAngle2
+                self.randomAngle+=self.randomAngle2
+                while self.randomAngle>=360:
+                    self.randomAngle-=360
+                
 
         if self.health<=0 or self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
@@ -3831,9 +3838,7 @@ class Dumbledore(Boss):
 
         if (self.lastFrame-70)%700==350:
             global_var.get_value('ch00_sound').play()
-            new_effect=Effect.powerUp()
-            new_effect.initial((self.tx,self.ty),500,40,(255,255,255),5,3,20)
-            effects.add(new_effect)
+            Effect.bossPower(self.tx,self.ty,effects)
         if (self.lastFrame-70)%200==50:
             pass
             #self.gotoPosition(random.random()*60+330,random.random()*40+100,50)
@@ -3877,35 +3882,71 @@ class Dumbledore(Boss):
             self.gotoPosition(360,220,40)
             self.randomAngle=random.random()*360
             self.randomAngle2=random.random()*360
-            self.frameLimit=1800
+            self.frameLimit=18000
+            self.count=0
         
         if self.lastFrame>=60:
-            if (self.lastFrame-60)%13==0:
-                new_effect=Effect.bulletCreate(3)
-                new_effect.initial(self.tx,self.ty,192,100,13)
-                #effects.add(new_effect)
-                global_var.get_value('enemyGun_sound2').play()
-                for i in range(0,8):
-                    new_bullet=Bullet.star_Bullet_Part4_Hex()
-                    new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.direction=-1
-                    new_bullet.rotationAngle=0.5
-                    new_bullet.speed=4
-                    new_bullet.setSpeed(self.randomAngle+i*(360/8),4)
-                    new_bullet.loadColor('blue')
-                    bullets.add(new_bullet)
-                for j in range(0,8):
-                    new_bullet=Bullet.star_Bullet_Part4_Hex()
-                    new_bullet.initial(self.tx,self.ty,1)
-                    new_bullet.direction=1
-                    new_bullet.rotationAngle=0.5
-                    new_bullet.speed=4
-                    new_bullet.setSpeed(self.randomAngle2+j*(360/8),4)
-                    new_bullet.loadColor('purple')
-                    bullets.add(new_bullet)
-                self.randomAngle+=7
-                self.randomAngle2-=7
-                    
+            if (self.lastFrame-60)%420<=18:
+                if (self.lastFrame-60)%420==0:
+                    self.randomAngle=random.random()*360
+                if (self.lastFrame-60)%420%3==0:
+                    num=round(((self.lastFrame-60)%420)/3)
+                    new_laser=Bullet.laser_line()
+                    new_laser.initial(self.tx,self.ty,1)
+                    new_laser.setFeature(self.randomAngle+num*(360/7),10,80,40,64,10,10,30)
+                    new_laser.furryCollide=10
+                    new_laser.dDegree=0
+                    new_laser.ifSimplifiedMode=True
+                    new_laser.widenProperty=False
+                    new_laser.doColorCode(4)
+                    bullets.add(new_laser)
+                    new_slave=Slave.lgtSpell6_bulletSlave()
+                    new_slave.unpdatePs=3
+                    new_slave.initial(self.tx,self.ty,0)
+                    new_slave.setSpeed(self.randomAngle+num*(360/7),15)
+                    new_slave.stayFrame=70
+                    new_slave.bulletStay=70-num*3
+                    new_slave.bulletInitialSpeed=0.2
+                    new_slave.bulletBasicSpeed=1.0
+                    new_slave.fireAngle=self.randomAngle+num*(360/7)
+                    slaves.add(new_slave)
+                    new_slave=Slave.lgtSpell6_bulletSlave()
+                    new_slave.unpdatePs=3
+                    new_slave.initial(self.tx,self.ty,0)
+                    new_slave.setSpeed(self.randomAngle+num*(360/7),15)
+                    new_slave.stayFrame=70
+                    new_slave.bulletStay=70-num*3
+                    new_slave.fireAngle=self.randomAngle+num*(360/7)
+                    new_slave.fireAngleInc=-28
+                    new_slave.adjAngle=-76
+                    new_slave.bulletInitialSpeed=0.1
+                    new_slave.bulletBasicSpeed=1.8
+                    slaves.add(new_slave)
+            if (self.lastFrame-60)%420==210:
+                new_bullet=Bullet.small_Bullet()
+                new_bullet.initial(self.tx,self.ty,1)
+                new_bullet.selfTarget(player.cx,player.cy,3)
+                new_bullet.countAngle()
+                angle=new_bullet.angle
+                if self.count%2==0:
+                    sign=1
+                else:
+                    sign=-1
+                adj=-40*sign
+                new_laser=Bullet.laser_line()
+                new_laser.initial(self.tx,self.ty,1)
+                new_laser.setFeature(angle+adj,5,90,10,64,10,20,-1)
+                new_laser.furryCollide=3
+                new_laser.dDegree=+0.5*sign
+                new_laser.ifSimplifiedMode=True
+                new_laser.widenProperty=True
+                new_laser.doColorCode(10)
+                bullets.add(new_laser)
+                self.count+=1
+
+            '''if (self.lastFrame-60)%60==0:
+                danmaku.ellipseByDeg(bullets,Bullet.satsu_Bullet,31,75,50,self.randomAngle,4,(self.tx,self.ty))
+                self.randomAngle-=25'''
         
         if self.health<=0 or self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
@@ -4525,9 +4566,7 @@ class Dumbledore(Boss):
                 self.fireCount+=1
         if (self.lastFrame-50)%300==260:
             global_var.get_value('ch00_sound').play()
-            new_effect=Effect.powerUp()
-            new_effect.initial((self.tx,self.ty),500,40,(255,255,255),5,3,20)
-            effects.add(new_effect)
+            Effect.bossPower(self.tx,self.ty,effects)
         if self.lastFrame%300==150 and self.lastFrame>0:
             self.gotoPosition(random.random()*200+260,random.random()*60+180,60)
         #spell end
@@ -4674,6 +4713,7 @@ class Dumbledore(Boss):
                 for i in range (0,10):
                     for j in range(0,3):
                         new_bullet=Bullet.mid_Bullet()
+                        new_bullet.cancalable=False
                         new_bullet.initial(self.tx,self.ty,1)
                         new_bullet.selfTarget(player.cx,player.cy,5-i*0.3)
                         new_bullet.countAngle()
