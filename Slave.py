@@ -5,6 +5,7 @@ import gF
 from pygame.sprite import Sprite
 import Bullet
 import Effect
+import global_var
 
 class slave_circle(pygame.sprite.Sprite):
     def __init__(self):
@@ -344,11 +345,17 @@ class lgtSpell6_bulletSlave(Bullet.Bullet):
         self.adjAngle=+90
         self.bulletInitialSpeed=0.2
         self.bulletBasicSpeed=1.6
+        self.colorCode=0
     def truePos(self):
         self.rect.centerx=self.tx
         self.rect.centery=self.ty
     
     def fire(self,bullets):
+        if self.lastFrame%2==0:
+            if not global_var.get_value('enemyFiring2'):
+                global_var.get_value('enemyGun_sound2').stop()
+                global_var.get_value('enemyGun_sound2').play()
+                global_var.set_value('enemyFiring2',True)
         new_bullet=Bullet.orb_bullet_lgtnsp6_stay_accelerate()
         new_bullet.initial(self.tx,self.ty,0)
         initialSpeed=self.bulletInitialSpeed
@@ -356,7 +363,7 @@ class lgtSpell6_bulletSlave(Bullet.Bullet):
         adjTimes=1+abs(0.2*math.sin(self.fireAngle/180*math.pi+0.5*math.pi-(self.angle+self.adjAngle)/180*math.pi))
         new_bullet.setSpeed(self.fireAngle,initialSpeed*adjTimes)
         new_bullet.setAccSpeed(self.fireAngle,initialSpeed*adjTimes,basicSpeed*adjTimes,120,self.bulletStay)
-        new_bullet.doColorCode(4)
+        new_bullet.doColorCode(self.colorCode)
         bullets.add(new_bullet)
         self.fireAngle+=self.fireAngleInc
     

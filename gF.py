@@ -49,7 +49,7 @@ def drawBackground(screen):
     screen.blit(global_var.get_value('left'),(0,0))
     screen.blit(global_var.get_value('up'),(60,0))
     screen.blit(global_var.get_value('down'),(60,690))
-    screen.blit(global_var.get_value('right'),(660,30))
+    screen.blit(global_var.get_value('right'),(620,30))
     
 
     #screen.blit(global_var.get_value('stage_background'),(0,0))
@@ -391,18 +391,39 @@ def loadImage():
     effectBar=pygame.transform.smoothscale(effectBar,(192,192)).convert_alpha()
     global_var.set_value('effectBar',effectBar)
 
-    watcher=pygame.image.load('resource/bullet/small_bullet_grey.png')
+    watcher=pygame.image.load('resource/bullet/small_bullet_grey.png').convert_alpha()
     global_var.set_value('watcher',watcher)
 
     lightnessBossBack=pygame.image.load('resource/background/lightnessBossBack.png').convert()
     global_var.set_value('lightnessBossBack',lightnessBossBack)
 
-    originBossCardPattern=pygame.image.load('resource/background/bossCardBackPattern.png')
+    originBossCardPattern=pygame.image.load('resource/background/bossCardBackPattern.png').convert_alpha()
     bossCardPatternPic=pic.doPic(originBossCardPattern)
     global_var.set_value('bossCardPatternPic',bossCardPatternPic)
 
-    etama2=pygame.image.load('resource/bullet/etama2.png')
+    etama2=pygame.image.load('resource/bullet/etama2.png').convert_alpha()
     global_var.set_value('etama2',etama2)
+
+    crowImage=pygame.image.load('resource/enemy/crow.png').convert_alpha()
+    crowSpriteMap=[]
+    movingMap=[]
+    idleMap=[]
+    for i in range(4):
+        new_surf=pygame.Surface((32,32)).convert_alpha()
+        new_surf.fill((0,0,0,0))
+        new_surf.blit(crowImage,(0,0),(i*32,0,32,32))
+        new_surf=pygame.transform.smoothscale(new_surf,(48,48))
+        movingMap.append(new_surf)
+    for i in range(4,8):
+        new_surf=pygame.Surface((32,32)).convert_alpha()
+        new_surf.fill((0,0,0,0))
+        new_surf.blit(crowImage,(0,0),(i*32,0,32,32))
+        new_surf=pygame.transform.smoothscale(new_surf,(48,48))
+        idleMap.append(new_surf)
+    crowSpriteMap.append(movingMap)
+    crowSpriteMap.append(idleMap)
+    global_var.set_value('crowSpriteMap',crowSpriteMap)
+
 
 class star_effect(pygame.sprite.Sprite):
     def __init__(self):
@@ -621,4 +642,4 @@ def restart(frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,
     global_var.set_value('ifStopPressing',False)
     global_var.set_value('ifGameOver',False)
     global_var.set_value('bgmContinuePos',[0,0])#[0]->for mid stage,[1]->for boss fight
-    doBackground(screen,backgrounds)
+    #doBackground(screen,backgrounds)

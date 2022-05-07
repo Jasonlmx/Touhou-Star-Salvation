@@ -12,6 +12,14 @@ import Effect
 import gameRule
 
 def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player):
+    if frame==1:# load in section, initialize background, and music
+        gF.doBackground(screen,backgrounds)
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load('resource/bgm/lightnessOnTheWay.mp3')   # 载入背景音乐文件
+        #pygame.mixer.music.load('resource/bgm/上海アリス幻樂団 - 死体旅行~ Be of good cheer!.mp3')
+        pygame.mixer.music.set_volume(0.6)                  # 设定背景音乐音量
+        pygame.mixer.music.play(loops=-1)
+        
     #part1 F300~F600:
     if frame>=300 and frame<=600:
         if frame%10==0 and (frame<=375 or (frame>=450 and frame<525)):
@@ -25,7 +33,7 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         elif frame%10==0:
             angle=180-12-12*math.sin(frame*6*math.pi/180)
             new_enemy=DADcharacter.spirit_part1_2(angle,random.random()*0.5+6)
-            new_enemy.initialize(690,190,1,-1)
+            new_enemy.initialize(650,190,1,-1)
             enemys.add(new_enemy)
         
     
@@ -40,13 +48,13 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
     if frame>=1000 and frame<=1400:
         if frame%24==0:
             new_enemy=DADcharacter.ghost_part3_1()
-            new_enemy.initialize(670,120,1,0)
+            new_enemy.initialize(630,120,1,0)
             enemys.add(new_enemy)
 
     #part4 F=1600~1900
     if frame==1600:
         new_enemy=DADcharacter.butterfly_part4_1()
-        new_enemy.initialize(360,20,1,-1)
+        new_enemy.initialize(340,20,1,-1)
         enemys.add(new_enemy)
 
     if frame>=1700 and frame<=1900:
@@ -62,13 +70,13 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         new_enemy.initialize(200,20,1,-1)
         enemys.add(new_enemy)
         new_enemy=DADcharacter.butterfly_part5_1()
-        new_enemy.initialize(520,20,1,-1)
+        new_enemy.initialize(480,20,1,-1)
         enemys.add(new_enemy)
     
     if frame>=2300 and frame<=2500:
         if frame%30==0:
             new_enemy=DADcharacter.spirit_part5_1()
-            new_enemy.initialize(670,200+random.random()*50-25,1,-1)
+            new_enemy.initialize(630,200+random.random()*50-25,1,-1)
             enemys.add(new_enemy)
 
         if frame%30==0:
@@ -82,7 +90,7 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         if frame%50==0:
             if frame%250==0:
                 new_enemy=DADcharacter.spirit_part6_1()
-                new_enemy.initialize(460,20,1,-1)
+                new_enemy.initialize(420,20,1,-1)
                 new_enemy.positive=adj*1
                 enemys.add(new_enemy)
             elif frame%200==0:
@@ -92,13 +100,13 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
                 enemys.add(new_enemy)
             elif frame%150==0:
                 new_enemy=DADcharacter.spirit_part6_1()
-                new_enemy.initialize(510,20,1,-1)
+                new_enemy.initialize(470,20,1,-1)
                 new_enemy.positive=adj*1
                 new_enemy.num=1
                 enemys.add(new_enemy)
             elif frame%100==0:
                 new_enemy=DADcharacter.spirit_part6_1()
-                new_enemy.initialize(360,20,1,-1)
+                new_enemy.initialize(340,20,1,-1)
                 new_enemy.num=1
                 enemys.add(new_enemy)
             else:
@@ -120,7 +128,7 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
             item.followPlayer=1
             item.followSpeed=9
         new_boss=DADcharacter.satori()
-        new_boss.initial(360,200)
+        new_boss.initial(340,200)
         bosses.add(new_boss)
         global_var.get_value('ch00_sound').play()
     '''
@@ -137,7 +145,7 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         if frame%60==0:
             r=random.random()*100-50
             new_enemy=DADcharacter.spirit_part7_1()
-            new_enemy.initialize(680,250+r,1,-1)
+            new_enemy.initialize(640,250+r,1,-1)
             enemys.add(new_enemy)
         if frame%60==30:
             r=random.random()*100-50
@@ -148,13 +156,13 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
     #part 8 8750~9500:
     if frame==8750:
         new_enemy=DADcharacter.butterfly_part8_1()
-        new_enemy.initialize(360,20,1,-1)
+        new_enemy.initialize(340,20,1,-1)
         enemys.add(new_enemy)
     
     #part 9 F9600~10300:
     if frame==9400:
         new_enemy=DADcharacter.butterfly_part9_1()
-        new_enemy.initialize(540,20,1,-1)
+        new_enemy.initialize(500,20,1,-1)
         enemys.add(new_enemy)
         new_enemy=DADcharacter.butterfly_part9_1()
         new_enemy.initialize(180,20,1,-1)

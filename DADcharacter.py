@@ -122,7 +122,7 @@ class enemy(pygame.sprite.Sprite):
         dy=py-self.ty
         dist=math.sqrt(dx**2+dy**2)
         minDist=global_var.get_value('enemyPos')[2]
-        if self.tx<660 and self.tx>60 and self.ty<690 and self.ty>30 and dist<minDist:
+        if self.tx<620 and self.tx>60 and self.ty<690 and self.ty>30 and dist<minDist:
             global_var.set_value('enemyPos',(self.tx,self.ty,dist))
 
     def ai_move(self):
@@ -162,8 +162,8 @@ class enemy(pygame.sprite.Sprite):
             y_now=self.ty+dy
             if x_now<80:
                 x_now=80
-            if x_now>640:
-                x_now=640
+            if x_now>600:
+                x_now=600
             new_item.initial(x_now,y_now)
             items.add(new_item)
 
@@ -364,6 +364,27 @@ class ghost(enemy):
                 tempImage=pygame.transform.scale(image,(size,size))
                 screen.blit(tempImage,(randomPoint[0]-round(1/2*size),randomPoint[1]-round(1/2*size)))
         '''
+
+class crow(enemy):
+    def __init__(self):
+        super(crow,self).__init__()
+        self.spriteMap=global_var.get_value('crowSpriteMap')
+        self.interval=3
+        self.drawCount=0
+        self.part=0
+
+    def draw(self,screen,frame):
+        self.drawCount+=1
+        if self.drawCount>=self.interval:
+            self.drawCount=0
+            self.part+=1
+        if self.speedx>0:
+            screen.blit(pygame.transform.flip(self.spriteMap[0][self.part%4],True,False),(round(self.tx-24),round(self.ty-24)))
+        elif self.speedx<0:
+            screen.blit(self.spriteMap[0][self.part%4],(round(self.tx-24),round(self.ty-24)))
+        else:
+            screen.blit(self.spriteMap[1][self.part%4],(round(self.tx-24),round(self.ty-24)))
+
 
 class spirit_test(spirit):
     def __init__(self):
@@ -1145,7 +1166,7 @@ class ghost_hufflepuff_spirit(spirit):
             self.distance=math.sqrt(dx**2+dy**2)
     def bounce(self):
         if self.bounceLim>0:
-            if (self.tx<=60 or self.tx>=660) and self.x_bouncing!=True:
+            if (self.tx<=60 or self.tx>=620) and self.x_bouncing!=True:
                 self.speedx=-self.speedx
                 self.countAngle()
                 self.speed_now-=1.5
@@ -1161,7 +1182,7 @@ class ghost_hufflepuff_spirit(spirit):
                 self.y_bouncing=True
                 self.bounceLim-=1
                 #print(self.tx,' ',self.ty,self.bouncing)
-            if self.tx>60 and self.tx<660:
+            if self.tx>60 and self.tx<620:
                 self.x_bouncing=False
             if self.ty<690 and self.ty>30:
                 self.y_bouncing=False
@@ -1291,7 +1312,7 @@ class ghost_gryffindor_spirit(spirit):
         if self.lastFrame>=self.maxLastFrame:
             self.health=0
         
-        if self.tx>=660:
+        if self.tx>=620:
             self.tx=61
         if self.tx<=60:
             self.tx=659
@@ -1603,8 +1624,8 @@ class  Player(pygame.sprite.Sprite):
             self.holdFrame=39
         if self.tx < 60+20:
             self.tx = 60+20
-        elif self.tx+5 > 660-20:
-            self.tx = 660-20-5
+        elif self.tx+5 > 620-20:
+            self.tx = 620-20-5
         if self.ty <= 30+20:
             self.ty = 30+20
         elif self.ty+5 >=720-50:
@@ -2033,7 +2054,7 @@ class Boss(pygame.sprite.Sprite):
         dy=py-self.ty
         dist=math.sqrt(dx**2+dy**2)
         minDist=global_var.get_value('enemyPos')[2]
-        if self.tx<660 and self.tx>60 and self.ty<690 and self.ty>30 and dist<minDist:
+        if self.tx<620 and self.tx>60 and self.ty<690 and self.ty>30 and dist<minDist:
             global_var.set_value('enemyPos',(self.tx,self.ty,dist))
     
     def initial(self,x,y):
@@ -2090,13 +2111,13 @@ class Boss(pygame.sprite.Sprite):
                 timerText=myfont.render(str(sec)+'.0'+str(miliSec), True, (255, 0, 0))
             else:
                 timerText=myfont.render(str(sec)+'.00', True, (255, 0, 0))
-        screen.blit(timerText,(600,695))
+        screen.blit(timerText,(560,695))
     
     def drawHealthBar(self,screen):
         if self.lastFrame<=60:
-            length=round(self.health/self.maxHealth*520/60*self.lastFrame)
+            length=round(self.health/self.maxHealth*480/60*self.lastFrame)
         else:
-            length=round(self.health/self.maxHealth*520)
+            length=round(self.health/self.maxHealth*480)
         if length<=0:
             length=0
         bar=pygame.Surface((length,6))
@@ -2115,7 +2136,7 @@ class Boss(pygame.sprite.Sprite):
             spellText=myfont.render(spellName, True, (255, 255, 255))
             shadowText=myfont.render(spellName, True, (100, 0, 0))
             w, h = spellText.get_size()
-            if player.cx>=660-w and player.cy<=60+h and self.lastFrame>=70:
+            if player.cx>=620-w and player.cy<=60+h and self.lastFrame>=70:
                 self.ifBlock=True
             else:
                 self.ifBlock=False
@@ -2124,23 +2145,23 @@ class Boss(pygame.sprite.Sprite):
                 shadowText.set_alpha(100)
             lineColor=(210,210,210)
             if self.lastFrame<=30:
-                screen.blit(shadowText,(660-w+3,690-h+2))
-                screen.blit(spellText,(660-w,690-h+2))
-                pygame.draw.line(screen,lineColor,(660,690+0),(660-w,690+0),2)
+                screen.blit(shadowText,(620-w+3,690-h+2))
+                screen.blit(spellText,(620-w,690-h+2))
+                pygame.draw.line(screen,lineColor,(620,690+0),(620-w,690+0),2)
             elif self.lastFrame<=90:
-                screen.blit(shadowText,(660-w+3,round(690-h-((657-h)/60)*(self.lastFrame-30))+2))
-                screen.blit(spellText,(660-w,round(690-h-((657-h)/60)*(self.lastFrame-30))))
-                pygame.draw.line(screen,lineColor,(660,round(690-h-((657-h)/60)*(self.lastFrame-30))+h+0),(660-w,round(690-h-((657-h)/60)*(self.lastFrame-30))+h+0),2)
+                screen.blit(shadowText,(620-w+3,round(690-h-((657-h)/60)*(self.lastFrame-30))+2))
+                screen.blit(spellText,(620-w,round(690-h-((657-h)/60)*(self.lastFrame-30))))
+                pygame.draw.line(screen,lineColor,(620,round(690-h-((657-h)/60)*(self.lastFrame-30))+h+0),(620-w,round(690-h-((657-h)/60)*(self.lastFrame-30))+h+0),2)
             else:
-                screen.blit(shadowText,(660-w+3,33+2))
-                screen.blit(spellText,(660-w,33))
-                pygame.draw.line(screen,lineColor,(660,33+h+0),(660-w,33+h+0),2)
+                screen.blit(shadowText,(620-w+3,33+2))
+                screen.blit(spellText,(620-w,33))
+                pygame.draw.line(screen,lineColor,(620,33+h+0),(620-w,33+h+0),2)
             
     def displayPercentHealth(self,screen,myfont):
         self.percentHealth=round(self.health/self.maxHealth*100)
         percentText=myfont.render(str(self.percentHealth)+'%', True, (255, 255, 255))
         w,h=percentText.get_size()
-        screen.blit(percentText,(580-w,695))
+        screen.blit(percentText,(540-w,695))
 
     def drawCardBonus(self,screen,myfont,player):
         if self.ifSpell:
@@ -2154,8 +2175,8 @@ class Boss(pygame.sprite.Sprite):
                 bonusText.set_alpha(100)
                 shadowText.set_alpha(100)
             if self.lastFrame>=90:
-                screen.blit(shadowText,(530+2,63+1))
-                screen.blit(bonusText,(530,63))
+                screen.blit(shadowText,(490+2,63+1))
+                screen.blit(bonusText,(490,63))
 
     def drawResult(self,effects,bonus,ifBonus):
         if ifBonus:
@@ -2419,7 +2440,7 @@ class satori(Boss):
             self.reset=False
             self.maxHealth=30000
             self.health=self.maxHealth
-            self.gotoPosition(360,210,30)
+            self.gotoPosition(340,210,30)
             self.randomAngle=random.random()*360
             self.frameLimit=1200
         '''
@@ -2469,7 +2490,7 @@ class satori(Boss):
             player.spellBonus=True
             self.maxHealth=60000
             self.health=60000
-            self.gotoPosition(360,200,80)
+            self.gotoPosition(340,200,80)
             self.frameLimit=1800
             self.cardBonus=10000000
             self.spellName='Wand Sign[Shocking Magic]'
@@ -2592,7 +2613,7 @@ class satori(Boss):
             player.spellBonus=True
             self.maxHealth=60000
             self.health=self.maxHealth
-            self.gotoPosition(360,140,80)
+            self.gotoPosition(340,140,80)
             self.frameLimit=8600-frame
             self.cardBonus=10000000
             self.framePunishment=800
@@ -2869,7 +2890,7 @@ class Dumbledore(Boss):
             self.reset=False
             self.maxHealth=50000
             self.health=50000
-            self.gotoPosition(360,170,40)
+            self.gotoPosition(340,170,40)
             self.randomAngle=90
             #self.randomAngle=random.random()*360
             self.randomAngle2=self.randomAngle
@@ -2971,12 +2992,12 @@ class Dumbledore(Boss):
             player.spellBonus=True
             self.maxHealth=57000
             self.health=57000
-            self.gotoPosition(360,200,80)
+            self.gotoPosition(340,200,80)
             self.frameLimit=3600
             self.cardBonus=10000000
             self.spellName='Glaring Star[Comets]'
             self.chSpellName='耀星「彗星」'
-            self.gotoPosition(360,120,50)
+            #self.gotoPosition(360,120,50)
             self.framePunishment=1700
             self.bulletSpeed=3
             global_var.get_value('spell_sound').play()
@@ -3050,8 +3071,8 @@ class Dumbledore(Boss):
             y_now=self.ty+dy
             if x_now<=150:
                 x_now=150
-            if x_now>=570:
-                x_now=570
+            if x_now>=530:
+                x_now=530
             if y_now<140:
                 y_now=140
             if y_now>220:
@@ -3092,7 +3113,7 @@ class Dumbledore(Boss):
             self.reset=False
             self.maxHealth=50000
             self.health=50000
-            self.gotoPosition(360,170,40)
+            self.gotoPosition(340,170,40)
             self.randomAngle=random.random()*360
             self.randomAngle2=self.randomAngle
             self.frameLimit=1800
@@ -3128,7 +3149,7 @@ class Dumbledore(Boss):
                 self.randomAngle+=6
                 self.randomAngle2-=6
             if (self.lastFrame-80)%100==0:
-                self.gotoPosition(random.random()*60+330,random.random()*20+170,40)
+                self.gotoPosition(random.random()*60+310,random.random()*20+170,40)
 
         
         if self.health<=0 or self.frameLimit<=0:
@@ -3147,12 +3168,12 @@ class Dumbledore(Boss):
             player.spellBonus=True
             self.maxHealth=50000
             self.health=self.maxHealth
-            self.gotoPosition(360,200,80)
+            #self.gotoPosition(360,200,80)
             self.frameLimit=3600
             self.cardBonus=10000000
             self.spellName='Star Rain[Star of hometown]'
             self.chSpellName='星雨「故乡之星」'
-            self.gotoPosition(360,120,50)
+            self.gotoPosition(340,120,50)
             self.framePunishment=1700
             global_var.get_value('spell_sound').play()
             new_effect=Effect.bossFaceSpell()
@@ -3172,11 +3193,11 @@ class Dumbledore(Boss):
                     new_bullet.ratio=7
                     area=random.randint(0,1)
                     if area==1:
-                        rx=660+random.random()*10
+                        rx=620+random.random()*10
                         ry=random.random()*680
                         new_bullet.initial(rx,ry,1)
                     else:
-                        rx=random.random()*660
+                        rx=random.random()*620
                         ry=random.random()*3+27
                         new_bullet.initial(rx,ry,1)
                     ra=90+43+angleInc+random.random()*4
@@ -3266,7 +3287,7 @@ class Dumbledore(Boss):
             self.reset=False
             self.maxHealth=50000
             self.health=50000
-            self.gotoPosition(360,200,40)
+            self.gotoPosition(340,200,40)
             self.randomAngle=random.random()*360
             self.randomAngle2=self.randomAngle-360/30
             self.frameLimit=1800
@@ -3315,7 +3336,7 @@ class Dumbledore(Boss):
         
 
             if (self.lastFrame-40)%90==0:
-                    self.gotoPosition(random.random()*60+330,random.random()*20+160,40)
+                    self.gotoPosition(random.random()*60+310,random.random()*20+160,40)
                 
         if self.health<=0 or self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
@@ -3333,14 +3354,14 @@ class Dumbledore(Boss):
             player.spellBonus=True
             self.maxHealth=50000
             self.health=self.maxHealth
-            self.gotoPosition(360,200,80)
+            self.gotoPosition(340,200,80)
             self.frameLimit=3600
             self.cardBonus=10000000
             self.framePunishment=1700
             self.spellName='Milky Way[Path of magic stardust]'
             self.chSpellName='银河「星辰闪耀之路」'
             self.hmSpeed=6
-            self.gotoPosition(360,120,50)
+            #self.gotoPosition(360,120,50)
             global_var.get_value('spell_sound').play()
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)
@@ -3353,7 +3374,7 @@ class Dumbledore(Boss):
         if self.lastFrame>=80:
             if self.lastFrame%4==0:
                 new_effect=Effect.bulletCreate(1)
-                path=math.sin(frame/1.3/180*math.pi)*170+360
+                path=math.sin(frame/1.3/180*math.pi)*170+340
                 width=100+math.sin((frame+30)*1.5/180*math.pi)*10
                 n=1
                 for i in (-1,1):
@@ -3472,7 +3493,7 @@ class Dumbledore(Boss):
             self.reset=False
             self.maxHealth=50000
             self.health=50000
-            self.gotoPosition(360,220,40)
+            self.gotoPosition(340,220,40)
             self.randomAngle=random.random()*360
             self.randomAngle2=random.random()*360
             self.frameLimit=1800
@@ -3516,7 +3537,7 @@ class Dumbledore(Boss):
                 self.randomAngle2=random.random()*360
         
         if (self.lastFrame-100)%180==90:
-            self.gotoPosition(random.random()*120+300,random.random()*50+150,80)
+            self.gotoPosition(random.random()*120+280,random.random()*50+150,80)
 
 
         if self.health<=0 or self.frameLimit<=0:
@@ -3535,7 +3556,7 @@ class Dumbledore(Boss):
             player.spellBonus=True
             self.maxHealth=100000
             self.health=self.maxHealth
-            self.gotoPosition(360,200,80)
+            self.gotoPosition(340,200,80)
             self.frameLimit=7200
             self.cardBonus=10000000
             self.framePunishment=300
@@ -3627,7 +3648,7 @@ class Dumbledore(Boss):
 
         
         if self.lastFrame>=80 and (self.lastFrame-80)%200==120:
-            self.gotoPosition(random.random()*30+345,random.random()*30+225,60)
+            self.gotoPosition(random.random()*30+325,random.random()*30+225,60)
 
 
         if self.health<=0:
@@ -3666,7 +3687,7 @@ class Dumbledore(Boss):
             self.reset=False
             self.maxHealth=45000
             self.health=45000
-            self.gotoPosition(360,220,40)
+            self.gotoPosition(340,220,40)
             self.randomAngle=random.random()*360
             self.randomAngle2=0
             self.frameLimit=18000
@@ -3698,7 +3719,7 @@ class Dumbledore(Boss):
                 new_effect.initial(self.tx,self.ty,100,24,4)
                 effects.add(new_effect)
                 '''
-                lines=2
+                lines=4
                 for i in range(0,lines):
                     new_bullet=Bullet.rice_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
@@ -3727,7 +3748,7 @@ class Dumbledore(Boss):
             player.spellBonus=True
             self.maxHealth=50000
             self.health=self.maxHealth
-            self.gotoPosition(360,100,80)
+            self.gotoPosition(340,100,80)
             self.frameLimit=4800
             self.cardBonus=10000000
             self.framePunishment=1300
@@ -3879,7 +3900,7 @@ class Dumbledore(Boss):
             self.reset=False
             self.maxHealth=60000
             self.health=60000
-            self.gotoPosition(360,220,40)
+            self.gotoPosition(340,220,40)
             self.randomAngle=random.random()*360
             self.randomAngle2=random.random()*360
             self.frameLimit=18000
@@ -3888,7 +3909,12 @@ class Dumbledore(Boss):
         if self.lastFrame>=60:
             if (self.lastFrame-60)%420<=18:
                 if (self.lastFrame-60)%420==0:
-                    self.randomAngle=random.random()*360
+                    new_bullet=Bullet.small_Bullet()
+                    new_bullet.initial(self.tx,self.ty,1)
+                    new_bullet.selfTarget(player.cx,player.cy,3)
+                    new_bullet.countAngle()
+                    self.randomAngle=new_bullet.angle+(360/7/2)
+                    #self.randomAngle=random.random()*360
                 if (self.lastFrame-60)%420%3==0:
                     num=round(((self.lastFrame-60)%420)/3)
                     new_laser=Bullet.laser_line()
@@ -3897,7 +3923,7 @@ class Dumbledore(Boss):
                     new_laser.furryCollide=10
                     new_laser.dDegree=0
                     new_laser.ifSimplifiedMode=True
-                    new_laser.widenProperty=False
+                    new_laser.widenProperty=True
                     new_laser.doColorCode(4)
                     bullets.add(new_laser)
                     new_slave=Slave.lgtSpell6_bulletSlave()
@@ -3905,6 +3931,7 @@ class Dumbledore(Boss):
                     new_slave.initial(self.tx,self.ty,0)
                     new_slave.setSpeed(self.randomAngle+num*(360/7),15)
                     new_slave.stayFrame=70
+                    new_slave.colorCode=3
                     new_slave.bulletStay=70-num*3
                     new_slave.bulletInitialSpeed=0.2
                     new_slave.bulletBasicSpeed=1.0
@@ -3915,6 +3942,7 @@ class Dumbledore(Boss):
                     new_slave.initial(self.tx,self.ty,0)
                     new_slave.setSpeed(self.randomAngle+num*(360/7),15)
                     new_slave.stayFrame=70
+                    new_slave.colorCode=4
                     new_slave.bulletStay=70-num*3
                     new_slave.fireAngle=self.randomAngle+num*(360/7)
                     new_slave.fireAngleInc=-28
@@ -3933,15 +3961,16 @@ class Dumbledore(Boss):
                 else:
                     sign=-1
                 adj=-40*sign
-                new_laser=Bullet.laser_line()
-                new_laser.initial(self.tx,self.ty,1)
-                new_laser.setFeature(angle+adj,5,90,10,64,10,20,-1)
-                new_laser.furryCollide=3
-                new_laser.dDegree=+0.5*sign
-                new_laser.ifSimplifiedMode=True
-                new_laser.widenProperty=True
-                new_laser.doColorCode(10)
-                bullets.add(new_laser)
+                for i in range(3):
+                    new_laser=Bullet.laser_line()
+                    new_laser.initial(self.tx,self.ty,1)
+                    new_laser.setFeature(angle+adj+40*(i-1),8,90,10,64,10,20,-1)
+                    new_laser.furryCollide=5
+                    new_laser.dDegree=+0.5*sign
+                    new_laser.ifSimplifiedMode=True
+                    new_laser.widenProperty=True
+                    new_laser.doColorCode(10)
+                    bullets.add(new_laser)
                 self.count+=1
 
             '''if (self.lastFrame-60)%60==0:
@@ -3964,7 +3993,7 @@ class Dumbledore(Boss):
             player.spellBonus=True
             self.maxHealth=75000
             self.health=self.maxHealth
-            self.gotoPosition(360,180,80)
+            self.gotoPosition(340,180,80)
             self.frameLimit=4800
             self.cardBonus=10000000
             self.framePunishment=1300
@@ -4025,7 +4054,7 @@ class Dumbledore(Boss):
             global_var.get_value('spell_end').play()
         
         if (self.lastFrame-80)%100==0:
-                self.gotoPosition(random.random()*60+330,random.random()*20+170,40)
+                self.gotoPosition(random.random()*60+310,random.random()*20+170,40)
         
         if self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
@@ -4044,7 +4073,7 @@ class Dumbledore(Boss):
             self.reset=False
             self.maxHealth=50000
             self.health=50000
-            self.gotoPosition(360,270,40)
+            self.gotoPosition(340,270,40)
             self.randomAngle=random.random()*360
             self.angleAddon=0
             #self.randomAngle2=random.random()*360
@@ -4077,7 +4106,7 @@ class Dumbledore(Boss):
             self.randomAngle-=13-self.angleAddon
 
         if (self.lastFrame-80)%180==90:
-            self.gotoPosition(random.random()*120+300,random.random()*50+150,80)
+            self.gotoPosition(random.random()*120+280,random.random()*50+150,80)
 
         if self.health<=0 or self.frameLimit<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
@@ -4095,13 +4124,13 @@ class Dumbledore(Boss):
             player.spellBonus=True
             self.maxHealth=80000
             self.health=self.maxHealth
-            self.gotoPosition(360,180,80)
+            self.gotoPosition(340,180,80)
             self.frameLimit=4800
             self.cardBonus=10000000
             self.framePunishment=1300
             self.spellName='Summon[Star Duplication Curse]'
             self.chSpellName='召唤「恒星复制诅咒」'
-            self.gotoPosition(360,240,50)
+            self.gotoPosition(340,240,50)
             self.randomAngle=random.random()*360
             self.randomAngle2=random.random()*360
             global_var.get_value('spell_sound').play()
@@ -4182,7 +4211,7 @@ class Dumbledore(Boss):
             self.reset=False
             self.maxHealth=50000
             self.health=50000
-            self.gotoPosition(360,230,40)
+            self.gotoPosition(340,230,40)
             self.randomAngle=random.random()*360
             #self.randomAngle2=random.random()*360
             self.frameLimit=2100
@@ -4244,7 +4273,7 @@ class Dumbledore(Boss):
                     self.randomAngle=random.random()*360
                 '''
             if (self.lastFrame-90)%200==0:
-                self.gotoPosition(280+160*random.random(),200+60*random.random(),60)
+                self.gotoPosition(260+160*random.random(),200+60*random.random(),60)
                 
                  
         if self.health<=0 or self.frameLimit<=0:
@@ -4263,7 +4292,7 @@ class Dumbledore(Boss):
             player.spellBonus=True
             self.maxHealth=80000
             self.health=self.maxHealth
-            self.gotoPosition(360,180,80)
+            self.gotoPosition(340,180,80)
             self.frameLimit=4800
             self.cardBonus=10000000
             self.framePunishment=1300
@@ -4316,7 +4345,7 @@ class Dumbledore(Boss):
                     global_var.set_value('enemyFiring1',True)
                 
             if (self.lastFrame-80)%100==20:
-                self.gotoPosition(280+160*random.random(),200+60*random.random(),60)
+                self.gotoPosition(260+160*random.random(),200+60*random.random(),60)
 
         if self.health<=30000 or self.frameLimit<=1200:
             if (self.lastFrame-80)%180==100 and not self.powerUp:
@@ -4360,7 +4389,7 @@ class Dumbledore(Boss):
             self.reset=False
             self.maxHealth=40000
             self.health=40000
-            self.gotoPosition(360,230,80)
+            self.gotoPosition(340,230,80)
             self.randomAngle=random.random()*360
             #self.randomAngle2=random.random()*360
             self.frameLimit=5100
@@ -4513,7 +4542,7 @@ class Dumbledore(Boss):
             self.framePunishment=1300
             self.spellName="Remind[Dance of Rainbow Outland]"
             self.chSpellName=u"想起 「虹彩陆离乱舞」]"
-            self.gotoPosition(360,220,50)
+            self.gotoPosition(340,220,50)
             self.randomAngle=random.random()*360
             global_var.get_value('spell_sound').play()
             new_effect=Effect.bossFaceSpell()
@@ -4568,7 +4597,7 @@ class Dumbledore(Boss):
             global_var.get_value('ch00_sound').play()
             Effect.bossPower(self.tx,self.ty,effects)
         if self.lastFrame%300==150 and self.lastFrame>0:
-            self.gotoPosition(random.random()*200+260,random.random()*60+180,60)
+            self.gotoPosition(random.random()*200+240,random.random()*60+180,60)
         #spell end
         if self.health<=0:
             #self.cancalAllBullet(bullets,items,effects,True)
@@ -4614,7 +4643,7 @@ class Dumbledore(Boss):
             self.framePunishment=300
             self.spellName="[Hogwarts Four Spirits]" 
             self.chSpellName='「霍格沃茨之魂灵」'
-            self.gotoPosition(360,250,50)
+            self.gotoPosition(340,250,50)
             self.randomAngle=random.random()*360
             new_effect=Effect.bossFaceSpell()
             effects.add(new_effect)

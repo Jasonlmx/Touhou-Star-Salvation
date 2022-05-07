@@ -377,13 +377,13 @@ class bonusText(screenText):
             height=round(h*self.lastFrame/self.transFrame)
             #print(height)
             #screen.blit(pygame.transform.scale(self.image,(384,height)),(168,100))
-            screen.blit(pygame.transform.scale(bonus_shade,(w,height)),(360-round(w/2)+2,140+(round(h/2-0.5*height))+3))
-            screen.blit(pygame.transform.smoothscale(bonus,(w,height)),(360-round(w/2),140+(round(h/2-0.5*height))))
+            screen.blit(pygame.transform.scale(bonus_shade,(w,height)),(340-round(w/2)+2,140+(round(h/2-0.5*height))+3))
+            screen.blit(pygame.transform.smoothscale(bonus,(w,height)),(340-round(w/2),140+(round(h/2-0.5*height))))
         elif self.lastFrame>=self.maxLastFrame-self.transFrame:
             height=round(h*(self.maxLastFrame-self.lastFrame)/self.transFrame)
             #screen.blit(pygame.transform.scale(self.image,(384,height)),(168,100))
-            screen.blit(pygame.transform.scale(bonus_shade,(w,height)),(360-round(w/2)+2,140+(round(h/2-0.5*height))+3))
-            screen.blit(pygame.transform.smoothscale(bonus,(w,height)),(360-round(w/2),140+(round(h/2-0.5*height))))
+            screen.blit(pygame.transform.scale(bonus_shade,(w,height)),(340-round(w/2)+2,140+(round(h/2-0.5*height))+3))
+            screen.blit(pygame.transform.smoothscale(bonus,(w,height)),(340-round(w/2),140+(round(h/2-0.5*height))))
         else:
             #pass
             screen.blit(bonus_shade,((360-round(w/2)+2),140+3))
@@ -403,11 +403,11 @@ class failText(screenText):
             height=round(48*self.lastFrame/self.transFrame)
             #print(height)
             #screen.blit(pygame.transform.scale(self.image,(384,height)),(168,100))
-            screen.blit(pygame.transform.smoothscale(self.image,(240,height)),(240,100+(24-round(0.5*height))))
+            screen.blit(pygame.transform.smoothscale(self.image,(240,height)),(220,100+(24-round(0.5*height))))
         elif self.lastFrame>=self.maxLastFrame-self.transFrame:
             height=round(48*(self.maxLastFrame-self.lastFrame)/self.transFrame)
             #screen.blit(pygame.transform.scale(self.image,(384,height)),(168,100))
-            screen.blit(pygame.transform.smoothscale(self.image,(240,height)),(240,100+(24-round(0.5*height))))
+            screen.blit(pygame.transform.smoothscale(self.image,(240,height)),(220,100+(24-round(0.5*height))))
         else:
             #pass
             screen.blit(self.image,(240,100))
@@ -421,7 +421,7 @@ class powerMaxText(screenText):
         self.image.blit(global_var.get_value('front00'), (0, 0), (386,240,232,48))
     
     def draw(self,screen):
-        screen.blit(self.image,(243,52))
+        screen.blit(self.image,(223,52))
     
 class extendText(screenText):
     def __init__(self):
@@ -431,7 +431,7 @@ class extendText(screenText):
         self.image.blit(global_var.get_value('front00'), (0, 0), (386,333,148,48))
     
     def draw(self,screen):
-        screen.blit(self.image,(285,160))
+        screen.blit(self.image,(266,160))
 
 class wave(pygame.sprite.Sprite):
     def __init__(self):

@@ -18,8 +18,8 @@ def createItem(tx,ty,items):
     y_now=ty
     if x_now<80:
         x_now=80
-    if x_now>640:
-        x_now=640
+    if x_now>600:
+        x_now=600
     new_item.initial(x_now,y_now)
     items.add(new_item)
 
@@ -142,7 +142,7 @@ class playerGun(pygame.sprite.Sprite):
             self.kill()
         if self.rect.right<=0+60:
             self.kill()
-        if self.rect.left>=660:
+        if self.rect.left>=620:
             self.kill()
 
 
@@ -278,7 +278,7 @@ class reimuBoomOrb(playerGun):
             global_var.set_value('boomStatu',0)
             self.doKill()
         if self.lastFrame>=self.rotaionMaxFrame+100:
-            if self.rect.top>=720-30+10 or self.rect.bottom<=0+30 or self.rect.right<=0+60 or self.rect.left>=660:
+            if self.rect.top>=720-30+10 or self.rect.bottom<=0+30 or self.rect.right<=0+60 or self.rect.left>=620:
                 self.doKill()
 
         
@@ -302,7 +302,7 @@ class reimuBoomOrb(playerGun):
         tx=pos[0]
         ty=pos[1]
         self.initAngle=self.angle
-        if tx>60 and tx<660 and ty>30 and ty<690:
+        if tx>60 and tx<620 and ty>30 and ty<690:
             self.selfTarget(tx,ty,self.speed)
         self.countAngle()
         if abs(self.initAngle-self.angle)<=self.adjAngle:
@@ -424,7 +424,7 @@ class reimuTargetSatsu(playerGun):
             self.kill()
         if self.rect.right<=0+60-40:
             self.kill()
-        if self.rect.left>=660+40:
+        if self.rect.left>=620+40:
             self.kill()
 
     def initial(self,angle,tx,ty,speed):
@@ -450,7 +450,7 @@ class reimuTargetSatsu(playerGun):
         tx=pos[0]
         ty=pos[1]
         self.initAngle=self.angle
-        if tx>60 and tx<660 and ty>30 and ty<690:
+        if tx>60 and tx<620 and ty>30 and ty<690:
             self.selfTarget(tx,ty,self.speed)
         self.countAngle()
         if abs(self.initAngle-self.angle)<=self.adjAngle:
@@ -592,7 +592,7 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
         if self.rect.right<=0+60-self.validAccuracy[3]:
             self.kill()
-        if self.rect.left>=660+self.validAccuracy[2]:
+        if self.rect.left>=620+self.validAccuracy[2]:
             self.kill()
 
 class small_Bullet(Bullet):
@@ -1787,13 +1787,13 @@ class laser_line(Bullet):
             self.kill()
     
     def doWarnLine(self):
-        while not (self.bx>=660+10 or self.bx<=60-10 or self.by>=690+10 or self.by<=30-10):
+        while not (self.bx>=620+10 or self.bx<=60-10 or self.by>=690+10 or self.by<=30-10):
             self.bx+=math.cos(self.degree/180*math.pi)*self.width
             self.by+=math.sin(self.degree/180*math.pi)*self.width
         self.endPoint=[self.bx,self.by]
 
     def doLaser(self,screen,bullets,effects):
-        while (not (self.bx>=660+10 or self.bx<=60-10 or self.by>=690+10 or self.by<=30-10)) and ((self.forwardNow<=self.forwardMax) or (self.forwardSpeed<=0)):
+        while (not (self.bx>=620+10 or self.bx<=60-10 or self.by>=690+10 or self.by<=30-10)) and ((self.forwardNow<=self.forwardMax) or (self.forwardSpeed<=0)):
             if self.countDistance(self.bx,self.by)<=20:
                 new_bullet=laser_line_sub(radius=self.widthNow)
                 new_bullet.initial(self.bx,self.by,1)
@@ -2048,7 +2048,7 @@ class orb_Bullet_bouncing_limit(orb_Bullet):
         self.checkValid()
     def bouncing(self):
         if self.bounceMax>0:
-            if self.tx<=60 or self.tx>=660:
+            if self.tx<=60 or self.tx>=620:
                 self.speedx=-self.speedx
                 self.bounceMax-=1
     
@@ -2089,7 +2089,7 @@ class big_star_Bullet_comet(big_star_Bullet):
     
     def bouncing(self):
         if self.bounceMax>0:
-            if self.tx<=60 or self.tx>=660:
+            if self.tx<=60 or self.tx>=620:
                 self.speedx=-self.speedx
                 self.bounceMax-=1
 
@@ -2108,7 +2108,7 @@ class laser_Bullet_immune(laser_Bullet_main):
                 self.kill()
             if self.rect.right<=0+60:
                 self.kill()
-            if self.rect.left>=660:
+            if self.rect.left>=620:
                 self.kill()
 
 class star_Bullet_immune(star_Bullet):
@@ -2124,7 +2124,7 @@ class star_Bullet_immune(star_Bullet):
                 self.kill()
             if self.rect.right<=0+60:
                 self.kill()
-            if self.rect.left>=660:
+            if self.rect.left>=620:
                 self.kill()
 
 class star_Bullet_fountain(big_star_Bullet):
@@ -2253,7 +2253,7 @@ class star_Bullet_fountain(big_star_Bullet):
         elif self.tx<=60:
             self.touched=True
             self.touch_direction=3
-        elif self.tx>=660:
+        elif self.tx>=620:
             self.touched=True
             self.touch_direction=1
         if self.touched:
@@ -2495,7 +2495,7 @@ class orb_Bullet_bouncing_5(rice_Bullet):
         self.checkValid()
     def bouncing(self):
         if self.bounceMax>0:
-            if self.tx<=60 or self.tx>=660:
+            if self.tx<=60 or self.tx>=620:
                 self.speedx=-self.speedx
                 self.bounceMax-=1
                 #self.loadColor('blue')
@@ -2520,7 +2520,7 @@ class orb_Bullet_bouncing_5(rice_Bullet):
             self.kill()
         if self.rect.right<=0+50:
             self.kill()
-        if self.rect.left>=670:
+        if self.rect.left>=630:
             self.kill()
 
 class big_Bullet_tracing_test(big_Bullet):
@@ -2736,12 +2736,12 @@ class star_bullet_side_selfTarget(star_Bullet):
             self.kill()
         if self.rect.right<=0+50:
             self.kill()
-        if self.rect.left>=670:
+        if self.rect.left>=630:
             self.kill()
 
     def motion_strategy(self,effects):
         bound=False
-        if self.tx<=60 or self.tx>=660 or self.ty<=30:
+        if self.tx<=60 or self.tx>=620 or self.ty<=30:
             bound=True
         if self.bounce>=1 and bound and self.ty<=500:
             if self.toggle%2==1:
@@ -2973,7 +2973,7 @@ class scale_bullet_midpath_ns1(scale_Bullet):
             self.tx+=self.speedx
             self.ty+=self.speedy
         self.truePos()
-        if self.tx<=60 or self.tx>=660:
+        if self.tx<=60 or self.tx>=620:
             self.speedx=-self.speedx
             self.loadColor('lightBlue')
         if self.ty<=30 and not self.ifHoming:

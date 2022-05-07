@@ -11,6 +11,7 @@ import global_var
 import Effect
 import gameRule
 import lightnessLevel
+import DuelClassLevel
 import menu
 
 #define background
@@ -33,8 +34,9 @@ screen = pygame.display.set_mode(size,RESIZABLE|DOUBLEBUF)
 #size = width, height =  pygame.display.list_modes()[0]
 if fullscreen:
     screen = pygame.display.set_mode(size,FULLSCREEN | HWSURFACE| DOUBLEBUF)
-stage=pygame.Surface((960,720)).convert_alpha()
-stage.set_clip(Rect(60,30,600,660))
+#stage=pygame.Surface((960,720)).convert_alpha()
+stage=pygame.Surface((660,690)).convert_alpha()
+stage.set_clip(Rect(60,30,560,660))
 global_var._init()
 
 #test functions 
@@ -103,6 +105,7 @@ global_var.set_value('ifGameOver',False)
 global_var.set_value('bgmPauseFlag',0)
 global_var.set_value('bgmContinuePos',[0,0])#[0]->for mid stage,[1]->for boss fight
 global_var.set_value('boomStatu',0)
+global_var.set_value('levelSign',0)
 log = open("./log.csv", 'w+')
 #main loop controller 
 running = True
@@ -147,7 +150,7 @@ backgrounds=pygame.sprite.Group()
 bosses=pygame.sprite.Group()
 titleDec=pygame.sprite.Group()#for decoration of title frame, updated in menu.Menu()
 gameRule.addStars(screen,stars)
-gF.doBackground(screen,backgrounds)
+#gF.doBackground(screen,backgrounds)
 
 
 #loadSoundEffects
@@ -331,7 +334,10 @@ while running:
         #create enemy
         #Enemy generator now disabled and substituted by stage controller
         if not global_var.get_value('pause'):
-            lightnessLevel.stageController(stage,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player)
+            if global_var.get_value('levelSign')==0:
+                lightnessLevel.stageController(stage,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player)
+            elif global_var.get_value('levelSign')==1:
+                DuelClassLevel.stageController(stage,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player)
 
         #draw objects
         if not global_var.get_value('ifBoss') and frame<=10600:
@@ -546,7 +552,7 @@ while running:
         #drawCover
         gF.pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,booms,playerGuns)
         gF.drawBackground(screen)
-        pygame.draw.rect(screen,(255,255,255),(58,28,603,663),2)
+        pygame.draw.rect(screen,(255,255,255),(58,28,563,663),2)
         missFrame=myfont.render('miss: '+str(player.deadFrame), True, (255, 255, 255))
         screen.blit(missFrame,(250,0))
         gF.displayMenu(screen,stars)

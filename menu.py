@@ -167,7 +167,7 @@ class Menu():
         self.levelImg=global_var.get_value('levelImg')
         self.font=pygame.font.SysFont('arial', 20)
         self.selectNum=[0,0,0,0]
-        self.stairMax=[7,0,1,1]
+        self.stairMax=[7,1,1,1]
         self.menuStair=0 #0:main menu, 1 stage selection, 2 player selection, 3 practice menu
         self.playerReset=False
         self.lightStrength=0.0
@@ -334,8 +334,9 @@ class Menu():
                     global_var.get_value('invalid_sound').play()
             elif self.menuStair==1:
                 if self.selectNum[0]==0 or self.selectNum[0]==2: 
-                    if self.selectNum[self.menuStair]==0:
+                    if self.selectNum[self.menuStair]==0 or self.selectNum[self.menuStair]==1:
                         global_var.get_value('ok_sound').play()
+                        global_var.set_value('levelSign',self.selectNum[self.menuStair])
                         self.menuStair+=1
             elif self.menuStair==2:
                 if self.selectNum[0]==0:
@@ -347,10 +348,6 @@ class Menu():
                     global_var.get_value('ok_sound').play()
                     global_var.set_value('ifTest',False)
                     pygame.mixer.music.stop()
-                    pygame.mixer.music.load('resource/bgm/lightnessOnTheWay.mp3')   # 载入背景音乐文件
-                    #pygame.mixer.music.load('resource/bgm/上海アリス幻樂団 - 死体旅行~ Be of good cheer!.mp3')
-                    pygame.mixer.music.set_volume(0.6)                  # 设定背景音乐音量
-                    pygame.mixer.music.play(loops=-1)
                     self.menuStair=0
                     global_var.set_value('menu',False)
                     self.playerReset=True
