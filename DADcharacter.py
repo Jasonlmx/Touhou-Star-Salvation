@@ -32,10 +32,11 @@ class enemy(pygame.sprite.Sprite):
         self.dy=0
         self.lastFrame=0
         self.deadImage=pygame.image.load('resource/sprite/sprite_dead.png')
+        self.fireFrame=0
     def checkValid(self,effects,items,bullets):
         if self.rect.bottom<=30 or self.rect.top>=700:
             self.kill()
-        if self.rect.right<=20 or self.rect.left>700:
+        if self.rect.right<=20 or self.rect.left>660:
             self.kill()
         if self.health<=0:
             self.doKill(effects,items,bullets)
@@ -263,7 +264,17 @@ class spirit(enemy):
         self.part=0
         self.lockNum=0
         self.lock=0
+        self.colorDict=(2,3,1,2,2,0,1,0)
+        self.nimbusAngle=0
     def draw(self,screen,frame):
+        sizeAdj=round(4*math.sin(self.lastFrame*3/180*math.pi))
+        nimbusImage=pygame.Surface((48,48))
+        nimbusImage=nimbusImage.convert_alpha()
+        nimbusImage.fill((0,0,0,0))
+        nimbusImage.blit(global_var.get_value('nimbus'),(0,0),(48*self.colorDict[self.colorNum],0,48,48))
+        nimbusImage=pygame.transform.smoothscale(nimbusImage,(48+sizeAdj,48+sizeAdj))
+        gF.drawRotation(nimbusImage,(self.rect.centerx-round((48+sizeAdj)/2),self.rect.centery-round((48+sizeAdj)/2)),self.nimbusAngle,screen)
+        self.nimbusAngle+=6
         image=pygame.Surface((48,48)).convert_alpha()
         #image.set_alpha(256)
         #image=image.convert_alpha()
@@ -303,6 +314,7 @@ class spirit(enemy):
             image=pygame.transform.flip(image,True,False)
         
         screen.blit(image,(self.rect.centerx-24,self.rect.centery-24))
+        
 
     def doKill(self,effects,items,bullets):
         global_var.get_value('enemyDead_sound').play()
@@ -385,11 +397,49 @@ class crow(enemy):
         else:
             screen.blit(self.spriteMap[1][self.part%4],(round(self.tx-24),round(self.ty-24)))
 
+class yinyangyu(enemy):
+    def __init__(self):
+        super(yinyangyu,self).__init__()
+        self.colorNum=0
+        self.colorList=((254,156,162),(161,255,184),(161,217,251),(235,154,250))
+        self.rotateAngle=random.random()*360
+        self.rotationPerFrame=8
+        self.spriteMap=global_var.get_value('yinyangyuSpriteMap')
+        self.outRange=48/2
+        self.drawOutRange=True
+    def draw(self,screen,frame):
+        self.colorNum=self.colorNum%4
+        self.rotateAngle+=self.rotationPerFrame
+        gF.drawRotation(self.spriteMap[self.colorNum][1],(round(self.tx-24),round(self.ty-24)),self.rotateAngle,screen)
+        screen.blit(self.spriteMap[self.colorNum][0],(round(self.tx-25),round(self.ty-25)))
+        if self.drawOutRange:
+            for i in range(0,5):
+                radius=5
+                dist=radius+self.outRange
+                angle=self.rotateAngle+i*(360/5)
+                nx=dist*math.cos(angle*math.pi/180)
+                ny=dist*math.sin(angle*math.pi/180)  
+                pos=(round(self.tx+nx),round(self.ty+ny))
+                pygame.draw.circle(screen,self.colorList[self.colorNum],pos,radius)
+
+class kedama(enemy):
+    def __init__(self):
+        super(kedama,self).__init__()
+        self.rotateAngle=random.random()*360
+        self.rotationPerFrame=-12
+        self.colorNum=0
+        self.spriteMap=global_var.get_value('kedamaSpriteMap')
+    
+    def draw(self,screen,frame):
+        self.colorNum=self.colorNum%4
+        self.rotateAngle+=self.rotationPerFrame
+        pos=(round(self.tx-24),round(self.ty-24))
+        gF.drawRotation(self.spriteMap[self.colorNum],pos,self.rotateAngle,screen)
 
 class spirit_test(spirit):
     def __init__(self):
         super(spirit_test,self).__init__()
-    
+        
     def fire(self,frame,bullets,effects):
         if frame%200==0:
             if not global_var.get_value('enemyFiring2'):

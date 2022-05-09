@@ -361,14 +361,14 @@ class bonusText(screenText):
             height=round(48*self.lastFrame/self.transFrame)
             #print(height)
             #screen.blit(pygame.transform.scale(self.image,(384,height)),(168,100))
-            screen.blit(pygame.transform.scale(self.image,(384,height)),(168,100+(24-round(0.5*height))))
+            screen.blit(pygame.transform.scale(self.image,(384,height)),(148,100+(24-round(0.5*height))))
         elif self.lastFrame>=self.maxLastFrame-self.transFrame:
             height=round(48*(self.maxLastFrame-self.lastFrame)/self.transFrame)
             #screen.blit(pygame.transform.scale(self.image,(384,height)),(168,100))
-            screen.blit(pygame.transform.scale(self.image,(384,height)),(168,100+(24-round(0.5*height))))
+            screen.blit(pygame.transform.scale(self.image,(384,height)),(148,100+(24-round(0.5*height))))
         else:
             #pass
-            screen.blit(self.image,(168,100))
+            screen.blit(self.image,(148,100))
         bonus=self.font.render(str(self.bonus), True, (255, 255, 255))
         bonus_shade=self.font.render(str(self.bonus), True, (30, 30, 30))
         w=bonus.get_width()
@@ -386,8 +386,8 @@ class bonusText(screenText):
             screen.blit(pygame.transform.smoothscale(bonus,(w,height)),(340-round(w/2),140+(round(h/2-0.5*height))))
         else:
             #pass
-            screen.blit(bonus_shade,((360-round(w/2)+2),140+3))
-            screen.blit(bonus,((360-round(w/2)),140))
+            screen.blit(bonus_shade,((340-round(w/2)+2),140+3))
+            screen.blit(bonus,((340-round(w/2)),140))
         #screen.blit(bonus,((360-round(w/2)),140))
     
 class failText(screenText):
@@ -410,7 +410,7 @@ class failText(screenText):
             screen.blit(pygame.transform.smoothscale(self.image,(240,height)),(220,100+(24-round(0.5*height))))
         else:
             #pass
-            screen.blit(self.image,(240,100))
+            screen.blit(self.image,(220,100))
         #screen.blit(self.image,(240,100))
 
 class powerMaxText(screenText):

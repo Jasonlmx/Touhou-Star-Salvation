@@ -1,4 +1,5 @@
 from email.mime import application
+from hashlib import new
 from sys import api_version
 import pygame
 import math
@@ -424,6 +425,26 @@ def loadImage():
     crowSpriteMap.append(idleMap)
     global_var.set_value('crowSpriteMap',crowSpriteMap)
 
+    enemyImage=pygame.image.load('resource/enemy/enemy.png').convert_alpha()
+    yinyangyuSpriteMap=[]
+    for i in range(0,4):
+        new_surf=pygame.Surface((32,32)).convert_alpha()
+        new_surf.blit(enemyImage,(0,0),(128+i*32,192,32,32))
+        new_surf=pygame.transform.smoothscale(new_surf,(48,48))
+        new_nimbus=pygame.Surface((32,32)).convert_alpha()
+        new_nimbus.blit(enemyImage,(0,0),(128+i*32,192+32,32,32))
+        new_nimbus=pygame.transform.smoothscale(new_nimbus,(48,48))
+        yinyangyuSpriteMap.append((new_surf,new_nimbus))
+    global_var.set_value('yinyangyuSpriteMap',yinyangyuSpriteMap)
+
+    kedamaSpriteMap=[]
+    for i in range(2):
+        for j in range(2):
+            new_surf=pygame.Surface((32,32)).convert_alpha()
+            new_surf.blit(enemyImage,(0,0),(64+i*32,128+j*32,32,32))
+            new_surf=pygame.transform.smoothscale(new_surf,(48,48))
+            kedamaSpriteMap.append(new_surf)
+    global_var.set_value('kedamaSpriteMap',kedamaSpriteMap)
 
 class star_effect(pygame.sprite.Sprite):
     def __init__(self):
