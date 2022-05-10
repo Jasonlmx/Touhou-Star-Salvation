@@ -154,7 +154,7 @@ gameRule.addStars(screen,stars)
 
 
 #loadSoundEffects
-enemy_sound_amplify=2
+enemy_sound_amplify=1
 miss_sound=pygame.mixer.Sound('resource/sound/se_pldead00.wav')
 miss_sound.set_volume(0.2)
 shoot_sound=pygame.mixer.Sound('resource/sound/se_plst00.wav')

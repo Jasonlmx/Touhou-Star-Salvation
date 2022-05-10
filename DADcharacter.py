@@ -182,9 +182,9 @@ class butterfly(enemy):
     def __init__(self):
         super(butterfly,self).__init__()
         self.health=1000
-        self.down=[]
         self.deadImage=pygame.image.load('resource/sprite/sprite_dead.png').convert_alpha()
-
+        
+        self.down=[]
         for i in range(1,6):
             down1=pygame.image.load('resource/enemy/butterfly_down_'+str(i)+'.png').convert_alpha()
             down1=pygame.transform.scale(down1,(98,98))
@@ -211,7 +211,7 @@ class butterfly(enemy):
         self.frame=0
     def draw(self,screen,frame):
         self.frame+=1
-        if frame%7==0:
+        if frame%10==0:
             self.action+=1
         self.countAngle()
         if (self.angle>100) and (self.angle<260):

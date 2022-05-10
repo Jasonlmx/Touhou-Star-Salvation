@@ -3020,4 +3020,32 @@ class orb_bullet_lgtnsp6_stay_accelerate(orb_Bullet):
             self.speedNow+=acc
             self.setSpeed(self.angle,self.speedNow)
         
+class rice_bullet_lgtnsp6_stay_accelerate(rice_Bullet):
+    def __init__(self):
+        super(rice_bullet_lgtnsp6_stay_accelerate,self).__init__()
+        self.initialSpeed=0
+        self.speedNow=0
+        self.endSpeed=0
+        self.accFrame=20
+        self.accStart=40
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.movement()
+        self.motionStrate()
+        if self.lastFrame<=self.createMax and self.ifDrawCreate:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
+        self.checkValid()
+    
+    def setAccSpeed(self,angle,initialSpeed,endSpeed,accFrame=20,accStart=40):
+        self.angle=angle
+        self.initialSpeed=initialSpeed
+        self.speedNow=initialSpeed
+        self.endSpeed=endSpeed
 
+    def motionStrate(self):
+        if self.lastFrame>=self.accStart and self.lastFrame<self.accStart+self.accFrame:
+            acc=(self.endSpeed-self.initialSpeed)/self.accFrame
+            self.speedNow+=acc
+            self.setSpeed(self.angle,self.speedNow)
