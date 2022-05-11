@@ -131,11 +131,11 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         new_boss.initial(340,200)
         bosses.add(new_boss)
         global_var.get_value('ch00_sound').play()
-    '''
-    if frame==3400:
+    
+    ''' if frame==3400:
         for boss in bosses:
-            boss.gotoPosition(200,100,40)
-    '''
+            boss.gotoPosition(200,100,40)'''
+    
     if frame==3600:
         for boss in bosses:
             boss.cardNum=1

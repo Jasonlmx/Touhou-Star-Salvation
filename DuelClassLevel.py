@@ -1,3 +1,4 @@
+from pickle import FALSE
 import pygame,sys
 import random
 import math
@@ -90,7 +91,45 @@ class part4_gravity_bullet(Bullet.rice_Bullet):
             self.makeNoise=False
             sendKiraSound()
 
+class part4_gravity_bullet2(Bullet.orb_Bullet):
+    def __init__(self):
+        super(part4_gravity_bullet2,self).__init__()
+        self.maxSpeed=4
+        self.gravePerSec=+0.04
+        self.makeNoise=True
+    
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.movement()
+        self.motionStrate()
+        #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
+        #screen.blit(self.surf,self.rect)
+        if self.lastFrame<=self.createMax and self.ifDrawCreate:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
+        self.checkValid()
 
+    def speedCalc(self):
+        speed=math.sqrt(self.speedx**2+self.speedy**2)
+        return speed
+    
+    def checkValid(self):
+        if self.rect.top>=720-30+self.validAccuracy[1]:
+            self.kill()
+        if self.rect.right<=0+60-self.validAccuracy[3]:
+            self.kill()
+        if self.rect.left>=620+self.validAccuracy[2]:
+            self.kill()
+
+    def motionStrate(self):
+        if self.speedCalc()<=self.maxSpeed or self.speedy<0:
+            self.speedy+=self.gravePerSec
+        elif self.makeNoise:
+            self.makeNoise=False
+            sendKiraSound()
+
+        
 
 #  enemy zone
 
@@ -340,23 +379,33 @@ class part3_enemy_spirite(DADcharacter.spirit):
                 new_bullet.doColorCode(self.BulletColorDict2[self.actionNum])
                 bullets.add(new_bullet)
         elif self.stayFrameMax>=self.stayFrame:
-            if self.fireFrame%100==0:
-                sendFireSound(2)
-                new_bullet=Bullet.scale_Bullet()
-                new_bullet.initial(self.tx,self.ty,0)
-                px=global_var.get_value('player1x')
-                py=global_var.get_value('player1y')
-                new_bullet.selfTarget(px,py,5)
-                new_bullet.countAngle()
-                angle=new_bullet.angle
-                #new_bullet.loadColor('green')
-                #bullets.add(new_bullet)
-                for i in (-1,0,1):
-                    for j in range(3):
-                        new_bullet=Bullet.scale_Bullet()
+            if self.stayFrame<=150:
+                if self.fireFrame%70==0:
+                    sendFireSound(2)
+                    new_bullet=Bullet.scale_Bullet()
+                    new_bullet.initial(self.tx,self.ty,0)
+                    px=global_var.get_value('player1x')
+                    py=global_var.get_value('player1y')
+                    new_bullet.selfTarget(px,py,5)
+                    new_bullet.countAngle()
+                    angle=new_bullet.angle
+                    #new_bullet.loadColor('green')
+                    #bullets.add(new_bullet)
+                    for i in (-1,0,1):
+                        for j in range(3):
+                            new_bullet=Bullet.scale_Bullet()
+                            new_bullet.initial(self.tx,self.ty,0)
+                            new_bullet.setSpeed(angle+i*45,4+0.8*j)
+                            new_bullet.loadColor(self.BulletColorDict[self.actionNum])
+                            bullets.add(new_bullet)
+            else:
+                if self.fireFrame%40==0:
+                    angle=random.random()*360
+                    for i in range(10):
+                        new_bullet=Bullet.small_Bullet()
                         new_bullet.initial(self.tx,self.ty,0)
-                        new_bullet.setSpeed(angle+i*45,4+0.8*j)
-                        new_bullet.loadColor(self.BulletColorDict[self.actionNum])
+                        new_bullet.setSpeed(angle+i*(360/10),3)
+                        new_bullet.loadColor('white')
                         bullets.add(new_bullet)
         else:
             if self.fireFrame%30==0:
@@ -406,7 +455,122 @@ class part4_enemy_kedama(DADcharacter.kedama):
     
     def dropItem(self,items):
         self.createItem(items,1,3)
+    
+    def doKill(self, effects, items, bullets):
+        global_var.get_value('enemyDead_sound').play()
+        new_effect=Effect.enemyDead()
+        new_effect.initial(self.deadImage,self.rect.centerx,self.rect.centery)
+        effects.add(new_effect)
+        angle=random.random()*50+245
+        for i in (-1.5,-0.5,0.5,1.5):
+            new_bullet=part4_gravity_bullet2()
+            new_bullet.initial(self.tx,self.ty,0)
+            new_bullet.setSpeed(angle+i*18,4)
+            new_bullet.loadColor('blue')
+            new_bullet.gravePerSec=0.08
+            bullets.add(new_bullet)
 
+        self.dropItem(items)
+        self.kill()
+
+#  boss zone
+
+class sanaeMidpath(DADcharacter.Boss):
+    def __init__(self):
+        super(sanaeMidpath,self).__init__()
+        self.image=global_var.get_value('sanaeSpriteMap')
+        self.reset=True
+        self.idlePart=0
+        self.idleFrame=0
+        #self.movingFrame=0#  comtaminated
+        self.motionFrame=0
+        self.movingPart=0
+        self.attackingFrame=0
+        self.attackingPart=0
+        self.decendingFrameMove=0
+        self.decendingFrameAttack=0
+        self.idleInterval=6
+        self.movingInterval=5
+        self.attackingInterval=6
+        self.attackAnimeSign=False
+        self.movingLeft=False
+        self.displayAdj=0
+        self.alreadyMoved=False
+    def draw(self,screen):
+        amplify=4
+        self.displayAdj=amplify*math.sin(self.lastFrame*4/180*math.pi)
+        dpy=self.ty+self.displayAdj
+        #print(self.speedx)
+        if abs(self.speedx)>=0.1:
+            self.alreadyMoved=True
+            self.motionFrame+=1
+            self.attackingFrame=0
+            self.attackingPart=0
+            self.decendingFrameMove=0
+            self.decendingFrameAttack=0
+            if self.motionFrame>=self.movingInterval:
+                self.movingPart+=1
+                self.motionFrame=0
+            if self.movingPart>3:
+                self.movingPart=3
+            if self.speedx<0:
+                temp=pygame.transform.flip(self.image[1][self.movingPart],True,False)
+                self.movingLeft=True
+            else:
+                temp=self.image[1][self.movingPart]
+                self.movingLeft=False
+            pos=(round(self.tx-48),round(dpy-48))
+            screen.blit(temp,pos)
+        elif self.attackAnimeSign and not self.alreadyMoved:
+            self.attackingFrame+=1
+            self.decendingFrameMove=0
+            self.decendingFrameAttack=0
+            if self.attackingFrame>=self.attackingInterval:
+                self.attackingPart+=1
+                self.attackingFrame=0
+            if self.attackingPart>2:
+                self.attackingPart=2
+            pos=(round(self.tx-48),round(dpy-72))
+            screen.blit(self.image[2][self.attackingPart],pos)
+        else:
+            #print(self.movingPart)
+            if self.movingPart>0:
+                self.decendingFrameMove+=1
+                if self.decendingFrameMove>=self.movingInterval:
+                    self.movingPart-=1
+                    self.decendingFrameMove=0
+                if self.movingPart==0:
+                    self.alreadyMoved=False
+                if self.movingLeft:
+                    temp=pygame.transform.flip(self.image[1][self.movingPart],True,False)
+                else:
+                    temp=self.image[1][self.movingPart]
+
+                pos=(round(self.tx-48),round(dpy-48))
+                screen.blit(temp,pos)
+            elif self.attackingPart>0:
+                self.decendingFrameAttack+=1
+                if self.decendingFrameAttack>=self.attackingInterval:
+                    self.attackingPart-=1
+                    self.decendingFrameAttack=0
+                pos=(round(self.tx-48),round(dpy-72))
+                screen.blit(self.image[2][self.attackingPart],pos)
+            else:
+                #print('is idle')
+                self.idleFrame+=1
+                if self.idleFrame>=self.idleInterval:
+                    self.idlePart+=1
+                    self.idleFrame=0
+                if self.idlePart>3:
+                    self.idlePart=0
+                pos=(round(self.tx-48),round(dpy-48))
+                #print(pos)
+                screen.blit(self.image[0][self.idlePart],pos)
+                #pygame.draw.circle(screen, (255,255,255), pos,50,50)
+
+
+                
+            
 def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player):
     if frame==1:# load in section, initialize background, and music
         pygame.mixer.music.stop()
@@ -512,11 +676,50 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
             new_enemy.colorNum=4
             enemys.add(new_enemy)
     
-    if frame>=2800 and frame<=3400:
+    if frame>=2700 and frame<=3300:
         if (frame-2800)%25==0:
-            for i in range(3):
+            for i in range(2):
                 new_enemy=part4_enemy_kedama()
-                new_enemy.initialize(50,100+70*i,0,-1)
+                new_enemy.initialize(50,100+140*i,0,-1)
                 new_enemy.actionNum=0
                 new_enemy.colorNum=0
                 enemys.add(new_enemy)
+            
+            new_enemy=part4_enemy_kedama()
+            new_enemy.initialize(630,170,0,-1)
+            new_enemy.actionNum=1
+            new_enemy.colorNum=0
+            enemys.add(new_enemy)
+
+    if frame==3600:
+        new_boss=sanaeMidpath()
+        #new_boss=DADcharacter.Boss()
+        new_boss.initial(340,200)
+        bosses.add(new_boss)
+
+    if frame==3900:
+        for boss in bosses:
+            boss.attackAnimeSign=True
+
+    if frame==4200:
+        for boss in bosses:
+            boss.attackAnimeSign=False
+    
+    if frame==4400:
+        for boss in bosses:
+            boss.attackAnimeSign=True
+    
+    if frame==4500:
+        for boss in bosses:
+            boss.gotoPosition(450,560,70)
+    
+    if frame==4600:
+        for boss in bosses:
+            boss.gotoPosition(100,200,60)
+    
+    if frame==4700:
+        for boss in bosses:
+            boss.attackAnimeSign=False
+    if frame==4800:
+        for boss in bosses:
+            boss.gotoPosition(490,200,90)

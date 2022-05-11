@@ -446,6 +446,32 @@ def loadImage():
             kedamaSpriteMap.append(new_surf)
     global_var.set_value('kedamaSpriteMap',kedamaSpriteMap)
 
+    sanaeImage=pygame.image.load('resource/boss/sanae.png').convert_alpha()
+    sanaeSpriteMap=[]
+    sanaeIdle=[]
+    sanaeMove=[]
+    sanaeAttack=[]
+    for i in range(2):
+        for j in range(4):
+            new_surf=pygame.Surface((64,64)).convert_alpha()
+            new_surf.blit(sanaeImage,(0,0),(j*64,64*i,64,64))
+            new_surf=pygame.transform.smoothscale(new_surf,(96,96))
+            if i==0:
+                sanaeIdle.append(new_surf)
+            elif i==1:
+                sanaeMove.append(new_surf)
+    for i in range(4):
+        new_surf=pygame.Surface((64,80)).convert_alpha()
+        new_surf.blit(sanaeImage,(0,0),(64*i,128,64,80))
+        new_surf=pygame.transform.smoothscale(new_surf,(96,120))
+        sanaeAttack.append(new_surf)
+    
+    sanaeSpriteMap.append(sanaeIdle)
+    sanaeSpriteMap.append(sanaeMove)
+    sanaeSpriteMap.append(sanaeAttack)
+    print(sanaeSpriteMap)
+    global_var.set_value('sanaeSpriteMap',sanaeSpriteMap)
+
 class star_effect(pygame.sprite.Sprite):
     def __init__(self):
         super(star_effect,self).__init__()
