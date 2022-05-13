@@ -170,7 +170,7 @@ class part1_enemy(DADcharacter.spirit):
                 if self.fireFrame%40==0:
                     sendFireSound(3)
                     for i in range(0,5):
-                        new_bullet=Bullet.mid_Bullet()
+                        new_bullet=Bullet.rice_Bullet()
                         new_bullet.initial(self.tx,self.ty,0)
                         new_bullet.loadColor('green')
                         new_bullet.setSpeed(50+20*i,4)
@@ -190,7 +190,7 @@ class part1_enemy(DADcharacter.spirit):
                     self.randomAngle=random.random()*360
                     sendFireSound(3)
                     for i in range(16):
-                        new_bullet=Bullet.mid_Bullet()
+                        new_bullet=Bullet.kunai_Bullet()
                         new_bullet.initial(self.tx,self.ty,0)
                         new_bullet.loadColor('green')
                         px=global_var.get_value('player1x')
@@ -478,7 +478,10 @@ class part4_enemy_kedama(DADcharacter.kedama):
 class sanaeMidpath(DADcharacter.Boss):
     def __init__(self):
         super(sanaeMidpath,self).__init__()
+
+        #effect zone
         self.image=global_var.get_value('sanaeSpriteMap')
+        self.lightEffect=global_var.get_value('orinLightEffect')
         self.reset=True
         self.idlePart=0
         self.idleFrame=0
@@ -492,16 +495,25 @@ class sanaeMidpath(DADcharacter.Boss):
         self.idleInterval=6
         self.movingInterval=5
         self.attackingInterval=6
-        self.attackAnimeSign=False
+        self.attackAnimeSign=False # adjustable 
+        self.lightEffectRotationAngle=0
+        self.lightEffectRotationPerFrame=3
         self.movingLeft=False
         self.displayAdj=0
         self.alreadyMoved=False
+        self.attackLightEffectSign=False # adjustable, only considerable when attackAnimeSign is True
+        self.existDrawFrame=0
+        #spell zone
+        self.maxSpell=4
+        self.bulletAdj=(-18,-65)
+        self.randomAngle=0
     def draw(self,screen):
+        self.existDrawFrame+=1
         amplify=4
-        self.displayAdj=amplify*math.sin(self.lastFrame*4/180*math.pi)
+        self.displayAdj=amplify*math.sin(self.existDrawFrame*4/180*math.pi)
         dpy=self.ty+self.displayAdj
         #print(self.speedx)
-        if abs(self.speedx)>=0.1:
+        if abs(self.speedx)>=0.1 or abs(self.speedy)>=0.1:
             self.alreadyMoved=True
             self.motionFrame+=1
             self.attackingFrame=0
@@ -532,6 +544,16 @@ class sanaeMidpath(DADcharacter.Boss):
                 self.attackingPart=2
             pos=(round(self.tx-48),round(dpy-72))
             screen.blit(self.image[2][self.attackingPart],pos)
+
+            if self.attackLightEffectSign and self.attackingPart==2:
+                self.lightEffectRotationAngle+=self.lightEffectRotationPerFrame
+                if self.lightEffectRotationAngle>=360:
+                    self.lightEffectRotationAngle=self.lightEffectRotationAngle%360
+                antiAngle=360-self.lightEffectRotationAngle
+                pygame.draw.circle(screen,(120,120,200),(round(self.tx-18),round(self.ty-65)),22,4)
+                gF.drawRotation(self.lightEffect,(round(self.tx-18-32),round(self.ty-65-32)),self.lightEffectRotationAngle,screen)
+                gF.drawRotation(self.lightEffect,(round(self.tx-18-32),round(self.ty-65-32)),antiAngle,screen)
+                
         else:
             #print(self.movingPart)
             if self.movingPart>0:
@@ -566,11 +588,95 @@ class sanaeMidpath(DADcharacter.Boss):
                 pos=(round(self.tx-48),round(dpy-48))
                 #print(pos)
                 screen.blit(self.image[0][self.idlePart],pos)
-                #pygame.draw.circle(screen, (255,255,255), pos,50,50)
-
-
-                
             
+    def attack(self, frame, items, effects, bullets, backgrounds, enemys, slaves, player):
+        if self.cardNum==0: 
+            self.noneSpell_0(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+        if self.cardNum==1:
+            if not self.ifSpell:
+                self.noneSpell_1(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+            else:
+                self.spell_1(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+        if self.cardNum==2:
+            if not self.ifSpell:
+                self.noneSpell_2(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+            else:
+                self.spell_2(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+        if self.cardNum==3:
+            if not self.ifSpell:
+                self.noneSpell_3(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+            else:
+                self.spell_3(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+    
+    def noneSpell_0(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
+        self.maxHealth=20000
+        self.health=20000
+        self.reset=True
+        self.frameLimit=1200
+    
+    def spell_1(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
+        if self.reset:
+            self.lastFrame=0
+            self.reset=False
+            self.maxHealth=10000
+            self.health=self.maxHealth
+            self.gotoPosition(340,210,30)
+            self.randomAngle=random.random()*360
+            self.frameLimit=1200
+            self.startFrame=60
+            self.randomAngle=random.random()*360
+            self.attackAnimeSign=True
+            self.attackLightEffectSign=True
+
+            # spell zone
+            self.cardBonus=10000000
+            self.spellName='Wind Sign[Hogsmade Hurricane]'
+            self.chSpellName='御风「霍格莫德飓风」'
+            global_var.get_value('spell_sound').play()
+            player.spellBonus=True
+            # send spell effect
+            new_effect=Effect.bossFaceSpell()
+            effects.add(new_effect)
+            self.doSpellCardAttack(effects)
+
+        self.cardBonus-=self.framePunishment
+
+        inSpellFrame=self.lastFrame-self.startFrame
+        if self.lastFrame>=self.startFrame:
+            if inSpellFrame%60<=20:
+                if inSpellFrame%4==0:
+                    sendFireSound(3)
+                    for i in range(0,5):
+                        new_bullet=Bullet.orb_Bullet()
+                        new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
+                        new_bullet.doColorCode(4)
+                        new_bullet.setSpeed(self.randomAngle+i*(360/5),5)
+                        bullets.add(new_bullet)
+                if inSpellFrame%60==20:
+                    self.randomAngle=random.random()*360
+
+        if self.health<=0 or self.frameLimit<=0:
+            self.cancalAllBullet(bullets,items,effects,True)
+            self.reset=True
+            self.ifSpell=True
+            self.cardNum+=1
+            self.health=20000
+            if self.frameLimit>0:
+                self.createItem(items,0,5)
+                self.createItem(items,1,20)
+                ifBonus=player.spellBonus
+            else:
+                ifBonus=False
+            self.drawResult(effects,self.cardBonus,ifBonus)
+            if ifBonus:
+                player.score+=self.cardBonus
+                global_var.get_value('bonus_sound').play()
+            global_var.get_value('spell_end').play()
+            self.attackLightEffectSign=False
+            self.attackAnimeSign=False
+    
+    def spell_2(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
+        pass
 def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player):
     if frame==1:# load in section, initialize background, and music
         pygame.mixer.music.stop()
@@ -691,35 +797,17 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
             new_enemy.colorNum=0
             enemys.add(new_enemy)
 
-    if frame==3600:
+    if frame==3500:
         new_boss=sanaeMidpath()
         #new_boss=DADcharacter.Boss()
-        new_boss.initial(340,200)
+        new_boss.initial(340,-200)
         bosses.add(new_boss)
-
-    if frame==3900:
-        for boss in bosses:
-            boss.attackAnimeSign=True
-
-    if frame==4200:
-        for boss in bosses:
-            boss.attackAnimeSign=False
     
-    if frame==4400:
+    if frame==3590:
         for boss in bosses:
-            boss.attackAnimeSign=True
+            boss.gotoPosition(340,200,90)
     
-    if frame==4500:
+    if frame==3700:
         for boss in bosses:
-            boss.gotoPosition(450,560,70)
-    
-    if frame==4600:
-        for boss in bosses:
-            boss.gotoPosition(100,200,60)
-    
-    if frame==4700:
-        for boss in bosses:
-            boss.attackAnimeSign=False
-    if frame==4800:
-        for boss in bosses:
-            boss.gotoPosition(490,200,90)
+            boss.cardNum=1
+            boss.ifSpell=True

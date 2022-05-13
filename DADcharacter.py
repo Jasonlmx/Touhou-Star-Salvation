@@ -31,7 +31,7 @@ class enemy(pygame.sprite.Sprite):
         self.dx=0
         self.dy=0
         self.lastFrame=0
-        self.deadImage=pygame.image.load('resource/sprite/sprite_dead.png')
+        self.deadImage=pygame.image.load('resource/sprite/sprite_dead.png').convert_alpha()
         self.fireFrame=0
     def checkValid(self,effects,items,bullets):
         if self.rect.bottom<=30 or self.rect.top>=700:
@@ -2083,7 +2083,7 @@ class Boss(pygame.sprite.Sprite):
         self.deadImage=pygame.image.load('resource/sprite/sprite_dead.png').convert_alpha()
         self.percentHealth=0
         self.if_chSpellName=False
-    
+        self.boomImmune=False
     def doSpellCardAttack(self,effects):
         new_effect=Effect.spellAttackImage()
         new_effect.initial(360,380)

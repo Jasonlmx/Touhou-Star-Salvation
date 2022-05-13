@@ -1574,7 +1574,7 @@ class rice_Bullet(Bullet):
         super(rice_Bullet,self).__init__()
         self.surf = pygame.Surface((8,8))
         self.rect = self.surf.get_rect()
-        self.surf.fill((255,255,255))
+        self.surf.fill((255,0,0))
         self.type=11
         self.dx=12
         self.dy=12
@@ -1639,7 +1639,8 @@ class rice_Bullet(Bullet):
         #pos=gF.returnPosition(w,h,(self.rect.centerx-15,self.rect.centery-15),angle)
         size=w,h=self.tempImage.get_size()
         #print(size)
-        screen.blit(self.tempImage,(self.rect.centerx-round(w/2),self.rect.centery-round(h/2)))
+        screen.blit(self.tempImage,(round(self.rect.centerx-w/2),round(self.rect.centery-h/2)))
+        #screen.blit(self.surf,self.rect)
         #screen.blit(self.tempImage,pos)
         #gF.drawRotation(self.image,(self.rect.centerx-10,self.rect.centery-10),270-self.angle,screen)
 
@@ -1684,6 +1685,48 @@ class bact_Bullet(rice_Bullet):
         else:
             self.tempImage=self.image
 
+class sharp_Bullet(rice_Bullet):
+    def __init__(self):
+        super(sharp_Bullet,self).__init__()
+        self.surf = pygame.Surface((8,8))
+        self.imageList=global_var.get_value('sharpBulletImageList')
+        self.rect = self.surf.get_rect()
+        self.surf.fill((255,255,255))
+        self.type=13
+    
+    def doColorCode(self,code):
+        self.colorNum=code
+        self.image=self.imageList[self.colorNum]
+        if self.ifDrawCreate:
+            self.getCreateImage(code)
+            self.tempImage=self.createImage
+        else:
+            self.tempImage=self.image
+
+class kunai_Bullet(sharp_Bullet):
+    def __init__(self):
+        super(sharp_Bullet,self).__init__()
+        self.surf = pygame.Surface((8,8))
+        self.imageList=global_var.get_value('kunaiBulletImageList')
+        self.rect = self.surf.get_rect()
+        self.surf.fill((255,0,0))
+        self.type=13
+    
+    def drawBullet(self,screen):
+        self.countAngle()
+        angle=270-self.angle
+        if round(angle)!=round(self.lastAngle) or self.lastFrame==1 or self.lastNum!=self.colorNum:
+            self.tempImage=pygame.transform.rotate(self.image, angle)
+        self.lastNum=self.colorNum
+        self.lastAngle=angle
+        size=w,h=self.tempImage.get_size()
+        k=4.5
+        dx=k*math.sin(angle*math.pi/180)
+        dy=k*math.cos(angle*math.pi/180)
+        pos=(round(self.tx+dx-w/2),round(self.ty+dy-h/2))
+        screen.blit(self.tempImage,pos)
+        #screen.blit(self.surf,self.rect)
+        
 
 class laser_line(Bullet):
     def __init__(self):

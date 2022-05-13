@@ -231,7 +231,7 @@ def loadImage():
     butterfly_bullet_image=pygame.transform.smoothscale(butterfly_bullet_image,(384,48))
     global_var.set_value('butterfly_bullet_image',butterfly_bullet_image)
     rice_bullet_image=pygame.image.load('resource/bullet/rice_bullet.png')
-    rice_bullet_image=pygame.transform.scale(rice_bullet_image,(384,24))
+    rice_bullet_image=pygame.transform.smoothscale(rice_bullet_image,(384,24))
     global_var.set_value('rice_bullet_image',rice_bullet_image)
     satsu_bullet_image=pygame.image.load('resource/bullet/satsu_bullet.png')
     satsu_bullet_image=pygame.transform.smoothscale(satsu_bullet_image,(384,24))
@@ -384,6 +384,22 @@ def loadImage():
         small_bullet_img.append(new_image)
     global_var.set_value('small_bullet_img',small_bullet_img)
 
+    sharpBulletImageList=[]
+    for i in range(0,16):
+        new_surf=pygame.Surface((16,16)).convert_alpha()
+        new_surf.blit(etama,(0,0),(i*16,96,16,16))
+        new_surf=pygame.transform.smoothscale(new_surf,(24,24))
+        sharpBulletImageList.append(new_surf)
+    global_var.set_value('sharpBulletImageList',sharpBulletImageList)
+
+    kunaiBulletImageList=[]
+    for i in range(0,16):
+        new_surf=pygame.Surface((16,16)).convert_alpha()
+        new_surf.blit(etama,(0,0),(i*16,80,16,16))
+        new_surf=pygame.transform.smoothscale(new_surf,(24,24))
+        kunaiBulletImageList.append(new_surf)
+    global_var.set_value('kunaiBulletImageList',kunaiBulletImageList)
+
     titleStar=pygame.image.load('resource/title/titleStar.png')
     titleStar=pygame.transform.smoothscale(titleStar,(round(42*amplified_times),round(42*amplified_times))).convert_alpha()
     global_var.set_value('titleStar',titleStar)
@@ -471,6 +487,13 @@ def loadImage():
     sanaeSpriteMap.append(sanaeAttack)
     print(sanaeSpriteMap)
     global_var.set_value('sanaeSpriteMap',sanaeSpriteMap)
+
+    orinSpriteMap=[]
+    orinImage=pygame.image.load('resource/boss/stg5enm.png')
+    lightEffect=pygame.Surface((64,64)).convert_alpha()
+    lightEffect.blit(orinImage,(0,0),(192,128,64,64))
+    lightEffect.set_alpha(150)
+    global_var.set_value('orinLightEffect',lightEffect)
 
 class star_effect(pygame.sprite.Sprite):
     def __init__(self):
