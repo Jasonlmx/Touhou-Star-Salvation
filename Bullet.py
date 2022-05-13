@@ -1639,7 +1639,7 @@ class rice_Bullet(Bullet):
         #pos=gF.returnPosition(w,h,(self.rect.centerx-15,self.rect.centery-15),angle)
         size=w,h=self.tempImage.get_size()
         #print(size)
-        screen.blit(self.tempImage,(round(self.rect.centerx-w/2),round(self.rect.centery-h/2)))
+        screen.blit(self.tempImage,(round(self.tx-w/2),round(self.ty-h/2)))
         #screen.blit(self.surf,self.rect)
         #screen.blit(self.tempImage,pos)
         #gF.drawRotation(self.image,(self.rect.centerx-10,self.rect.centery-10),270-self.angle,screen)
