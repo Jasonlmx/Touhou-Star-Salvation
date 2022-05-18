@@ -45,7 +45,7 @@ class part2_acc_bullet(Bullet.orb_bullet_lgtnsp6_stay_accelerate):
 class part3_acc_bullet(Bullet.rice_bullet_lgtnsp6_stay_accelerate):
     def __init__(self):
         super(part3_acc_bullet,self).__init__()
-    
+
     def motionStrate(self):
         if self.lastFrame==self.accStart:
             sendKiraSound()
@@ -281,7 +281,7 @@ class midpath_spell3_small_snow_bullet(Bullet.small_Bullet):
             angle=random.random()*360
             new_bullet=midpath_spell3_small_snow_bullet_acc()
             new_bullet.initial(self.tx,self.ty,0)
-            new_bullet.setAccSpeed(angle,0.001,self.initialSpeed-3,150,120)
+            new_bullet.setAccSpeed(angle,0.001,self.initialSpeed-1.2,60,90)
             new_bullet.setSpeed(angle,0.001)
             new_bullet.loadColor('lightBlue')
             bullets.add(new_bullet)
@@ -293,7 +293,43 @@ class midpath_spell3_small_snow_bullet(Bullet.small_Bullet):
 class midpath_spell3_small_snow_bullet_acc(Bullet.small_bullet_lgtnsp6_stay_accelerate):
     def __init__(self):
         super(midpath_spell3_small_snow_bullet_acc,self).__init__()
+
+class midpath_spell3_mid_snow_bullet(Bullet.mid_Bullet):
+    def __init__(self):
+        super(midpath_spell3_mid_snow_bullet,self).__init__()
+        self.ifChanged=False
+        self.signalReciever=False
+
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.movement()
+        self.signalRecieve() 
+        self.motionStrate(bullets)
+        if self.lastFrame<=self.createMax and self.ifDrawCreate:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
+        #screen.blit(self.surf,self.rect)
+        self.checkValid()
+    
+    def motionStrate(self,bullets):
+        if self.signalReciever and not self.ifChanged:
+            radius=12
+            initialAngle=random.random()*360
+            for i in range(6):
+                new_bullet=part3_acc_bullet()
+                nx=self.tx+radius*math.cos((initialAngle+i*(360/6))*math.pi/180)
+                ny=self.ty+radius*math.sin((initialAngle+i*(360/6))*math.pi/180)
+                new_bullet.initial(nx,ny,0)
+                new_bullet.setAccSpeed(initialAngle+i*(360/6),0.001,2.5,60,90)
+                new_bullet.doColorCode(8)
+                new_bullet.setSpeed(initialAngle+i*(360/6),0.001)
+                bullets.add(new_bullet)
+            self.kill()
+    def signalRecieve(self):
+        self.signalReciever=global_var.get_value('midPathSpell3Signal')
 #  enemy zone
+
 
 class testEnemy(DADcharacter.enemy):
     def __init__(self):
@@ -472,7 +508,7 @@ class part3_enemy_main(DADcharacter.butterfly):
                             new_bullet=part3_acc_bullet()
                             new_bullet.initial(self.tx,self.ty,0)
                             new_bullet.setSpeed(self.fireAngle+i*(360/5),1+j*0.3)
-                            new_bullet.setAccSpeed(self.fireAngle+i*(360/5),1+j*0.3,self.bulletSpeed+j*(0.3+self.speedMultipler),30,30-3*self.firetime)
+                            new_bullet.setAccSpeed(self.fireAngle+i*(360/5),1+j*0.3,self.bulletSpeed+j*(0.3+self.speedMultipler),20,40)
                             #new_bullet.setSpeed(self.fireAngle+i*(360/6),self.bulletSpeed+j*(0.3+self.speedMultipler))
                             new_bullet.doColorCode(self.colorList[self.actionNum])
                             bullets.add(new_bullet)
@@ -990,14 +1026,15 @@ class sanaeMidpath(DADcharacter.Boss):
             self.startFrame=120
             self.attackAnimeSign=False
             self.attackLightEffectSign=False
-
+            
             # spell zone
             self.cardBonus=10000000
             self.spellName='Blizzard[Icy Snow]'
             self.chSpellName=u'暴雪「凝冰之雪」'
             global_var.get_value('spell_sound').play()
             player.spellBonus=True
-    
+            self.snow_interval=2
+
             # send spell effect
             new_effect=Effect.sanaeFaceSpell()
             effects.add(new_effect)
@@ -1007,17 +1044,18 @@ class sanaeMidpath(DADcharacter.Boss):
         inSpellFrame=self.lastFrame-self.startFrame
 
 
-        snow_interval=2
-        hailAndSnow_ratio=10
+        
+        hailAndSnow_ratio=7
         freeze_interval=360
         if self.lastFrame>=self.startFrame:
-            if inSpellFrame%snow_interval==0:
+            sendKiraSound()
+            if inSpellFrame%self.snow_interval==0:
                 hailSign=random.randint(0,hailAndSnow_ratio)
                 pos=(random.random()*560+60,25)
-                angle=random.random()*4+88
-                speed=4+random.random()
+                angle=random.random()*8+86
+                speed=3.5+random.random()
                 if hailSign==0:
-                    new_bullet=Bullet.mid_Bullet()
+                    new_bullet=midpath_spell3_mid_snow_bullet()
                     new_bullet.initial(pos[0],pos[1],0)
                     new_bullet.setSpeed(angle,speed-1)
                     new_bullet.loadColor('skyBlue')
@@ -1031,14 +1069,30 @@ class sanaeMidpath(DADcharacter.Boss):
                     bullets.add(new_bullet)
             if inSpellFrame%freeze_interval==0 and inSpellFrame!=0:
                 global_var.set_value('midPathSpell3Signal',True)
-                self.attackAnimeSign=True
-                global_var.get_value('kira1_sound').stop()
-                global_var.get_value('kira1_sound').play()
+                global_var.get_value('spell_end').stop()
+                global_var.get_value('spell_end').play()
+                new_effect=Effect.wave()
+                new_effect.initial((self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1]),900,20,(255,255,255),8)
+                effects.add(new_effect)
+
             if inSpellFrame%freeze_interval==1:
                 global_var.set_value('midPathSpell3Signal',False)
+            
+            if inSpellFrame%freeze_interval==freeze_interval-100:
+                global_var.get_value('ch00_sound').stop()
+                global_var.get_value('ch00_sound').play()
+                self.attackAnimeSign=True
+                self.attackLightEffectSign=True
+                
+        
             if inSpellFrame%freeze_interval==50:
                 self.attackAnimeSign=False
+                self.attackLightEffectSign=False
 
+            if inSpellFrame%freeze_interval<=100 and inSpellFrame>100:
+                self.snow_interval=5
+            else:
+                self.snow_interval=2
 
         if self.health<=0 or self.frameLimit<=0:
             self.cancalAllBullet(bullets,items,effects,True)

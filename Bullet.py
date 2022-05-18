@@ -3079,7 +3079,8 @@ class orb_bullet_lgtnsp6_stay_accelerate(orb_Bullet):
         self.initialSpeed=initialSpeed
         self.speedNow=initialSpeed
         self.endSpeed=endSpeed
-
+        self.accFrame=accFrame
+        self.accStart=accStart
     def motionStrate(self):
         if self.lastFrame>=self.accStart and self.lastFrame<self.accStart+self.accFrame:
             acc=(self.endSpeed-self.initialSpeed)/self.accFrame
@@ -3109,6 +3110,8 @@ class rice_bullet_lgtnsp6_stay_accelerate(rice_Bullet):
         self.initialSpeed=initialSpeed
         self.speedNow=initialSpeed
         self.endSpeed=endSpeed
+        self.accFrame=accFrame
+        self.accStart=accStart
 
     def motionStrate(self):
         if self.lastFrame>=self.accStart and self.lastFrame<self.accStart+self.accFrame:
@@ -3139,7 +3142,8 @@ class small_bullet_lgtnsp6_stay_accelerate(small_Bullet):
         self.initialSpeed=initialSpeed
         self.speedNow=initialSpeed
         self.endSpeed=endSpeed
-
+        self.accFrame=accFrame
+        self.accStart=accStart
     def motionStrate(self):
         if self.lastFrame>=self.accStart and self.lastFrame<self.accStart+self.accFrame:
             acc=(self.endSpeed-self.initialSpeed)/self.accFrame
