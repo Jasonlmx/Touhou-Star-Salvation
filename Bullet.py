@@ -1,3 +1,4 @@
+from imp import new_module
 from typing import ForwardRef
 import pygame,sys
 import random
@@ -1335,7 +1336,7 @@ class laser_Bullet_sub(Bullet):
         super(laser_Bullet_sub,self).__init__()
         self.ratio=ratio
         self.surf = pygame.Surface((self.ratio,self.ratio))
-        self.surf.fill((255,255,255))
+        self.surf.fill((255,0,0))
         self.rect = self.surf.get_rect()
         #self.image=pygame.image.load('resource/bullet/small_bullet_grey.png').convert_alpha()
         self.dx=6
@@ -1350,6 +1351,10 @@ class laser_Bullet_sub(Bullet):
         self.widthAdj=0
         self.angle=0
         self.ifSimpified=False
+        self.ifExtraJudgePoint=False
+        self.ifSetPoint=False
+        self.ifSetDrawPoint=False
+        self.pointList=[]
         self.colorList=[(151,151,151),(255,24,24),(255,127,127),(251,66,255),(253,109,242),(62,69,255),(105,137,255),(108,255,255),(63,249,255),(57,255,182),(114,255,192),(201,255,128),(255,255,128),(255,255,122),(255,255,122),(233,233,233)]
     def doColorCode(self,code):
         self.colorNum=code
@@ -1363,8 +1368,26 @@ class laser_Bullet_sub(Bullet):
     def update(self,screen,bullets,effects):
         self.frame+=1
         self.movement()
-        
-        
+        if self.ifExtraJudgePoint:
+            self.checkDistance()
+            if self.distance<=15:
+                r=self.speed/3
+                agList=[self.angle,self.angle-180]
+                if not self.ifSetPoint:
+                    for i in range(2):
+                        nx=self.tx+r*math.cos(agList[i]/180*math.pi)
+                        ny=self.ty+r*math.sin(agList[i]/180*math.pi)
+                        self.pointList.append((nx,ny))
+                    self.ifSetPoint=True
+                for i in self.pointList:
+                    nx=i[0]
+                    ny=i[1]
+                    new_bullet=laser_line_sub(radius=self.ratio)
+                    new_bullet.initial(nx,ny,0)
+                    new_bullet.update(screen,bullets,effects)
+                    bullets.add(new_bullet)
+                        
+
         self.checkValid()
 
         if self.frame>=self.length:
@@ -1386,18 +1409,20 @@ class laser_Bullet_sub(Bullet):
     def draw(self,screen):
         width=self.widthAdj+2
         length=self.speed+2
-        stx=self.tx+0.5*length*math.cos(self.angle/180*math.pi)
-        sty=self.ty+0.5*length*math.sin(self.angle/180*math.pi)
-        edx=self.tx+0.5*length*math.cos((self.angle-180)/180*math.pi)
-        edy=self.ty+0.5*length*math.sin((self.angle-180)/180*math.pi)
+        if not self.ifSetDrawPoint:
+            self.stx=self.tx+0.5*length*math.cos(self.angle/180*math.pi)
+            self.sty=self.ty+0.5*length*math.sin(self.angle/180*math.pi)
+            self.edx=self.tx+0.5*length*math.cos((self.angle-180)/180*math.pi)
+            self.edy=self.ty+0.5*length*math.sin((self.angle-180)/180*math.pi)
+            self.ifSetDrawPoint=True
         whiteWidth=round(width/2.5)
         color=self.colorList[self.colorNum]
         whiteNess=round(color[0]+color[1]+color[2])/3+50
         if whiteNess>255:
             whiteNess=255
-        pygame.draw.line(screen,self.colorList[self.colorNum],(round(stx),round(sty)),(round(edx),round(edy)),width)
+        pygame.draw.line(screen,self.colorList[self.colorNum],(round(self.stx),round(self.sty)),(round(self.edx),round(self.edy)),width)
         if whiteWidth>=1:
-            pygame.draw.line(screen,(whiteNess,whiteNess,whiteNess),(round(stx),round(sty)),(round(edx),round(edy)),whiteWidth)
+            pygame.draw.line(screen,(whiteNess,whiteNess,whiteNess),(round(self.stx),round(self.sty)),(round(self.edx),round(self.edy)),whiteWidth)
         #gF.drawRotation(self.tempImage,(self.rect.centerx-round((self.widthAdj+2)/2),self.rect.centery-round((self.speed+2)/2)),270-self.angle,screen)
         #screen.blit(self.tempImage,(self.rect.centerx-round((self.widthAdj+2)/2),self.rect.centery-round((self.speed+4)/2)))
 
@@ -1618,8 +1643,6 @@ class rice_Bullet(Bullet):
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
-        #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
-        #screen.blit(self.surf,self.rect)
         if self.lastFrame<=self.createMax and self.ifDrawCreate:
             self.drawCreateImg(screen)
         else:
@@ -1938,7 +1961,7 @@ class laser_line_sub(Bullet):
         super(laser_line_sub,self).__init__()
         self.surf = pygame.Surface((radius,radius))
         self.rect = self.surf.get_rect()
-        #self.surf.fill((255,255,255))
+        self.surf.fill((0,255,0))
         self.type=15
         self.graze=0
     def checkValid(self):
@@ -1953,7 +1976,7 @@ class laser_line_sub(Bullet):
         self.movement()
         self.checkValid()
         #if self.lastFrame<=1:
-            #self.drawBullet(screen)
+        #self.drawBullet(screen)
         
 
 #bullets modified for lightness level
@@ -3066,6 +3089,36 @@ class orb_bullet_lgtnsp6_stay_accelerate(orb_Bullet):
 class rice_bullet_lgtnsp6_stay_accelerate(rice_Bullet):
     def __init__(self):
         super(rice_bullet_lgtnsp6_stay_accelerate,self).__init__()
+        self.initialSpeed=0
+        self.speedNow=0
+        self.endSpeed=0
+        self.accFrame=20
+        self.accStart=40
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.movement()
+        self.motionStrate()
+        if self.lastFrame<=self.createMax and self.ifDrawCreate:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
+        self.checkValid()
+    
+    def setAccSpeed(self,angle,initialSpeed,endSpeed,accFrame=20,accStart=40):
+        self.angle=angle
+        self.initialSpeed=initialSpeed
+        self.speedNow=initialSpeed
+        self.endSpeed=endSpeed
+
+    def motionStrate(self):
+        if self.lastFrame>=self.accStart and self.lastFrame<self.accStart+self.accFrame:
+            acc=(self.endSpeed-self.initialSpeed)/self.accFrame
+            self.speedNow+=acc
+            self.setSpeed(self.angle,self.speedNow)
+
+class small_bullet_lgtnsp6_stay_accelerate(small_Bullet):
+    def __init__(self):
+        super(small_bullet_lgtnsp6_stay_accelerate,self).__init__()
         self.initialSpeed=0
         self.speedNow=0
         self.endSpeed=0

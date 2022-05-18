@@ -1,3 +1,4 @@
+from imp import new_module
 from pickle import FALSE
 import pygame,sys
 import random
@@ -129,8 +130,169 @@ class part4_gravity_bullet2(Bullet.orb_Bullet):
             self.makeNoise=False
             sendKiraSound()
 
+class midpath_spell1_wind_bullet(Bullet.sharp_Bullet):
+    def __init__(self):
+        super(midpath_spell1_wind_bullet,self).__init__()
+        self.angleIncPerFrame=-1.9
+        self.angleIncChange=+0.02
+        self.initialSpeed=4
+        self.judgeBool=True
+    def setSpeed(self,angle,speed):
+        s=math.sin(math.radians(angle))
+        c=math.cos(math.radians(angle))
+        self.speedy=s*speed
+        self.speedx=c*speed
+        #self.initialSpeed=speed
+
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.movement()
+        self.motionStrate()
+        if self.lastFrame<=self.createMax and self.ifDrawCreate:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
+        self.checkValid()
+
+    def motionStrate(self):
+        self.countAngle()
+        if self.judgeBool:
+            if self.angleIncPerFrame<0:
+                self.angleIncPerFrame+=self.angleIncChange
+            else:
+                self.angleIncPerFrame=0     
+        else:
+            if self.angleIncPerFrame>0:
+                self.angleIncPerFrame+=self.angleIncChange
+            else:
+                self.angleIncPerFrame=0   
+        angle=self.angle+self.angleIncPerFrame
+        self.setSpeed(angle,self.speed)
+        
+class midpath_spell2_rain_bullet(Bullet.rice_Bullet):
+    def __init__(self):
+        super(midpath_spell2_rain_bullet,self).__init__()
+        self.maxSpeed=4
+        self.gravePerSec=+0.03
+        self.makeNoise=True
+        self.startFrame=0
         
 
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.movement()
+        if self.lastFrame>self.startFrame:
+            self.motionStrate()
+        #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
+        #screen.blit(self.surf,self.rect)
+        if self.lastFrame<=self.createMax and self.ifDrawCreate:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
+        self.checkValid()
+
+    def speedCalc(self):
+        speed=math.sqrt(self.speedx**2+self.speedy**2)
+        return speed
+    
+    def checkValid(self):
+        if self.rect.top>=720-30+self.validAccuracy[1]:
+            self.kill()
+        if self.rect.right<=0+60-self.validAccuracy[3]:
+            self.kill()
+        if self.rect.left>=620+self.validAccuracy[2]:
+            self.kill()
+
+    def motionStrate(self):
+        if self.speedCalc()<=self.maxSpeed or self.speedy<0:
+            self.speedy+=self.gravePerSec
+        elif self.makeNoise:
+            self.makeNoise=False
+            sendKiraSound()
+
+class midpath_spell2_laser_bullet_main(Bullet.laser_Bullet_main):
+    def __init__(self,ratio=8,leng=20,speed=5):
+            super(midpath_spell2_laser_bullet_main,self).__init__()
+            self.ratio=ratio
+            self.surf = pygame.Surface((self.ratio,self.ratio))
+            self.surf.fill((255,255,255))
+            self.rect = self.surf.get_rect()
+            self.speed=speed
+            self.length=leng
+            self.angleChangePerFrame=-4.5
+            self.angleChangeInc=0.05
+            self.initialSpeed=speed
+            self.maxFrame=100
+            self.adj=0
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.movement()
+        self.motionStrate()
+        self.countAngle()
+        new_sub=Bullet.laser_Bullet_sub(self.length,self.ratio)
+        new_sub.ifExtraJudgePoint=True
+        new_sub.angle=self.angle
+        new_sub.speed=self.speed
+        new_sub.initial(self.tx,self.ty,self.fro)
+        new_sub.doColorCode(self.colorNum)
+        bullets.add(new_sub)
+        self.checkValid()
+    
+    def motionStrate(self):
+        self.countAngle()
+        if self.adj==0:
+            if self.angleChangePerFrame<=2:
+                angle=self.angle+self.angleChangePerFrame
+                self.angleChangePerFrame+=self.angleChangeInc
+                self.speed+=0.12
+                self.setSpeed(angle,self.speed)
+        elif self.adj==1:
+            if self.angleChangePerFrame<=2:
+                angle=self.angle-self.angleChangePerFrame
+                self.angleChangePerFrame+=self.angleChangeInc
+                self.speed+=0.12
+                self.setSpeed(angle,self.speed)
+
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
+
+class midpath_spell3_small_snow_bullet(Bullet.small_Bullet):
+    def __init__(self):
+        super(midpath_spell3_small_snow_bullet,self).__init__()
+        self.signalReciever=False
+        self.ifChanged=False
+        self.initialSpeed=0
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.movement()
+        self.signalRecieve() 
+        self.motionStrate(bullets)
+        if self.lastFrame<=self.createMax and self.ifDrawCreate:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
+        #screen.blit(self.surf,self.rect)
+        self.checkValid()
+    
+    def motionStrate(self,bullets):
+        if self.signalReciever and not self.ifChanged:
+            self.countAngle()
+            angle=random.random()*360
+            new_bullet=midpath_spell3_small_snow_bullet_acc()
+            new_bullet.initial(self.tx,self.ty,0)
+            new_bullet.setAccSpeed(angle,0.001,self.initialSpeed-3,150,120)
+            new_bullet.setSpeed(angle,0.001)
+            new_bullet.loadColor('lightBlue')
+            bullets.add(new_bullet)
+            self.kill()
+
+    def signalRecieve(self):
+        self.signalReciever=global_var.get_value('midPathSpell3Signal')
+
+class midpath_spell3_small_snow_bullet_acc(Bullet.small_bullet_lgtnsp6_stay_accelerate):
+    def __init__(self):
+        super(midpath_spell3_small_snow_bullet_acc,self).__init__()
 #  enemy zone
 
 class testEnemy(DADcharacter.enemy):
@@ -618,42 +780,73 @@ class sanaeMidpath(DADcharacter.Boss):
         if self.reset:
             self.lastFrame=0
             self.reset=False
-            self.maxHealth=10000
+            self.maxHealth=35000
             self.health=self.maxHealth
-            self.gotoPosition(340,210,30)
+            self.gotoPosition(340,200,30)
             self.randomAngle=random.random()*360
-            self.frameLimit=1200
-            self.startFrame=60
-            self.randomAngle=random.random()*360
+            self.frameLimit=3000
+            self.frameLimitMax=self.frameLimit
+            self.startFrame=120
             self.attackAnimeSign=True
             self.attackLightEffectSign=True
+            self.angleIncPerSec=0
 
             # spell zone
             self.cardBonus=10000000
             self.spellName='Wind Sign[Hogsmade Hurricane]'
-            self.chSpellName='御风「霍格莫德飓风」'
+            self.chSpellName=u'御风「霍格莫德飓风」'
             global_var.get_value('spell_sound').play()
             player.spellBonus=True
             # send spell effect
-            new_effect=Effect.bossFaceSpell()
+            new_effect=Effect.sanaeFaceSpell()
             effects.add(new_effect)
             self.doSpellCardAttack(effects)
 
         self.cardBonus-=self.framePunishment
-
+        speed=2*self.lastFrame/self.frameLimitMax+8
+        amp=1.3*self.lastFrame/self.frameLimitMax+1
         inSpellFrame=self.lastFrame-self.startFrame
         if self.lastFrame>=self.startFrame:
-            if inSpellFrame%60<=20:
-                if inSpellFrame%4==0:
-                    sendFireSound(3)
-                    for i in range(0,5):
-                        new_bullet=Bullet.orb_Bullet()
+            if True:
+                if inSpellFrame%2==0:
+                    sendFireSound(2)
+                    if inSpellFrame%360<180:
+                        #self.angleIncPerSec=1*math.sin(inSpellFrame*2*math.pi/180)-1.3
+                        
+                        boolSign=True
+                    else:
+                        #self.angleIncPerSec=-(1*math.sin(inSpellFrame*2*math.pi/180)-1.3)
+                        #self.angleIncChange=-self.angleIncPerSec/90
+                        boolSign=False
+                    self.angleIncPerSec=amp*math.cos((inSpellFrame+90)*math.pi/180)
+                    self.angleIncChange=-self.angleIncPerSec/100
+                    for i in range(0,6):
+                        new_bullet=midpath_spell1_wind_bullet()
                         new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
-                        new_bullet.doColorCode(4)
-                        new_bullet.setSpeed(self.randomAngle+i*(360/5),5)
+                        new_bullet.doColorCode(10)
+                        new_bullet.setSpeed(self.randomAngle+i*(360/6),speed)
+                        new_bullet.speed=speed
+                        new_bullet.angleIncPerFrame=self.angleIncPerSec
+                        new_bullet.angleIncChange=self.angleIncChange
+                        new_bullet.judgeBool=boolSign
                         bullets.add(new_bullet)
-                if inSpellFrame%60==20:
-                    self.randomAngle=random.random()*360
+                    self.randomAngle-=1*math.cos((inSpellFrame+90)*math.pi/180)
+                if inSpellFrame%10==0:
+                    if boolSign:
+                        self.randomAngle+=20+2*random.random()
+                    else:
+                        self.randomAngle-=20+2*random.random()
+            if inSpellFrame%90==0:
+                angle=random.random()*360
+                sendFireSound(1)
+                sendKiraSound()
+                for i in range(30):
+                    new_bullet=Bullet.orb_Bullet()
+                    new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
+                    new_bullet.setSpeed(angle+i*(360/30),2.4)
+                    new_bullet.loadColor('lightGreen')
+                    #new_bullet.doColorCode(0)
+                    bullets.add(new_bullet)
 
         if self.health<=0 or self.frameLimit<=0:
             self.cancalAllBullet(bullets,items,effects,True)
@@ -676,7 +869,197 @@ class sanaeMidpath(DADcharacter.Boss):
             self.attackAnimeSign=False
     
     def spell_2(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
-        pass
+        if self.reset:
+            self.lastFrame=0
+            self.reset=False
+            self.maxHealth=25000
+            self.health=self.maxHealth
+            self.gotoPosition(340,200,30)
+            self.randomAngle=random.random()*360
+            self.frameLimit=3000
+            self.frameLimitMax=self.frameLimit
+            self.startFrame=120
+            self.attackAnimeSign=False
+            self.attackLightEffectSign=False
+            self.fireCount=0
+
+            # spell zone
+            self.cardBonus=10000000
+            self.spellName='Sudden Rain[Thunder Storm]'
+            self.chSpellName=u'骤雨「雷暴操纵术」'
+            global_var.get_value('spell_sound').play()
+            player.spellBonus=True
+            self.bulletSenderAngle=0
+            self.bulletSenderAngleInc=62
+            self.senderRadius=20
+            # send spell effect
+            new_effect=Effect.sanaeFaceSpell()
+            effects.add(new_effect)
+            self.doSpellCardAttack(effects)
+        
+        self.cardBonus-=self.framePunishment
+        inSpellFrame=self.lastFrame-self.startFrame
+
+        if self.lastFrame>=self.startFrame:
+            '''self.attackAnimeSign=True
+            self.attackLightEffectSign=True'''
+            xPos=340+280*math.sin(inSpellFrame*4/180*math.pi)
+            if inSpellFrame%2==0:
+                sendFireSound(2)
+                self.bulletSenderAngle+=self.bulletSenderAngleInc+random.random()*30
+                for i in range(2):
+                    individualAngle=self.bulletSenderAngle+i*(360/2)
+                    nx=xPos+self.senderRadius*math.cos(individualAngle*math.pi/180)
+                    ny=30+self.senderRadius*math.sin(individualAngle*math.pi/180)
+                    sendAngle=individualAngle-140
+                    new_bullet=midpath_spell2_rain_bullet()
+                    new_bullet.initial(nx,ny,0)
+                    new_bullet.setSpeed(sendAngle,2)
+                    new_bullet.doColorCode(6)
+                    new_bullet.maxSpeed=7
+                    bullets.add(new_bullet)
+            '''if inSpellFrame%15==0:
+                angle=88+random.random()*4
+                for i in range(3):
+                    new_bullet=Bullet.sharp_Bullet()
+                    new_bullet.initial(xPos,30,0)
+                    new_bullet.setSpeed(angle,5.5+1*i)
+                    new_bullet.doColorCode(2)
+                    bullets.add(new_bullet)'''
+            if inSpellFrame>=140:
+                if inSpellFrame%140==0:
+                    new_effect=Effect.bulletCreate(6)
+                    new_effect.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],92,48,30)
+                    effects.add(new_effect)
+
+                    global_var.get_value('laser_sound').stop()
+                    global_var.get_value('laser_sound').play()
+                    self.fireCount+=1
+                    adj=(1,-1)
+                    decision=self.fireCount%2
+                    self.randomAngle=(random.random()*20+120)*adj[decision]+90
+                    for i in range(9):
+                        new_bullet=midpath_spell2_laser_bullet_main(4,30,7)
+                        new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
+                        new_bullet.doColorCode(13)
+                        new_bullet.adj=decision
+                        new_bullet.setSpeed(self.randomAngle+i*40,7)
+                        bullets.add(new_bullet)
+            
+            if inSpellFrame%140==110:
+                self.attackAnimeSign=True
+                self.attackLightEffectSign=True
+            if inSpellFrame%140==30:
+                self.attackAnimeSign=False
+                self.attackLightEffectSign=False
+
+            if inSpellFrame%280==190:
+                self.gotoPosition(player.cx+random.random()*60-30,random.random()*40+180,60)
+
+        if self.health<=0 or self.frameLimit<=0:
+            self.cancalAllBullet(bullets,items,effects,True)
+            self.reset=True
+            self.ifSpell=True
+            self.cardNum+=1
+            self.health=20000
+            if self.frameLimit>0:
+                self.createItem(items,0,5)
+                self.createItem(items,1,20)
+                ifBonus=player.spellBonus
+            else:
+                ifBonus=False
+            self.drawResult(effects,self.cardBonus,ifBonus)
+            if ifBonus:
+                player.score+=self.cardBonus
+                global_var.get_value('bonus_sound').play()
+            global_var.get_value('spell_end').play()
+            self.attackLightEffectSign=False
+            self.attackAnimeSign=False
+
+
+    def spell_3(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
+        if self.reset:
+            self.lastFrame=0
+            self.reset=False
+            self.maxHealth=25000
+            self.health=self.maxHealth
+            self.gotoPosition(340,200,30)
+            self.randomAngle=random.random()*360
+            self.frameLimit=3000
+            self.frameLimitMax=self.frameLimit
+            self.startFrame=120
+            self.attackAnimeSign=False
+            self.attackLightEffectSign=False
+
+            # spell zone
+            self.cardBonus=10000000
+            self.spellName='Blizzard[Icy Snow]'
+            self.chSpellName=u'暴雪「凝冰之雪」'
+            global_var.get_value('spell_sound').play()
+            player.spellBonus=True
+    
+            # send spell effect
+            new_effect=Effect.sanaeFaceSpell()
+            effects.add(new_effect)
+            self.doSpellCardAttack(effects)
+        
+        self.cardBonus-=self.framePunishment
+        inSpellFrame=self.lastFrame-self.startFrame
+
+
+        snow_interval=2
+        hailAndSnow_ratio=10
+        freeze_interval=360
+        if self.lastFrame>=self.startFrame:
+            if inSpellFrame%snow_interval==0:
+                hailSign=random.randint(0,hailAndSnow_ratio)
+                pos=(random.random()*560+60,25)
+                angle=random.random()*4+88
+                speed=4+random.random()
+                if hailSign==0:
+                    new_bullet=Bullet.mid_Bullet()
+                    new_bullet.initial(pos[0],pos[1],0)
+                    new_bullet.setSpeed(angle,speed-1)
+                    new_bullet.loadColor('skyBlue')
+                    bullets.add(new_bullet)
+                else:
+                    new_bullet=midpath_spell3_small_snow_bullet()
+                    new_bullet.initialSpeed=speed
+                    new_bullet.initial(pos[0],pos[1],0)
+                    new_bullet.setSpeed(angle,speed)
+                    new_bullet.loadColor('white')
+                    bullets.add(new_bullet)
+            if inSpellFrame%freeze_interval==0 and inSpellFrame!=0:
+                global_var.set_value('midPathSpell3Signal',True)
+                self.attackAnimeSign=True
+                global_var.get_value('kira1_sound').stop()
+                global_var.get_value('kira1_sound').play()
+            if inSpellFrame%freeze_interval==1:
+                global_var.set_value('midPathSpell3Signal',False)
+            if inSpellFrame%freeze_interval==50:
+                self.attackAnimeSign=False
+
+
+        if self.health<=0 or self.frameLimit<=0:
+            self.cancalAllBullet(bullets,items,effects,True)
+            self.reset=True
+            self.ifSpell=True
+            self.cardNum+=1
+            self.health=20000
+            if self.frameLimit>0:
+                self.createItem(items,0,5)
+                self.createItem(items,1,20)
+                ifBonus=player.spellBonus
+            else:
+                ifBonus=False
+            self.drawResult(effects,self.cardBonus,ifBonus)
+            if ifBonus:
+                player.score+=self.cardBonus
+                global_var.get_value('bonus_sound').play()
+            global_var.get_value('spell_end').play()
+            self.attackLightEffectSign=False
+            self.attackAnimeSign=False
+
 def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player):
     if frame==1:# load in section, initialize background, and music
         pygame.mixer.music.stop()

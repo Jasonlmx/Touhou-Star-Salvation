@@ -720,8 +720,14 @@ class bossFaceSpell(pygame.sprite.Sprite):
             self.ly-=0
         else:
             self.lx-=20
-            self.ly+=15
+            self.ly+=3.7
 
+class sanaeFaceSpell(bossFaceSpell):
+    def __init__(self):
+        super(sanaeFaceSpell,self).__init__()
+        self.image=global_var.get_value('sanaeImg')
+        self.lx=660
+        self.ly=0
 class spellAttackImage(pygame.sprite.Sprite):
     def __init__(self):
         super(spellAttackImage,self).__init__()

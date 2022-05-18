@@ -245,6 +245,10 @@ def loadImage():
     satoriImg=pygame.image.load('resource/boss/face04ct.png')
     satoriImg=pygame.transform.smoothscale(satoriImg,(384,768)).convert_alpha()
     global_var.set_value('satoriImg',satoriImg)
+    sanaeImg=pygame.image.load('resource/boss/sanaeFace.png')
+    sanaeImg=pygame.transform.smoothscale(sanaeImg,(384,650)).convert_alpha()
+    global_var.set_value('sanaeImg',sanaeImg)
+
     pauseImg=pygame.image.load('resource/text/pause.png')
     pauseImg=pygame.transform.smoothscale(pauseImg,(384,384)).convert_alpha()
     global_var.set_value('pauseImg',pauseImg)
