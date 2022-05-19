@@ -908,7 +908,7 @@ class sanaeMidpath(DADcharacter.Boss):
         if self.reset:
             self.lastFrame=0
             self.reset=False
-            self.maxHealth=25000
+            self.maxHealth=40000
             self.health=self.maxHealth
             self.gotoPosition(340,200,30)
             self.randomAngle=random.random()*360
@@ -1017,7 +1017,7 @@ class sanaeMidpath(DADcharacter.Boss):
         if self.reset:
             self.lastFrame=0
             self.reset=False
-            self.maxHealth=25000
+            self.maxHealth=40000
             self.health=self.maxHealth
             self.gotoPosition(340,200,30)
             self.randomAngle=random.random()*360
