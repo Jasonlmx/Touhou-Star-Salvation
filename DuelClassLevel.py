@@ -701,6 +701,7 @@ class sanaeMidpath(DADcharacter.Boss):
         self.alreadyMoved=False
         self.attackLightEffectSign=False # adjustable, only considerable when attackAnimeSign is True
         self.existDrawFrame=0
+        self.midPathStayFrame=0
         #spell zone
         self.maxSpell=4
         self.bulletAdj=(-18,-65)
@@ -805,7 +806,12 @@ class sanaeMidpath(DADcharacter.Boss):
                 self.noneSpell_3(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
             else:
                 self.spell_3(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
-    
+        if self.cardNum==4:
+            self.midPathStayFrame+=1
+            if self.midPathStayFrame==100:
+                self.gotoPosition(340,-200,60)
+            if self.midPathStayFrame==160:
+                self.kill()
     def noneSpell_0(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
         self.maxHealth=20000
         self.health=20000
@@ -1093,6 +1099,8 @@ class sanaeMidpath(DADcharacter.Boss):
                 self.snow_interval=5
             else:
                 self.snow_interval=2
+            if inSpellFrame%360==160:
+                self.gotoPosition(player.cx+random.random()*60-30,random.random()*40+180,60)
 
         if self.health<=0 or self.frameLimit<=0:
             self.cancalAllBullet(bullets,items,effects,True)

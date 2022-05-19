@@ -400,6 +400,7 @@ def loadImage():
     kunaiBulletImageList=[]
     for i in range(0,16):
         new_surf=pygame.Surface((16,16)).convert_alpha()
+        new_surf.fill((0,0,0,0))
         new_surf.blit(etama,(0,0),(i*16,80,16,16))
         new_surf=pygame.transform.smoothscale(new_surf,(24,24))
         kunaiBulletImageList.append(new_surf)
@@ -454,7 +455,7 @@ def loadImage():
         new_surf.blit(enemyImage,(0,0),(128+i*32,192,32,32))
         new_surf=pygame.transform.smoothscale(new_surf,(48,48))
         new_nimbus=pygame.Surface((32,32)).convert_alpha()
-        new_nimbus.blit((0,0,0,0))
+        new_nimbus.fill((0,0,0,0))
         new_nimbus.blit(enemyImage,(0,0),(128+i*32,192+32,32,32))
         new_nimbus=pygame.transform.smoothscale(new_nimbus,(48,48))
         yinyangyuSpriteMap.append((new_surf,new_nimbus))
@@ -464,6 +465,7 @@ def loadImage():
     for i in range(2):
         for j in range(2):
             new_surf=pygame.Surface((32,32)).convert_alpha()
+            new_surf.fill((0,0,0,0))
             new_surf.blit(enemyImage,(0,0),(64+i*32,128+j*32,32,32))
             new_surf=pygame.transform.smoothscale(new_surf,(48,48))
             kedamaSpriteMap.append(new_surf)
