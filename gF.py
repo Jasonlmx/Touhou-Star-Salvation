@@ -391,6 +391,7 @@ def loadImage():
     sharpBulletImageList=[]
     for i in range(0,16):
         new_surf=pygame.Surface((16,16)).convert_alpha()
+        new_surf.fill((0,0,0,0))
         new_surf.blit(etama,(0,0),(i*16,96,16,16))
         new_surf=pygame.transform.smoothscale(new_surf,(24,24))
         sharpBulletImageList.append(new_surf)
@@ -449,9 +450,11 @@ def loadImage():
     yinyangyuSpriteMap=[]
     for i in range(0,4):
         new_surf=pygame.Surface((32,32)).convert_alpha()
+        new_surf.fill((0,0,0,0))
         new_surf.blit(enemyImage,(0,0),(128+i*32,192,32,32))
         new_surf=pygame.transform.smoothscale(new_surf,(48,48))
         new_nimbus=pygame.Surface((32,32)).convert_alpha()
+        new_nimbus.blit((0,0,0,0))
         new_nimbus.blit(enemyImage,(0,0),(128+i*32,192+32,32,32))
         new_nimbus=pygame.transform.smoothscale(new_nimbus,(48,48))
         yinyangyuSpriteMap.append((new_surf,new_nimbus))
@@ -474,6 +477,7 @@ def loadImage():
     for i in range(2):
         for j in range(4):
             new_surf=pygame.Surface((64,64)).convert_alpha()
+            new_surf.fill((0,0,0,0))
             new_surf.blit(sanaeImage,(0,0),(j*64,64*i,64,64))
             new_surf=pygame.transform.smoothscale(new_surf,(96,96))
             if i==0:
@@ -482,6 +486,7 @@ def loadImage():
                 sanaeMove.append(new_surf)
     for i in range(4):
         new_surf=pygame.Surface((64,80)).convert_alpha()
+        new_surf.fill((0,0,0,0))
         new_surf.blit(sanaeImage,(0,0),(64*i,128,64,80))
         new_surf=pygame.transform.smoothscale(new_surf,(96,120))
         sanaeAttack.append(new_surf)
@@ -495,6 +500,7 @@ def loadImage():
     orinSpriteMap=[]
     orinImage=pygame.image.load('resource/boss/stg5enm.png')
     lightEffect=pygame.Surface((64,64)).convert_alpha()
+    lightEffect.fill((0,0,0,0))
     lightEffect.blit(orinImage,(0,0),(192,128,64,64))
     lightEffect.set_alpha(150)
     global_var.set_value('orinLightEffect',lightEffect)
