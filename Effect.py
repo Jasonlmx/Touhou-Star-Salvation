@@ -869,6 +869,7 @@ class bossBrustMomiji(bossBrusterTestObj):
         super(bossBrustMomiji,self).__init__()
         self.maxFrame=60
         self.surf=pygame.Surface((32,32)).convert_alpha()
+        self.surf.fill((0,0,0,0))
         self.surf.blit(global_var.get_value('etama2'),(0,0),(32,224,32,32))
         self.angle=random.random()*360
         self.randR=[-1,1]
@@ -906,6 +907,7 @@ class bossPowerMomiji(bossBrustMomiji):
         super(bossPowerMomiji,self).__init__()
         self.maxFrame=60
         self.surf=pygame.Surface((32,32)).convert_alpha()
+        self.surf.fill((0,0,0,0))
         self.surf.blit(global_var.get_value('etama2'),(0,0),(0,224,32,32))
         self.angle=random.random()*360
         self.randR=[-1,1]

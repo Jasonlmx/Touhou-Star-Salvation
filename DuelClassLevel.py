@@ -918,7 +918,7 @@ class sanaeMidpath(DADcharacter.Boss):
             self.health=self.maxHealth
             self.gotoPosition(340,200,30)
             self.randomAngle=random.random()*360
-            self.frameLimit=3000
+            self.frameLimit=3600
             self.frameLimitMax=self.frameLimit
             self.startFrame=120
             self.attackAnimeSign=False
@@ -1027,11 +1027,12 @@ class sanaeMidpath(DADcharacter.Boss):
             self.health=self.maxHealth
             self.gotoPosition(340,200,30)
             self.randomAngle=random.random()*360
-            self.frameLimit=3000
+            self.frameLimit=3600
             self.frameLimitMax=self.frameLimit
             self.startFrame=120
             self.attackAnimeSign=False
             self.attackLightEffectSign=False
+            global_var.set_value('midPathSpell3Signal',False)
             
             # spell zone
             self.cardBonus=10000000
@@ -1064,7 +1065,7 @@ class sanaeMidpath(DADcharacter.Boss):
                     new_bullet=midpath_spell3_mid_snow_bullet()
                     new_bullet.initial(pos[0],pos[1],0)
                     new_bullet.setSpeed(angle,speed-1)
-                    new_bullet.loadColor('skyBlue')
+                    new_bullet.loadColor('white')
                     bullets.add(new_bullet)
                 else:
                     new_bullet=midpath_spell3_small_snow_bullet()
@@ -1087,6 +1088,9 @@ class sanaeMidpath(DADcharacter.Boss):
             if inSpellFrame%freeze_interval==freeze_interval-100:
                 global_var.get_value('ch00_sound').stop()
                 global_var.get_value('ch00_sound').play()
+                new_effect=Effect.powerUp()
+                new_effect.initial((self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1]),300,100,(30,224,255),20,1,0)
+                effects.add(new_effect)
                 self.attackAnimeSign=True
                 self.attackLightEffectSign=True
                 
@@ -1105,7 +1109,7 @@ class sanaeMidpath(DADcharacter.Boss):
         if self.health<=0 or self.frameLimit<=0:
             self.cancalAllBullet(bullets,items,effects,True)
             self.reset=True
-            self.ifSpell=True
+            self.ifSpell=False
             self.cardNum+=1
             self.health=20000
             if self.frameLimit>0:
@@ -1121,6 +1125,7 @@ class sanaeMidpath(DADcharacter.Boss):
             global_var.get_value('spell_end').play()
             self.attackLightEffectSign=False
             self.attackAnimeSign=False
+            self.frameLimit=20*60
 
 def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player):
     if frame==1:# load in section, initialize background, and music
