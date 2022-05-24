@@ -687,6 +687,38 @@ class part4_enemy_kedama(DADcharacter.kedama):
         self.dropItem(items)
         self.kill()
 
+class support_enemy_yinyangyu(DADcharacter.yinyangyu):
+    def __init__(self):
+        super(support_enemy_yinyangyu,self).__init__()
+        self.fireInterval=60
+        self.fireFrame=random.randint(0,self.fireInterval)
+        self.colorNum=0
+    def ai_move(self):
+        pass
+
+    def fire(self, frame, bullets, effects):
+        self.fireFrame+=1
+        if self.fireFrame%self.fireInterval==0:
+            sendFireSound(1)
+            '''new_bullet=Bullet.small_Bullet()
+            new_bullet.initial(self.tx,self.ty,0)
+            px=global_var.get_value('player1x')
+            py=global_var.get_value('player1y')
+            new_bullet.selfTarget(px,py,3)
+            new_bullet.countAngle()
+            angle=new_bullet.angle
+            rndAdj=random.random()*10-5'''
+            angle=random.random()*360
+            for i in range(10):
+                for j in range(2):
+                    new_bullet=part3_acc_bullet()
+                    new_bullet.initial(self.tx,self.ty,0)
+                    new_bullet.setSpeed(angle+i*36,0.5+0.5*j)
+                    new_bullet.setAccSpeed(angle+i*36,0.5+0.5*j,3.5+2*j,50,60)
+                    new_bullet.loadColor('red')
+                    bullets.add(new_bullet)
+
+
 #  boss zone
 
 class sanaeMidpath(DADcharacter.Boss):
@@ -1157,11 +1189,6 @@ class sanaeMidpath(DADcharacter.Boss):
 
 def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player):
 
-    ifMidpath=global_var.get_value('DuelClassLevel_ifMidpath')
-    midPathFrame=global_var.get_value('DeulClassLevel_midpathFrame')
-    if ifMidpath:
-        frameAfterMidpath=frame-midPathFrame
-
     if frame==1:# load in section, initialize background, and music
         pygame.mixer.music.stop()
         pygame.mixer.music.load('resource/bgm/yujiMidpath.mp3')   # 载入背景音乐文件
@@ -1170,6 +1197,11 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         pygame.mixer.music.play(loops=-1)
         global_var.set_value('DuelClassLevel_ifMidpath',False)
         global_var.set_value('DeulClassLevel_midpathFrame',0)
+
+    ifMidpath=global_var.get_value('DuelClassLevel_ifMidpath')
+    midPathFrame=global_var.get_value('DeulClassLevel_midpathFrame')
+    if ifMidpath:
+        frameAfterMidpath=frame-midPathFrame
 
     if frame==100:
         seperate=40
@@ -1300,9 +1332,11 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
     
     if ifMidpath:
 
-        if frame<=8600:
+        if frame<=8200:
             if frame%50==0:
-                new_enemy=DADcharacter.crow()
-                new_enemy.initialize(630,200,0,0)
+                new_enemy=support_enemy_yinyangyu()
+                ex=random.random()*560+60
+                new_enemy.initialize(ex,20,0,-1)
+                new_enemy.selfTarget(player.cx,player.cy,2.8)
                 #new_enemy.actionNum=1
                 enemys.add(new_enemy)
