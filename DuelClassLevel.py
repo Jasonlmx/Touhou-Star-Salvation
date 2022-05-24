@@ -299,12 +299,16 @@ class midpath_spell3_mid_snow_bullet(Bullet.mid_Bullet):
         super(midpath_spell3_mid_snow_bullet,self).__init__()
         self.ifChanged=False
         self.signalReciever=False
-
+        self.warnLineProcessSign=False
+        self.warnLineFrame=0
+        self.maxIncFrame=70
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
         self.signalRecieve() 
+        self.warnRecieve()
         self.motionStrate(bullets)
+        self.drawWarnCircle(screen)
         if self.lastFrame<=self.createMax and self.ifDrawCreate:
             self.drawCreateImg(screen)
         else:
@@ -312,6 +316,14 @@ class midpath_spell3_mid_snow_bullet(Bullet.mid_Bullet):
         #screen.blit(self.surf,self.rect)
         self.checkValid()
     
+    def drawWarnCircle(self,screen):
+        if self.warnLineProcessSign and self.warnLineFrame<=self.maxIncFrame:
+            radius=round(23*(self.warnLineFrame/self.maxIncFrame)+1)
+        else:
+            radius=24
+        if self.warnLineProcessSign:
+            pygame.draw.circle(screen,(255,255,255),(round(self.tx),round(self.ty)),radius,1)
+
     def motionStrate(self,bullets):
         if self.signalReciever and not self.ifChanged:
             radius=12
@@ -326,6 +338,10 @@ class midpath_spell3_mid_snow_bullet(Bullet.mid_Bullet):
                 new_bullet.setSpeed(initialAngle+i*(360/6),0.001)
                 bullets.add(new_bullet)
             self.kill()
+    def warnRecieve(self):
+        self.warnLineFrame=global_var.get_value('midPathSpell3WarnFrame')
+        self.warnLineProcessSign=global_var.get_value('midPathSpell3Warn')
+
     def signalRecieve(self):
         self.signalReciever=global_var.get_value('midPathSpell3Signal')
 #  enemy zone
@@ -811,7 +827,10 @@ class sanaeMidpath(DADcharacter.Boss):
             if self.midPathStayFrame==100:
                 self.gotoPosition(340,-200,60)
             if self.midPathStayFrame==160:
+                global_var.set_value('DuelClassLevel_ifMidpath',True)
+                global_var.set_value('DeulClassLevel_midpathFrame',frame)
                 self.kill()
+
     def noneSpell_0(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
         self.maxHealth=20000
         self.health=20000
@@ -1030,6 +1049,7 @@ class sanaeMidpath(DADcharacter.Boss):
             self.frameLimit=3600
             self.frameLimitMax=self.frameLimit
             self.startFrame=120
+            self.warnFrame=0
             self.attackAnimeSign=False
             self.attackLightEffectSign=False
             global_var.set_value('midPathSpell3Signal',False)
@@ -1084,15 +1104,23 @@ class sanaeMidpath(DADcharacter.Boss):
 
             if inSpellFrame%freeze_interval==1:
                 global_var.set_value('midPathSpell3Signal',False)
-            
+                global_var.set_value('midPathSpell3Warn',False)
+                self.warnFrame=0
+                global_var.set_value('midPathSpell3WarnFrame',self.warnFrame)
+
             if inSpellFrame%freeze_interval==freeze_interval-100:
                 global_var.get_value('ch00_sound').stop()
                 global_var.get_value('ch00_sound').play()
+                global_var.set_value('midPathSpell3Warn',True)
                 new_effect=Effect.powerUp()
                 new_effect.initial((self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1]),300,100,(30,224,255),20,1,0)
                 effects.add(new_effect)
                 self.attackAnimeSign=True
                 self.attackLightEffectSign=True
+            
+            if inSpellFrame%freeze_interval>=freeze_interval-100:
+                self.warnFrame+=1
+                global_var.set_value('midPathSpell3WarnFrame',self.warnFrame)
                 
         
             if inSpellFrame%freeze_interval==50:
@@ -1128,12 +1156,20 @@ class sanaeMidpath(DADcharacter.Boss):
             self.frameLimit=20*60
 
 def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player):
+
+    ifMidpath=global_var.get_value('DuelClassLevel_ifMidpath')
+    midPathFrame=global_var.get_value('DeulClassLevel_midpathFrame')
+    if ifMidpath:
+        frameAfterMidpath=frame-midPathFrame
+
     if frame==1:# load in section, initialize background, and music
         pygame.mixer.music.stop()
         pygame.mixer.music.load('resource/bgm/yujiMidpath.mp3')   # 载入背景音乐文件
         #pygame.mixer.music.load('resource/bgm/上海アリス幻樂団 - 死体旅行~ Be of good cheer!.mp3')
         pygame.mixer.music.set_volume(0.7)                  # 设定背景音乐音量
         pygame.mixer.music.play(loops=-1)
+        global_var.set_value('DuelClassLevel_ifMidpath',False)
+        global_var.set_value('DeulClassLevel_midpathFrame',0)
 
     if frame==100:
         seperate=40
@@ -1261,3 +1297,12 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         for boss in bosses:
             boss.cardNum=1
             boss.ifSpell=True
+    
+    if ifMidpath:
+
+        if frame<=8600:
+            if frame%50==0:
+                new_enemy=DADcharacter.crow()
+                new_enemy.initialize(630,200,0,0)
+                #new_enemy.actionNum=1
+                enemys.add(new_enemy)
