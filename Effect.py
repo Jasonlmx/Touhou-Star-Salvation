@@ -806,7 +806,9 @@ class scoreImage(pygame.sprite.Sprite):
         self.surf=0
         self.lastFrame=0
         self.maxFrame=50
-
+        self.changeFrame=6
+        self.width=0
+        self.height=0
     def initial(self,tx,ty,score,colorType=0):
         self.tx=tx+self.randPos
         self.ty=ty
@@ -825,7 +827,8 @@ class scoreImage(pygame.sprite.Sprite):
             word=word+self.wordDict[index]
         self.surf=self.font.render(word,True,self.color)
         self.rect=self.surf.get_rect()
-    
+        self.width=self.surf.get_width()
+        self.height=self.surf.get_height()
     def checkValid(self):
         if self.lastFrame>=self.maxFrame:
             self.kill()
@@ -836,7 +839,14 @@ class scoreImage(pygame.sprite.Sprite):
         self.rect.centery=round(self.ty)
     
     def draw(self,screen):
-        screen.blit(self.surf,self.rect)
+        if self.lastFrame<=self.changeFrame:
+            width=self.width/self.changeFrame*self.lastFrame
+        elif self.lastFrame>=self.maxFrame-self.changeFrame:
+            width=self.width/self.changeFrame*(self.maxFrame-self.lastFrame)
+        else:
+            width=self.width
+        height=self.height
+        screen.blit(self.surf,self.rect,(0,0,width,height))
 
     def update(self,screen):
         self.lastFrame+=1

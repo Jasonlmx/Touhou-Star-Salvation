@@ -106,6 +106,7 @@ global_var.set_value('bgmPauseFlag',0)
 global_var.set_value('bgmContinuePos',[0,0])#[0]->for mid stage,[1]->for boss fight
 global_var.set_value('boomStatu',0)
 global_var.set_value('levelSign',0)
+global_var.set_value('scoreShown',0)
 log = open("./log.csv", 'w+')
 #main loop controller 
 running = True

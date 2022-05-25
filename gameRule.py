@@ -12,6 +12,19 @@ import Effect
 import Item
 import gameRule
 
+def returnScoreFormat(string):
+    zeroNum=9-len(string)
+    zeroString=''
+    for i in range(0,zeroNum):
+        zeroString+='0'
+    scoreString=zeroString+string
+    scoreFinal=''
+    for i in range(0,3):
+        scoreFinal+=scoreString[i*3:i*3+3]
+        if i!=2:
+            scoreFinal+=','
+    return scoreFinal
+
 def addLastingCancel(tx,ty,slaves,maxFrame,doBonus):
         new_slave=Slave.bulletCancelLasting()
         new_slave.initial(tx,ty,maxFrame,900,doBonus)
@@ -335,16 +348,21 @@ def displayUi(screen,player,myfont):
 
     #score part
     scoreTemp=str(player.score)
-    zeroNum=9-len(scoreTemp)
-    zeroString=''
-    for i in range(0,zeroNum):
-        zeroString+='0'
-    scoreString=zeroString+scoreTemp
-    scoreFinal=''
-    for i in range(0,3):
-        scoreFinal+=scoreString[i*3:i*3+3]
-        if i!=2:
-            scoreFinal+=','
+    #scoreFinal=returnScoreFormat(scoreTemp)
+    scoreShown=global_var.get_value('scoreShown')
+    minimumScoreStep=111
+    scoreSub=player.score-scoreShown
+    if scoreSub<=111:
+        scoreShown=player.score
+    else:
+        while minimumScoreStep<=scoreSub:
+            minimumScoreStep=minimumScoreStep*10+1
+        minimumScoreStep=round((minimumScoreStep-1)/10)
+        scoreShown+=minimumScoreStep
+    global_var.set_value('scoreShown',scoreShown)
+    #print(scoreShown,scoreTemp)
+    scoreFinal=returnScoreFormat(str(scoreShown))
+
     scoreText=myfont.render('         '+scoreFinal, True, (255, 255, 255))
     shadowText=myfont.render('         '+scoreFinal, True, (23, 23, 23))
     screen.blit(shadowText,(673+3+20,130+2))

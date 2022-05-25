@@ -668,6 +668,7 @@ class part4_enemy_kedama(DADcharacter.kedama):
                 bullets.add(new_bullet)
     
     def dropItem(self,items):
+        self.createItem(items,0,1)
         self.createItem(items,1,3)
     
     def doKill(self, effects, items, bullets):
@@ -693,8 +694,10 @@ class support_enemy_yinyangyu(DADcharacter.yinyangyu):
         self.fireInterval=60
         self.fireFrame=random.randint(0,self.fireInterval)
         self.colorNum=0
+        self.health=1200
     def ai_move(self):
-        pass
+        if self.rect.left>=620 or self.rect.right<=60:
+            self.kill()
 
     def fire(self, frame, bullets, effects):
         self.fireFrame+=1
@@ -717,7 +720,52 @@ class support_enemy_yinyangyu(DADcharacter.yinyangyu):
                     new_bullet.setAccSpeed(angle+i*36,0.5+0.5*j,3.5+2*j,50,60)
                     new_bullet.loadColor('red')
                     bullets.add(new_bullet)
+    
+    def dropItem(self, items):
+        self.createItem(items,0,1)
+        self.createItem(items,1,2)
 
+
+class part5_enemy_kedama(DADcharacter.kedama):
+    def __init__(self):
+        super(part5_enemy_kedama,self).__init__()
+        self.actionNum=0
+        self.turnSign=[1,-1,1,-1]
+        self.turnFrame=70
+        self.changeFrame=40
+        self.angleNow=90
+        self.angleList=[90,90,270,270]
+        self.initialSpeed=4.2
+        self.health=600
+        self.fireInterval=8
+        self.fireFrame=random.randint(0,self.fireInterval)
+    def ai_move(self):
+        if self.lastFrame==1:
+            self.angleNow=self.angleList[self.actionNum]
+            self.setSpeed(self.angleNow,self.initialSpeed)
+            
+        if self.lastFrame>=self.turnFrame and self.lastFrame<self.changeFrame+self.turnFrame:
+            self.angleNow+=90/self.changeFrame*self.turnSign[self.actionNum]
+            self.setSpeed(self.angleNow,self.initialSpeed)
+        if self.rect.left>=620 or self.rect.right<=60 or self.rect.top>=690 or self.rect.bottom<=30:
+            self.kill()
+    
+    def fire(self, frame, bullets, effects):
+        self.fireFrame+=1
+        if self.fireFrame%self.fireInterval==0:
+            sendFireSound(2)
+            angle=random.random()*360
+            new_bullet=part2_acc_bullet()
+            new_bullet.initial(self.tx,self.ty,0)
+            new_bullet.setSpeed(angle,0.2)
+            new_bullet.setAccSpeed(angle,0.2,4,60,50)
+            #new_bullet.doColorCode(random.randint(0,6))
+            new_bullet.loadColor('green')
+            bullets.add(new_bullet)
+
+    def dropItem(self, items):
+        self.createItem(items,0,2)
+        self.createItem(items,1,3)
 
 #  boss zone
 
@@ -1201,7 +1249,13 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
     ifMidpath=global_var.get_value('DuelClassLevel_ifMidpath')
     midPathFrame=global_var.get_value('DeulClassLevel_midpathFrame')
     if ifMidpath:
-        frameAfterMidpath=frame-midPathFrame
+        if frame<=8200:
+            frameAfterMidpath=0
+        else:
+            if midPathFrame>=8200:
+                frameAfterMidpath=frame-midPathFrame
+            else:
+                frameAfterMidpath=frame-8200
 
     if frame==100:
         seperate=40
@@ -1330,7 +1384,7 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
             boss.cardNum=1
             boss.ifSpell=True
     
-    if ifMidpath:
+    if ifMidpath and frame>=3700:
 
         if frame<=8200:
             if frame%50==0:
@@ -1339,4 +1393,35 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
                 new_enemy.initialize(ex,20,0,-1)
                 new_enemy.selfTarget(player.cx,player.cy,2.8)
                 #new_enemy.actionNum=1
+                enemys.add(new_enemy)
+    
+    if ifMidpath and frame>=8200:
+        if frameAfterMidpath>=200 and frameAfterMidpath<=400:
+            if frameAfterMidpath%30==0:
+                new_enemy=part5_enemy_kedama()
+                new_enemy.initialize(340+160,20,0,-1)
+                new_enemy.actionNum=0
+                new_enemy.colorNum=0
+                enemys.add(new_enemy)
+        
+        
+                new_enemy=part5_enemy_kedama()
+                new_enemy.initialize(340-160,20,0,-1)
+                new_enemy.actionNum=1
+                new_enemy.colorNum=0
+                enemys.add(new_enemy)
+        
+        if frameAfterMidpath>=500 and frameAfterMidpath<=700:
+            if frameAfterMidpath%30==0:
+                new_enemy=part5_enemy_kedama()
+                new_enemy.initialize(340+160,700,0,-1)
+                new_enemy.actionNum=2
+                new_enemy.colorNum=1
+                enemys.add(new_enemy)
+        
+        
+                new_enemy=part5_enemy_kedama()
+                new_enemy.initialize(340-160,700,0,-1)
+                new_enemy.actionNum=3
+                new_enemy.colorNum=0
                 enemys.add(new_enemy)
