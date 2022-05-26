@@ -642,7 +642,10 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
                     start1=global_var.get_value('bgmContinuePos')[0]
                     pygame.mixer.music.play(loops=-1,start=start1/1000)
                 else:
-                    pygame.mixer.music.load('resource/bgm/金卡雷 - 引燃夜空的星火.mp3')
+                    if global_var.get_value('levelSign')==0:
+                        pygame.mixer.music.load('resource/bgm/金卡雷 - 引燃夜空的星火.mp3')
+                    elif global_var.get_value('levelSign')==1:
+                        pygame.mixer.music.load('resource/bgm/金卡雷 - 风中花，雪中月.mp3')
                     start1=global_var.get_value('bgmContinuePos')[1]
                     pygame.mixer.music.play(loops=-1,start=start1/1000)
                 global_var.set_value('pauseSelectNum',0)

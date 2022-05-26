@@ -365,10 +365,12 @@ class Menu():
                     global_var.set_value('ifSpellTest',self.ifSpell)
                     global_var.set_value('spellNum',self.testSpellNum)
                     pygame.mixer.music.stop()
+                    '''
                     pygame.mixer.music.load('resource/bgm/lightnessOnTheWay.mp3')   # 载入背景音乐文件
                     #pygame.mixer.music.load('resource/bgm/上海アリス幻樂団 - 死体旅行~ Be of good cheer!.mp3')
                     pygame.mixer.music.set_volume(0.6)                  # 设定背景音乐音量
-                    pygame.mixer.music.play(loops=-1)
+                    pygame.mixer.music.play(loops=-1)'''
                     self.menuStair=0
+
                     global_var.set_value('menu',False)
                     self.playerReset=True

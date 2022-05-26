@@ -13,6 +13,7 @@ import Slave
 import global_var
 import Effect
 import gameRule
+import danmaku
 
 def sendFireSound(num):
     index=str(num)
@@ -381,6 +382,28 @@ class part6_rice_to_laserBullet_bullet(Bullet.rice_Bullet):
             new_bullet.setSpeed(self.angle,12)
             new_bullet.doColorCode(3)
             bullets.add(new_bullet)
+            self.kill()
+
+class sanae_noneSpell_1_orb_bullet(part2_acc_bullet):
+    def __init__(self):
+        super(sanae_noneSpell_1_orb_bullet,self).__init__()
+        self.stdAngle=0
+        self.stdSpeed=0
+    def update(self, screen, bullets, effects):
+        self.lastFrame+=1
+        self.movement()
+        self.motionStrate()
+        self.split(bullets)
+        if self.lastFrame<=self.createMax and self.ifDrawCreate:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
+        self.checkValid()
+    
+    def split(self,bullets):
+        if self.lastFrame==self.accFrame+self.accStart:
+            sendKiraSound()
+            danmaku.polyByLength(bullets,Bullet.orb_Bullet,10,3,self.stdSpeed,self.stdAngle,(self.tx,self.ty),'green',False)
             self.kill()
 
 #  enemy zone
@@ -1447,6 +1470,176 @@ class sanaeMidpath(DADcharacter.Boss):
             self.attackAnimeSign=False
             self.frameLimit=20*60
 
+class SanaeStageFinal(sanaeMidpath):
+    def __init__(self):
+            super(SanaeStageFinal,self).__init__()
+            self.maxSpell=9
+    
+    def attack(self, frame, items, effects, bullets, backgrounds, enemys, slaves, player):
+        if self.cardNum==0: 
+            self.noneSpell_0(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+        if self.cardNum==1:
+            if not self.ifSpell:
+                self.noneSpell_1(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+            else:
+                self.spell_1(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+        if self.cardNum==2:
+            if not self.ifSpell:
+                self.noneSpell_2(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+            else:
+                self.spell_2(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+        if self.cardNum==3:
+            if not self.ifSpell:
+                self.noneSpell_3(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+            else:
+                self.spell_3(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+        if self.cardNum==4:
+            if not self.ifSpell:
+                self.noneSpell_4(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+            else:
+                self.spell_4(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+        if self.cardNum==5:
+            if not self.ifSpell:
+                self.noneSpell_5(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+            else:
+                self.spell_5(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+        if self.cardNum==6:
+            if not self.ifSpell:
+                self.noneSpell_6(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+            else:
+                self.spell_6(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+        if self.cardNum==7:
+            if not self.ifSpell:
+                self.noneSpell_7(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+            else:
+                self.spell_7(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+        if self.cardNum==8:
+            if not self.ifSpell:
+                self.noneSpell_8(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+            else:
+                self.spell_8(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+        if self.cardNum==9:
+            if not self.ifSpell:
+                self.noneSpell_9(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+            else:
+                self.spell_9(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+    
+
+    def noneSpell_0(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
+        self.maxHealth=20000
+        self.health=20000
+        self.reset=True
+        self.frameLimit=1200
+    
+    def noneSpell_1(self, frame, items, effects, bullets, backgrounds, enemys, slaves, player):
+        if self.reset: #start reset, individualized
+            self.lastFrame=0
+            self.reset=False
+            self.maxHealth=30000
+            self.health=self.maxHealth
+            self.gotoPosition(340-self.bulletAdj[0],200-self.bulletAdj[1],40)
+            self.randomAngle=random.random()*360
+            self.frameLimit=3600
+            self.frameLimitMax=self.frameLimit
+            self.startFrame=120
+            self.attackAnimeSign=True
+            self.attackLightEffectSign=True
+
+            #spell zone
+            self.fireInterval=120
+
+        inSpellFrame=self.lastFrame-self.startFrame
+
+        if self.lastFrame>=self.startFrame:
+            if inSpellFrame%self.fireInterval==0:
+                new_bullet=Bullet.small_Bullet()
+                new_bullet.initial(self.tx,self.ty,0)
+                new_bullet.selfTarget(player.cx,player.cy,2)
+                new_bullet.countAngle()
+                self.fireAngle=new_bullet.angle
+                stdSpeed_main=4+random.random()*2
+                self.stdSpeed_sub=random.random()+1.5
+                for i in range(3):
+                    sendFireSound(1)
+                    new_bullet=sanae_noneSpell_1_orb_bullet()
+                    new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
+                    new_bullet.cancalable=False
+                    new_bullet.setSpeed(self.fireAngle+i*(360/3),stdSpeed_main)
+                    new_bullet.setAccSpeed(self.fireAngle+i*(360/3),stdSpeed_main,0,10,20)
+                    new_bullet.loadColor('lightGreen')
+                    new_bullet.stdSpeed=self.stdSpeed_sub
+                    new_bullet.stdAngle=self.fireAngle
+                    bullets.add(new_bullet)
+            
+            if inSpellFrame%self.fireInterval==60:
+                sendFireSound(1)
+                danmaku.polyByLength(bullets,Bullet.orb_Bullet,7,3,self.stdSpeed_sub/10*9,self.fireAngle-180,(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1]),'green')
+                #angle=random.random()*360
+                '''for i in range(20):
+                    sendFireSound(1)
+                    new_bullet=Bullet.orb_Bullet()
+                    new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
+                    new_bullet.setSpeed(angle+i*(360/20),4)
+                    new_bullet.loadColor('lightGreen')
+                    bullets.add(new_bullet)'''
+
+        
+        if self.health<=0 or self.frameLimit<=0: #end check, non_spell
+            self.cancalAllBullet(bullets,items,effects,True)
+            self.reset=True
+            self.ifSpell=True
+            self.health=20000
+            self.attackLightEffectSign=False
+            self.attackAnimeSign=False
+
+    def spell_1(self, frame, items, effects, bullets, backgrounds, enemys, slaves, player):
+        if self.reset:
+            self.lastFrame=0
+            self.reset=False
+            self.maxHealth=45000
+            self.health=self.maxHealth
+            self.gotoPosition(340,200,30)
+            self.randomAngle=random.random()*360
+            self.frameLimit=7200
+            self.frameLimitMax=self.frameLimit
+            self.startFrame=120
+            self.attackAnimeSign=False
+            self.attackLightEffectSign=False
+
+            # spell zone
+            self.cardBonus=10000000
+            self.spellName='Wind Sign[Hogsmade Hurricane]'
+            self.chSpellName=u'御风「霍格莫德飓风」'
+            global_var.get_value('spell_sound').play()
+            player.spellBonus=True
+            # send spell effect
+            new_effect=Effect.sanaeFaceSpell()
+            effects.add(new_effect)
+            self.doSpellCardAttack(effects)
+        
+
+
+        if self.health<=0 or self.frameLimit<=0:
+            self.cancalAllBullet(bullets,items,effects,True)
+            self.reset=True
+            self.ifSpell=True
+            self.cardNum+=1
+            self.health=20000
+            if self.frameLimit>0:
+                self.createItem(items,0,5)
+                self.createItem(items,1,20)
+                ifBonus=player.spellBonus
+            else:
+                ifBonus=False
+            self.drawResult(effects,self.cardBonus,ifBonus)
+            if ifBonus:
+                player.score+=self.cardBonus
+                global_var.get_value('bonus_sound').play()
+            global_var.get_value('spell_end').play()
+            self.attackLightEffectSign=False
+            self.attackAnimeSign=False
+
+
 def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player):
 
     if frame==1:# load in section, initialize background, and music
@@ -1676,3 +1869,27 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
                     new_enemy.actionNum=i
                     new_enemy.colorNum=i+2
                     enemys.add(new_enemy)
+
+        if frameAfterMidpath==2500:
+            new_boss=SanaeStageFinal()
+            #new_boss=DADcharacter.Boss()
+            new_boss.initial(640,-200)
+            bosses.add(new_boss)
+    
+        if frameAfterMidpath==2590:
+            for boss in bosses:
+                boss.gotoPosition(340,200,90)
+        
+        if frameAfterMidpath==2690:
+            pygame.mixer.music.fadeout(1000)
+
+        if frameAfterMidpath==2790:
+            global_var.set_value('ifBoss',True)
+            pygame.mixer.music.stop()
+            #pygame.mixer.music.load('resource/bgm/lightnessBoss.mp3') 
+            pygame.mixer.music.load('resource/bgm/金卡雷 - 风中花，雪中月.mp3') 
+            pygame.mixer.music.set_volume(0.6) 
+            pygame.mixer.music.play(loops=-1)  
+            for boss in bosses:
+                boss.cardNum=1
+                boss.ifSpell=False

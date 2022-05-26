@@ -305,7 +305,12 @@ while running:
             if global_var.get_value('restarting'):
                 frame=0
                 if global_var.get_value('ifTest'):
-                    frame=10020#for test
+                    if global_var.get_value('levelSign')==0:
+                        frame=10020#for test
+                    elif global_var.get_value('levelSign')==1:
+                        frame=13020
+                        global_var.set_value('DuelClassLevel_ifMidpath',True)
+                        global_var.set_value('DeulClassLevel_midpathFrame',13020-2400)
                 global_var.set_value('restarting',False)
         frameText = myfont.render('F: '+str(frame), True, (255, 255, 255))
         
@@ -591,7 +596,12 @@ while running:
             player.power=100
             if global_var.get_value('ifTest'):
                 player.power=testFire
-                frame=10020
+                if global_var.get_value('levelSign')==0:
+                    frame=10020#for test
+                elif global_var.get_value('levelSign')==1:
+                    frame=13020
+                    global_var.set_value('DuelClassLevel_ifMidpath',True)
+                    global_var.set_value('DeulClassLevel_midpathFrame',13020-2400)
     pressed_keys_last=pressed_keys
     pygame.display.flip()
     #pygame.display.update()
