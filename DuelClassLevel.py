@@ -1,5 +1,6 @@
 from imp import new_module
 from pickle import FALSE
+from xxlimited import new
 import pygame,sys
 import random
 import math
@@ -344,6 +345,44 @@ class midpath_spell3_mid_snow_bullet(Bullet.mid_Bullet):
 
     def signalRecieve(self):
         self.signalReciever=global_var.get_value('midPathSpell3Signal')
+
+class part6_base_laserBullet(midpath_spell2_laser_bullet_main):
+    def __init__(self,ratio=8,leng=20,speed=5):
+        super(part6_base_laserBullet,self).__init__()
+        self.ratio=ratio
+        self.surf = pygame.Surface((self.ratio,self.ratio))
+        self.surf.fill((255,255,255))
+        self.rect = self.surf.get_rect()            
+        self.speed=speed
+        self.length=leng
+    def motionStrate(self):
+        pass
+
+class part6_rice_to_laserBullet_bullet(Bullet.rice_Bullet):
+    def __init__(self):
+        super(part6_rice_to_laserBullet_bullet,self).__init__()
+        self.transFrame=90
+
+    def update(self, screen, bullets, effects):
+        self.lastFrame+=1
+        self.movement()
+        self.trans(bullets)
+        if self.lastFrame<=self.createMax and self.ifDrawCreate:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
+        self.checkValid()
+    
+    def trans(self,bullets):
+        if self.lastFrame==self.transFrame:
+            new_bullet=part6_base_laserBullet(6,20,12)
+            new_bullet.initial(self.tx,self.ty,0)
+            self.countAngle()
+            new_bullet.setSpeed(self.angle,12)
+            new_bullet.doColorCode(3)
+            bullets.add(new_bullet)
+            self.kill()
+
 #  enemy zone
 
 
@@ -766,6 +805,114 @@ class part5_enemy_kedama(DADcharacter.kedama):
     def dropItem(self, items):
         self.createItem(items,0,2)
         self.createItem(items,1,3)
+
+class part6_winged_butterfly(DADcharacter.butterfly):
+    def __init__(self):
+        super(part6_winged_butterfly,self).__init__()
+        self.actionNum=0
+        self.inFrame=70
+        self.decFrame=20
+        self.stayFrame=7*60
+        self.incFrame=20
+        self.outFrame=70
+        self.initialSpeed=2.0
+        self.speedNow=self.initialSpeed
+        self.fireInterval=2
+        self.fireFrame=0
+        self.health=5000
+        self.ifFire=False
+        self.fireAngle=0
+    def ai_move(self):
+        self.ifFire=False
+        if self.lastFrame==1:
+            self.setSpeed(90,self.initialSpeed)
+        elif self.lastFrame>self.inFrame and self.lastFrame<=self.inFrame+self.decFrame:
+            self.speedNow-=self.initialSpeed/self.decFrame
+            self.setSpeed(90,self.speedNow)
+        elif self.lastFrame<=self.inFrame+self.decFrame+self.stayFrame and self.lastFrame>self.inFrame+self.decFrame:
+            self.ifFire=True
+        elif self.lastFrame<=self.inFrame+self.decFrame+self.stayFrame+self.incFrame and self.lastFrame>self.inFrame+self.decFrame+self.stayFrame:
+            self.speedNow+=self.initialSpeed/self.incFrame
+            self.setSpeed(270,self.speedNow)
+        elif self.lastFrame>=self.inFrame+self.decFrame+self.stayFrame+self.incFrame+self.outFrame:
+            self.kill()
+    
+    def fire(self, frame, bullets, effects):
+        if self.ifFire:
+            self.fireFrame+=1
+            if self.fireFrame==1:
+                new_bullet=Bullet.small_Bullet()
+                new_bullet.initial(self.tx,self.ty,0)
+                px=global_var.get_value('player1x')
+                py=global_var.get_value('player1y')
+                new_bullet.selfTarget(px,py,3)
+                new_bullet.countAngle()
+                #self.fireAngle=new_bullet.angle
+                self.fireAngle=90-30+random.random()*20
+            if self.fireFrame%self.fireInterval==0:
+                sendFireSound(2)
+                angle=self.fireAngle
+                angleAdj=80*math.sin(self.lastFrame*3/180*math.pi)+90
+                for i in (-1,1):
+                    for j in range(3):
+                        fireAngle=angle+i*angleAdj
+                        new_bullet=Bullet.sharp_Bullet()
+                        radius=30
+                        rx=self.tx+radius*math.cos(fireAngle/180*math.pi)
+                        ry=self.ty+radius*math.sin(fireAngle/180*math.pi)
+                        new_bullet.initial(rx,ry,0)
+                        new_bullet.setSpeed(fireAngle,7.5+1.3*j)
+                        new_bullet.doColorCode(4)
+                        bullets.add(new_bullet)
+
+class part6_side_enemy(DADcharacter.spirit):
+    def __init__(self):
+        super(part6_side_enemy,self).__init__()
+        self.colorNum=4
+        self.actionNum=0
+        self.inFrame=60
+        self.decFrame=20
+        self.stayFrame=70
+        self.incFrame=20
+        self.outFrame=60
+        self.initialSpeed=2.5
+        self.outSpeed=5
+        self.speedNow=self.initialSpeed
+        self.initialAngle=0
+        self.fireInterval=60
+        self.fireFrame=random.randint(0,self.fireInterval)
+        self.ifFire=False
+    def ai_move(self):
+        self.ifFire=False
+        if self.lastFrame==1:
+            self.initialAngle=90+20+random.random()*10
+            self.setSpeed(self.initialAngle,self.speedNow)
+        elif self.lastFrame>self.inFrame and self.lastFrame<=self.inFrame+self.decFrame:
+            self.speedNow-=self.initialSpeed/self.decFrame
+            self.setSpeed(self.initialAngle,self.speedNow)
+        elif self.lastFrame>self.inFrame+self.decFrame and self.lastFrame<=self.inFrame+self.decFrame+self.stayFrame:
+            self.ifFire=True
+        elif self.lastFrame>self.inFrame+self.decFrame+self.stayFrame and self.lastFrame<=self.inFrame+self.decFrame+self.stayFrame+self.incFrame:
+            self.speedNow+=self.outSpeed/self.incFrame
+            px=global_var.get_value('player1x')
+            py=global_var.get_value('player1y')
+            self.selfTarget(px,py,self.speedNow)
+        if self.rect.left>=620 or self.rect.right<=60 or self.rect.top>=690 or self.rect.bottom<=30:
+            self.kill()
+    
+    def fire(self, frame, bullets, effects):
+        if self.ifFire:
+            self.fireFrame+=1
+            if self.fireFrame%self.fireInterval==0:
+                sendFireSound(2)
+                new_bullet=part6_rice_to_laserBullet_bullet()
+                new_bullet.initial(self.tx,self.ty,0)
+                px=global_var.get_value('player1x')
+                py=global_var.get_value('player1y')
+                new_bullet.selfTarget(px,py,1.7)
+                new_bullet.doColorCode(3)
+                bullets.add(new_bullet)
+
 
 #  boss zone
 
@@ -1424,4 +1571,17 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
                 new_enemy.initialize(340-160,700,0,-1)
                 new_enemy.actionNum=3
                 new_enemy.colorNum=0
+                enemys.add(new_enemy)
+        
+        if frameAfterMidpath==850:
+            new_enemy=part6_winged_butterfly()
+            new_enemy.initialize(340-170,20,0,-1)
+            enemys.add(new_enemy)
+        
+        if frameAfterMidpath>=800 and frameAfterMidpath<=1000:
+            if frameAfterMidpath%20==0:
+                ex=340+140+50*random.random()
+                ey=20
+                new_enemy=part6_side_enemy()
+                new_enemy.initialize(ex,ey,0,-1)
                 enemys.add(new_enemy)

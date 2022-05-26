@@ -571,7 +571,7 @@ while running:
             boss.displayPercentHealth(screen,myfont)
 
         gF.showFpsBullet(screen,bigfont,frame,bulletSum,log)
-        gameRule.displayUi(screen,player,bigfont)
+        gameRule.displayUi(screen,player,bigfont,frame)
         screen.blit(frameText,(0,0))
         #gF.drawBlinder(screen,blinder)
 

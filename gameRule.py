@@ -1,3 +1,4 @@
+from tkinter import Frame
 import pygame,sys
 import random
 import math
@@ -313,7 +314,7 @@ def drawPlayer(screen,player,frame):
         if frame%4<2:
             player.draw(screen)
 
-def displayUi(screen,player,myfont):
+def displayUi(screen,player,myfont,frame):
     life=player.life
     spell=player.boom
     lifeImage=global_var.get_value('lifeSign')
@@ -350,15 +351,16 @@ def displayUi(screen,player,myfont):
     scoreTemp=str(player.score)
     #scoreFinal=returnScoreFormat(scoreTemp)
     scoreShown=global_var.get_value('scoreShown')
-    minimumScoreStep=111
-    scoreSub=player.score-scoreShown
-    if scoreSub<=111:
-        scoreShown=player.score
-    else:
-        while minimumScoreStep<=scoreSub:
-            minimumScoreStep=minimumScoreStep*10+1
-        minimumScoreStep=round((minimumScoreStep-1)/10)
-        scoreShown+=minimumScoreStep
+    if frame%1==0:
+        minimumScoreStep=1
+        scoreSub=player.score-scoreShown
+        if scoreSub<=1:
+            scoreShown=player.score
+        else:
+            while minimumScoreStep<=scoreSub:
+                minimumScoreStep=minimumScoreStep*10+1
+            minimumScoreStep=round((minimumScoreStep-1)/10)
+            scoreShown+=minimumScoreStep
     global_var.set_value('scoreShown',scoreShown)
     #print(scoreShown,scoreTemp)
     scoreFinal=returnScoreFormat(str(scoreShown))
