@@ -810,6 +810,7 @@ class part6_winged_butterfly(DADcharacter.butterfly):
     def __init__(self):
         super(part6_winged_butterfly,self).__init__()
         self.actionNum=0
+
         self.inFrame=70
         self.decFrame=20
         self.stayFrame=7*60
@@ -848,7 +849,11 @@ class part6_winged_butterfly(DADcharacter.butterfly):
                 new_bullet.selfTarget(px,py,3)
                 new_bullet.countAngle()
                 #self.fireAngle=new_bullet.angle
-                self.fireAngle=90-30+random.random()*20
+                if self.actionNum==0:
+                    self.fireAngle=90-30+random.random()*20
+                elif self.actionNum==1:
+                    self.fireAngle=90+30-random.random()*20
+
             if self.fireFrame%self.fireInterval==0:
                 sendFireSound(2)
                 angle=self.fireAngle
@@ -870,7 +875,7 @@ class part6_side_enemy(DADcharacter.spirit):
         super(part6_side_enemy,self).__init__()
         self.colorNum=4
         self.actionNum=0
-        self.inFrame=60
+        self.inFrame=50+random.randint(0,30)
         self.decFrame=20
         self.stayFrame=70
         self.incFrame=20
@@ -878,14 +883,14 @@ class part6_side_enemy(DADcharacter.spirit):
         self.initialSpeed=2.5
         self.outSpeed=5
         self.speedNow=self.initialSpeed
-        self.initialAngle=0
+        self.initialAngle=90+20+random.random()*10
         self.fireInterval=60
         self.fireFrame=random.randint(0,self.fireInterval)
         self.ifFire=False
     def ai_move(self):
         self.ifFire=False
         if self.lastFrame==1:
-            self.initialAngle=90+20+random.random()*10
+            #self.initialAngle=90+20+random.random()*10
             self.setSpeed(self.initialAngle,self.speedNow)
         elif self.lastFrame>self.inFrame and self.lastFrame<=self.inFrame+self.decFrame:
             self.speedNow-=self.initialSpeed/self.decFrame
@@ -911,9 +916,69 @@ class part6_side_enemy(DADcharacter.spirit):
                 py=global_var.get_value('player1y')
                 new_bullet.selfTarget(px,py,1.7)
                 new_bullet.doColorCode(3)
+                new_bullet.countAngle()
+                angle=new_bullet.angle
                 bullets.add(new_bullet)
+                for i in (-2,-1,1,2):
+                    new_bullet=part3_acc_bullet()
+                    new_bullet.initial(self.tx,self.ty,0)
+                    new_bullet.setSpeed(angle+i*30,1.7)
+                    new_bullet.setAccSpeed(angle+i*30,1.7,5,30,90)
+                    new_bullet.doColorCode(3)
+                    bullets.add(new_bullet)
 
 
+class part6_side_enemy_2(part6_side_enemy):
+    def __init__(self):
+        super(part6_side_enemy_2,self).__init__()
+        self.fireInterval=30
+        self.fireFrame=random.randint(0,self.fireInterval)
+        self.initialAngle=90-20-random.random()*10
+    def fire(self, frame, bullets, effects):
+        if self.ifFire:
+            self.fireFrame+=1
+            if self.fireFrame%self.fireInterval==0:
+                angle=random.random()*360
+                sendFireSound(2)
+                for i in range(12):
+                    new_bullet=part3_acc_bullet()
+                    new_bullet.initial(self.tx,self.ty,0)
+                    new_bullet.setSpeed(angle+i*(360/12),1.7)
+                    new_bullet.setAccSpeed(angle+i*(360/12),1.7,5,40,50)
+                    new_bullet.doColorCode(10)
+                    bullets.add(new_bullet)
+    
+class part7_enemy_spirit(DADcharacter.spirit):
+    def __init__(self):
+        super(part7_enemy_spirit,self).__init__()
+        self.actionNum=0
+        self.initialAngleList=[0,180,0,180]
+        self.health=800
+        self.fireInterval=60
+        self.fireFrame=random.randint(0,self.fireInterval)
+    def ai_move(self):
+        if self.lastFrame==1:
+            self.setSpeed(self.initialAngleList[self.actionNum],2.3)
+        if self.rect.left>=620 or self.rect.right<=60 or self.rect.top>=690 or self.rect.bottom<=30:
+            self.kill()
+    
+    def fire(self, frame, bullets, effects):
+        self.fireFrame+=1
+        if self.fireFrame%self.fireInterval==0:
+            sendFireSound(3)
+            new_bullet=Bullet.small_Bullet()
+            new_bullet.initial(self.tx,self.ty,0)
+            px=global_var.get_value('player1x')
+            py=global_var.get_value('player1y')
+            new_bullet.selfTarget(px,py,3)
+            new_bullet.countAngle()
+            angle=new_bullet.angle
+            for i in (-1,0,1):
+                new_bullet=Bullet.small_Bullet()
+                new_bullet.initial(self.tx,self.ty,0)
+                new_bullet.setSpeed(angle+i*2,2.4)
+                new_bullet.loadColor('green')
+                bullets.add(new_bullet)
 #  boss zone
 
 class sanaeMidpath(DADcharacter.Boss):
@@ -1068,11 +1133,11 @@ class sanaeMidpath(DADcharacter.Boss):
         if self.reset:
             self.lastFrame=0
             self.reset=False
-            self.maxHealth=35000
+            self.maxHealth=39000
             self.health=self.maxHealth
             self.gotoPosition(340,200,30)
             self.randomAngle=random.random()*360
-            self.frameLimit=3000
+            self.frameLimit=3600
             self.frameLimitMax=self.frameLimit
             self.startFrame=120
             self.attackAnimeSign=True
@@ -1160,7 +1225,7 @@ class sanaeMidpath(DADcharacter.Boss):
         if self.reset:
             self.lastFrame=0
             self.reset=False
-            self.maxHealth=40000
+            self.maxHealth=50000
             self.health=self.maxHealth
             self.gotoPosition(340,200,30)
             self.randomAngle=random.random()*360
@@ -1269,7 +1334,7 @@ class sanaeMidpath(DADcharacter.Boss):
         if self.reset:
             self.lastFrame=0
             self.reset=False
-            self.maxHealth=40000
+            self.maxHealth=50000
             self.health=self.maxHealth
             self.gotoPosition(340,200,30)
             self.randomAngle=random.random()*360
@@ -1575,6 +1640,7 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         
         if frameAfterMidpath==850:
             new_enemy=part6_winged_butterfly()
+            new_enemy.actionNum=0
             new_enemy.initialize(340-170,20,0,-1)
             enemys.add(new_enemy)
         
@@ -1585,3 +1651,28 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
                 new_enemy=part6_side_enemy()
                 new_enemy.initialize(ex,ey,0,-1)
                 enemys.add(new_enemy)
+        
+        if frameAfterMidpath==1300:
+            new_enemy=part6_winged_butterfly()
+            new_enemy.actionNum=1
+            new_enemy.initialize(340+170,20,0,-1)
+            enemys.add(new_enemy)
+
+        if frameAfterMidpath>=1250 and frameAfterMidpath<=1450:
+            if frameAfterMidpath%20==0:
+                ex=340-140-50*random.random()
+                ey=20
+                new_enemy=part6_side_enemy_2()
+                new_enemy.initialize(ex,ey,0,-1)
+                enemys.add(new_enemy)
+        
+        if frameAfterMidpath>=1800 and frameAfterMidpath<=2100:
+            if frameAfterMidpath%30==0:
+                exList=[50,630,50,630]
+                eyList=[100,190,280,370]
+                for i in range(0,4):
+                    new_enemy=part7_enemy_spirit()
+                    new_enemy.initialize(exList[i],eyList[i],0,-1)
+                    new_enemy.actionNum=i
+                    new_enemy.colorNum=i+2
+                    enemys.add(new_enemy)

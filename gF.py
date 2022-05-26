@@ -635,7 +635,10 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
                 global_var.set_value('pause',False)
                 pygame.mixer.music.stop()
                 if not global_var.get_value('ifBoss'):
-                    pygame.mixer.music.load('resource/bgm/lightnessOnTheWay.mp3')
+                    if global_var.get_value('levelSign')==0:
+                        pygame.mixer.music.load('resource/bgm/lightnessOnTheWay.mp3')
+                    elif global_var.get_value('levelSign')==1:
+                        pygame.mixer.music.load('resource/bgm/yujiMidpath.mp3')
                     start1=global_var.get_value('bgmContinuePos')[0]
                     pygame.mixer.music.play(loops=-1,start=start1/1000)
                 else:

@@ -456,7 +456,7 @@ while running:
 
             #collide detectž
             
-            #gameRule.missDetect(player,bullets,enemys,effects,miss_sound,items,slaves)
+            gameRule.missDetect(player,bullets,enemys,effects,miss_sound,items,slaves)
             
 
 
