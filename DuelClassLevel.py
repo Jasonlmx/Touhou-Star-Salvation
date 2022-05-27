@@ -1,6 +1,3 @@
-from imp import new_module
-from pickle import FALSE
-from xxlimited import new
 import pygame,sys
 import random
 import math
@@ -1526,6 +1523,7 @@ class SanaeStageFinal(sanaeMidpath):
     def __init__(self):
             super(SanaeStageFinal,self).__init__()
             self.maxSpell=9
+            self.boomImmune=True
     
     def attack(self, frame, items, effects, bullets, backgrounds, enemys, slaves, player):
         if self.cardNum==0: 
@@ -1655,6 +1653,7 @@ class SanaeStageFinal(sanaeMidpath):
             self.frameLimit=7200
             self.frameLimitMax=self.frameLimit
             self.startFrame=120
+            self.framePunishment=1000
             self.fireInterval=30
             self.attackAnimeSign=True
             self.attackLightEffectSign=True
@@ -1768,6 +1767,57 @@ class SanaeStageFinal(sanaeMidpath):
                 self.health=20000
                 self.attackLightEffectSign=False
                 self.attackAnimeSign=False
+    
+    def spell_2(self, frame, items, effects, bullets, backgrounds, enemys, slaves, player):
+        if self.reset:
+            self.lastFrame=0
+            self.reset=False
+            self.maxHealth=45000
+            self.health=self.maxHealth
+            self.gotoPosition(340-self.bulletAdj[0],220-self.bulletAdj[1],30)
+            self.randomAngle=random.random()*360
+            self.frameLimit=7200
+            self.frameLimitMax=self.frameLimit
+            self.startFrame=120
+            self.fireInterval=30
+            self.attackAnimeSign=False
+            self.attackLightEffectSign=False
+
+            # spell zone
+            self.cardBonus=10000000
+            self.spellName='Thunder Punishment[Thunder of Grand Miracle]'
+            self.chSpellName=u'雷罚「大奇迹之雷」'
+            global_var.get_value('spell_sound').play()
+            player.spellBonus=True
+            # send spell effect
+            new_effect=Effect.sanaeFaceSpell()
+            effects.add(new_effect)
+            self.doSpellCardAttack(effects)
+        
+        self.cardBonus-=self.framePunishment
+        inSpellFrame=self.lastFrame-self.startFrame
+
+        
+        
+        if self.health<=0 or self.frameLimit<=0:
+            self.cancalAllBullet(bullets,items,effects,True)
+            self.reset=True
+            self.ifSpell=False
+            self.cardNum+=1
+            self.health=20000
+            if self.frameLimit>0:
+                self.createItem(items,0,5)
+                self.createItem(items,1,20)
+                ifBonus=player.spellBonus
+            else:
+                ifBonus=False
+            self.drawResult(effects,self.cardBonus,ifBonus)
+            if ifBonus:
+                player.score+=self.cardBonus
+                global_var.get_value('bonus_sound').play()
+            global_var.get_value('spell_end').play()
+            self.attackLightEffectSign=False
+            self.attackAnimeSign=False
 
 def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player):
 
