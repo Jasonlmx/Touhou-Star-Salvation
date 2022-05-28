@@ -1714,7 +1714,7 @@ class sharp_Bullet(rice_Bullet):
         self.surf = pygame.Surface((8,8))
         self.imageList=global_var.get_value('sharpBulletImageList')
         self.rect = self.surf.get_rect()
-        self.surf.fill((255,255,255))
+        self.surf.fill((255,0,0))
         self.type=13
     
     def doColorCode(self,code):
@@ -1975,8 +1975,8 @@ class laser_line_sub(Bullet):
         self.lastFrame+=1
         self.movement()
         self.checkValid()
-        #if self.lastFrame<=1:
-        #self.drawBullet(screen)
+        '''if self.lastFrame<=1:
+            self.drawBullet(screen)'''
         
 
 #bullets modified for lightness level

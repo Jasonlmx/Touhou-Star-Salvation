@@ -455,6 +455,63 @@ class sanae_spell_1_gravity_bullet(part4_gravity_bullet):
         super(sanae_spell_1_gravity_bullet,self).__init__()          
         self.validAccuracy=(10,10,10,10)
 
+class sanae_spell_2_lightning_bullet(Bullet.sharp_Bullet):
+    def __init__(self):
+        super(sanae_spell_2_lightning_bullet,self).__init__()
+        self.speedMax=7.2
+        self.changeFrame=3
+        self.movingFrame=10
+        self.stayFrame=3
+        self.speedNow=self.speedMax+0.1
+        self.angleNow=0
+        self.stdAngle=40
+        self.turnCount=0
+        self.ifAddHitPoint=False
+    def update(self, screen, bullets, effects):
+        self.lastFrame+=1
+        self.movement()
+        self.motionStrate()
+        self.addHitPoint(bullets)
+        if self.lastFrame<=self.createMax and self.ifDrawCreate:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
+        self.checkValid()
+        #screen.blit(self.surf,self.rect)
+
+    def addHitPoint(self,bullets):
+        judgeFrame=(self.lastFrame+self.changeFrame)%(self.changeFrame*2+self.movingFrame+self.stayFrame)
+        if judgeFrame<=self.changeFrame+self.movingFrame and judgeFrame>self.changeFrame and self.ifAddHitPoint:
+            if self.distance<=40:
+                angleDict=[0,180,180,180]
+                radius=[0,self.speedMax*2,self.speedMax*4,self.speedMax*6]
+                for i in range(4):
+                    new_bullet=Bullet.laser_line_sub()
+                    angle=self.angleNow+angleDict[i]
+                    nx=self.tx+radius[i]*math.cos(angle/180*math.pi)
+                    ny=self.ty+radius[i]*math.sin(angle/180*math.pi)
+                    new_bullet.initial(nx,ny,0)
+                    bullets.add(new_bullet)
+    def motionStrate(self):
+        judgeFrame=(self.lastFrame+self.changeFrame)%(self.changeFrame*2+self.movingFrame+self.stayFrame)
+        if judgeFrame<=self.changeFrame:
+            self.speedNow+=self.speedMax/self.changeFrame
+            self.setSpeed(self.angleNow,self.speedNow)
+        elif judgeFrame<=self.changeFrame+self.movingFrame:
+            pass
+        elif judgeFrame<=self.changeFrame*2+self.movingFrame:
+            self.speedNow-=self.speedMax/self.changeFrame
+            self.setSpeed(self.angleNow,self.speedNow)
+        else:
+            if judgeFrame==self.changeFrame*2+self.movingFrame+self.stayFrame-1:
+                self.turnCount+=1
+                if self.turnCount%2==0:
+                    self.angleNow-=self.stdAngle*2
+                else:
+                    self.angleNow+=self.stdAngle*2
+                self.setSpeed(self.angleNow,self.speedNow)
+
+
 #  enemy zone
 
 
@@ -1603,7 +1660,7 @@ class SanaeStageFinal(sanaeMidpath):
         if self.lastFrame>=self.startFrame:
             if inSpellFrame%self.fireInterval==0:
                 new_bullet=Bullet.small_Bullet()
-                new_bullet.initial(self.tx,self.ty,0)
+                new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[0],0)
                 new_bullet.selfTarget(player.cx,player.cy,2)
                 new_bullet.countAngle()
                 self.fireAngle=new_bullet.angle
@@ -1737,7 +1794,7 @@ class SanaeStageFinal(sanaeMidpath):
             if self.lastFrame>=self.startFrame:
                 if inSpellFrame%self.fireInterval==0:
                     new_bullet=Bullet.small_Bullet()
-                    new_bullet.initial(self.tx,self.ty,0)
+                    new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[0],0)
                     new_bullet.selfTarget(player.cx,player.cy,2)
                     new_bullet.countAngle()
                     self.fireAngle=new_bullet.angle
@@ -1774,12 +1831,13 @@ class SanaeStageFinal(sanaeMidpath):
             self.reset=False
             self.maxHealth=45000
             self.health=self.maxHealth
-            self.gotoPosition(340-self.bulletAdj[0],220-self.bulletAdj[1],30)
+            self.gotoPosition(340,220,30)
             self.randomAngle=random.random()*360
+            self.randomAngle2=random.random()*360
             self.frameLimit=7200
             self.frameLimitMax=self.frameLimit
             self.startFrame=120
-            self.fireInterval=30
+            self.fireInterval=5
             self.attackAnimeSign=False
             self.attackLightEffectSign=False
 
@@ -1797,7 +1855,62 @@ class SanaeStageFinal(sanaeMidpath):
         self.cardBonus-=self.framePunishment
         inSpellFrame=self.lastFrame-self.startFrame
 
+        if self.lastFrame>=self.startFrame:
+            if inSpellFrame%180<=120:
+                if inSpellFrame%(self.fireInterval+2)==0:
+                    sendFireSound(2)
+                    for i in range(12):
+                        new_bullet=sanae_spell_2_lightning_bullet()
+                        new_bullet.initial(self.tx,self.ty,0)
+                        new_bullet.angleNow=self.randomAngle+i*(360/12)
+                        new_bullet.speedNow=4
+                        new_bullet.changeFrame=5
+                        new_bullet.movingFrame=10
+                        new_bullet.stayFrame=5
+                        #new_bullet.changeFrame=8
+                        new_bullet.setSpeed(self.randomAngle+i*(360/12),new_bullet.speedNow)
+                        new_bullet.speedMax=new_bullet.speedNow-0.1
+                        new_bullet.doColorCode(13)
+                        new_bullet.ifAddHitPoint=True
+                        bullets.add(new_bullet)        
+                    self.randomAngle-=0.8
+            elif inSpellFrame%180==179:
+                self.randomAngle=random.random()*360
+                
+            
+            if (inSpellFrame%180>=120 or inSpellFrame%180<10) and inSpellFrame>20:
+                sendFireSound(2)
+                if inSpellFrame%self.fireInterval==0:
+                    for i in range(13):
+                        new_bullet=sanae_spell_2_lightning_bullet()
+                        new_bullet.initial(self.tx,self.ty,0)
+                        new_bullet.angleNow=self.randomAngle2+i*(360/13)
+                        new_bullet.speedNow=4.2
+                        new_bullet.changeFrame=5
+                        new_bullet.movingFrame=15
+                        new_bullet.stdAngle=30
+                        new_bullet.stayFrame=5
+                        new_bullet.setSpeed(self.randomAngle2+i*(360/13),new_bullet.speedNow)
+                        new_bullet.speedMax=new_bullet.speedNow-0.1
+                        new_bullet.doColorCode(2)
+                        bullets.add(new_bullet)        
+            
+            if inSpellFrame%40==0:
+                angle=random.random()*360
+                sendFireSound(1)
+                for i in range(12):
+                    new_bullet=Bullet.orb_Bullet()
+                    new_bullet.initial(self.tx,self.ty,0)
+                    new_bullet.setSpeed(angle+i*360/12,5)
+                    new_bullet.loadColor('yellow')
+                    bullets.add(new_bullet)
+                
+            if inSpellFrame%180==50:
+                self.randomAngle2=random.random()*360
+                
         
+        if inSpellFrame%180==15:
+            self.gotoPosition(340-100+random.random()*200,random.random()*40+180,90)
         
         if self.health<=0 or self.frameLimit<=0:
             self.cancalAllBullet(bullets,items,effects,True)
