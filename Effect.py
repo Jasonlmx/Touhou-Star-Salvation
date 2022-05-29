@@ -952,3 +952,38 @@ def bossPower(tx,ty,effects,object=bossPowerMomiji,number=40):
         effects.add(new_effect)
 
     
+class sanae_spell_3_side_line(pygame.sprite.Sprite):
+    def __init__(self):
+        super(sanae_spell_3_side_line,self).__init__()
+        self.actionNum=0
+        self.lineColor=((235,184,0),(137,245,78))
+        self.posXList=(63,617)
+        self.maxFrame=200
+        self.changeFrame=30
+        self.density=1
+        self.lastFrame=0
+        self.upper=False
+        self.lower=True
+
+    def update(self,screen):
+        self.lastFrame+=1
+        self.draw(screen)
+        self.checkValid()
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
+
+    def draw(self,screen):
+        if self.lastFrame<=self.changeFrame:
+            self.density=self.lastFrame/self.changeFrame
+        elif self.lastFrame>self.maxFrame-self.changeFrame:
+            self.density=(self.maxFrame-self.lastFrame)/self.changeFrame
+        else:
+            self.density=1
+        color=self.lineColor[self.actionNum]
+        r=round(color[0]*self.density)
+        g=round(color[1]*self.density)
+        b=round(color[2]*self.density)
+        colorNow=(r,g,b)
+        pygame.draw.line(screen,colorNow,(63,30),(63,690),6)
+        pygame.draw.line(screen,colorNow,(617,30),(617,690),6)
