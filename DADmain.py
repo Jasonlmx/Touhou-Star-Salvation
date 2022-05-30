@@ -107,6 +107,8 @@ global_var.set_value('bgmContinuePos',[0,0])#[0]->for mid stage,[1]->for boss fi
 global_var.set_value('boomStatu',0)
 global_var.set_value('levelSign',0)
 global_var.set_value('scoreShown',0)
+global_var.set_value('DuelClassLevel_ifMidpath',False)
+global_var.set_value('DeulClassLevel_midpathFrame',0)
 log = open("./log.csv", 'w+')
 #main loop controller 
 running = True
@@ -155,7 +157,7 @@ gameRule.addStars(screen,stars)
 
 
 #loadSoundEffects
-enemy_sound_amplify=1
+enemy_sound_amplify=1.5
 miss_sound=pygame.mixer.Sound('resource/sound/se_pldead00.wav')
 miss_sound.set_volume(0.2)
 shoot_sound=pygame.mixer.Sound('resource/sound/se_plst00.wav')
@@ -461,7 +463,7 @@ while running:
 
             #collide detectž
             
-            gameRule.missDetect(player,bullets,enemys,effects,miss_sound,items,slaves)
+            #gameRule.missDetect(player,bullets,enemys,effects,miss_sound,items,slaves)
             
 
 

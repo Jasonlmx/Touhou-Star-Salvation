@@ -2209,26 +2209,50 @@ class SanaeStageFinal(sanaeMidpath):
                 if inSpellFrame%self.fireInterval==41:
                         
                         self.fireCount+=1
-                        if self.fireCount%2==0:
+                        if self.fireCount%4==0:
                             self.randomAngle=140+random.random()*20
-                        else:
+                        elif self.fireCount%4==1:
                             self.randomAngle=40-random.random()*20
+                        else:
+                            self.randomAngle=random.random()*360
+                        
+                        if self.fireCount%4==2 or self.fireCount%4==3:
+                            self.fireNode=1
+                            if self.fireCount%4==2:
+                                self.gotoPosition(340-100+random.random()*200,random.random()*40+180,50)
+                        else:
+                            self.fireNode=2
+                            if self.fireCount%4==0:
+                                self.gotoPosition(340-100+random.random()*200,random.random()*40+180,50)
                 if inSpellFrame%self.fireInterval<=34:
                     if inSpellFrame%self.fireInterval%self.fireNode==0:
                         sendFireSound(2)
                         for i in range(9):
-                            if i==0:
-                                new_bullet=sanae_noneSpell_4_bounce_scale_bullet()
+                            if self.fireCount%4<=1:
+                                if i==0:
+                                    new_bullet=sanae_noneSpell_4_bounce_scale_bullet()
+                                else:
+                                    new_bullet=sanae_noneSpell_4_bounce_rice_bullet()
                             else:
-                                new_bullet=sanae_noneSpell_4_bounce_rice_bullet()
+                                if i==0:
+                                    new_bullet=Bullet.scale_Bullet()
+                                else:
+                                    new_bullet=Bullet.rice_Bullet()
                             new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
                             new_bullet.setSpeed(self.randomAngle,12-0.5*i)
-                            new_bullet.loadColor('green')
+                            if self.fireCount%4<=1:
+                                new_bullet.loadColor('green')
+                            else:
+                                new_bullet.loadColor('orange')
                             bullets.add(new_bullet)
-                        if self.fireCount%2==0:
+                        if self.fireCount%4==0:
                             self.randomAngle+=14
-                        else:
+                        elif self.fireCount%4==1:
                             self.randomAngle-=14
+                        elif self.fireCount%4==2:
+                            self.randomAngle+=360/16.5
+                        elif self.fireCount%4==3:
+                            self.randomAngle-=360/16.5
 
 
             if self.health<=0 or self.frameLimit<=0: #end check, non_spell
@@ -2238,6 +2262,61 @@ class SanaeStageFinal(sanaeMidpath):
                 self.health=20000
                 self.attackLightEffectSign=False
                 self.attackAnimeSign=False
+    
+    def spell_4(self, frame, items, effects, bullets, backgrounds, enemys, slaves, player):
+        if self.reset:
+            self.lastFrame=0
+            self.reset=False
+            self.maxHealth=50000
+            self.health=self.maxHealth
+            self.gotoPosition(340,220,30)
+            self.randomAngle=random.random()*360
+            self.randomAngle2=random.random()*360
+            self.frameLimit=7200
+            self.frameLimitMax=self.frameLimit
+            self.startFrame=120
+            self.fireInterval=4
+            self.attackAnimeSign=False
+            self.attackLightEffectSign=False
+            global_var.set_value('endStageSpell3Signal',0)
+
+            # spell zone
+            self.cardBonus=10000000
+            self.spellName='Elf Sign[Leaves of the Void]'
+            self.chSpellName=u'精灵「虚空之森的落叶」'
+            global_var.get_value('spell_sound').play()
+            player.spellBonus=True
+            # send spell effect
+            new_effect=Effect.sanaeFaceSpell()
+            effects.add(new_effect)
+            self.doSpellCardAttack(effects)
+
+        self.cardBonus-=self.framePunishment
+        inSpellFrame=self.lastFrame-self.startFrame
+
+        if self.lastFrame>=self.startFrame:
+            if inSpellFrame%self.fireInterval==0:
+                pass
+        
+        if self.health<=0 or self.frameLimit<=0:
+            self.cancalAllBullet(bullets,items,effects,True)
+            self.reset=True
+            self.ifSpell=False
+            self.cardNum+=1
+            self.health=20000
+            if self.frameLimit>0:
+                self.createItem(items,0,5)
+                self.createItem(items,1,20)
+                ifBonus=player.spellBonus
+            else:
+                ifBonus=False
+            self.drawResult(effects,self.cardBonus,ifBonus)
+            if ifBonus:
+                player.score+=self.cardBonus
+                global_var.get_value('bonus_sound').play()
+            global_var.get_value('spell_end').play()
+            self.attackLightEffectSign=False
+            self.attackAnimeSign=False
 
 def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player):
 
