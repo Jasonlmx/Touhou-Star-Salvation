@@ -549,7 +549,7 @@ class sanae_spell_3_leaf_bullet(Bullet.scale_Bullet):
                 self.speedx=-self.speedx
                 self.ifBounce=True
 
-class sanae_noneSpell_4_bounce_rice_bullet(Bullet.rice_Bullet):
+class sanae_noneSpell_4_bounce_rice_bullet(Bullet.sharp_Bullet):
     def __init__(self):
         super(sanae_noneSpell_4_bounce_rice_bullet,self).__init__()
         self.maxBounce=2
@@ -579,7 +579,7 @@ class sanae_noneSpell_4_bounce_rice_bullet(Bullet.rice_Bullet):
                 self.speedy=-self.speedy
                 self.ty=30+abs(30-self.ty)
 
-class sanae_noneSpell_4_bounce_scale_bullet(Bullet.scale_Bullet):
+class sanae_noneSpell_4_bounce_scale_bullet(Bullet.mid_Bullet):
     def __init__(self):
         super(sanae_noneSpell_4_bounce_scale_bullet,self).__init__()
         self.maxBounce=2
@@ -609,7 +609,33 @@ class sanae_noneSpell_4_bounce_scale_bullet(Bullet.scale_Bullet):
                 self.speedy=-self.speedy
                 self.ty=30+abs(30-self.ty)
 
+class sanae_spell_4_changeDirect_orb_bullet(Bullet.orb_Bullet):
+    def __init__(self):
+        super(sanae_spell_4_changeDirect_orb_bullet,self).__init__()
+        self.changeAt=7
+        self.maxFrame=160
+        self.changeAngle=60
+        self.angle=0
+        self.speed=4
 
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.movement()
+        self.motionStrate()
+        if self.lastFrame<=self.createMax and self.ifDrawCreate:
+            self.drawCreateImg(screen)
+        else:
+            if self.rect.top<=690 and self.rect.bottom>=30 and self.rect.left<=620 and self.rect.right>=60:
+                self.drawBullet(screen)
+        self.checkValid()
+
+    def motionStrate(self):
+        if self.lastFrame==self.changeAt:
+            self.setSpeed(self.angle+self.changeAngle,self.speed)
+
+    '''def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()'''
 #  enemy zone
 
 
@@ -1758,7 +1784,7 @@ class SanaeStageFinal(sanaeMidpath):
         if self.lastFrame>=self.startFrame:
             if inSpellFrame%self.fireInterval==0:
                 new_bullet=Bullet.small_Bullet()
-                new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[0],0)
+                new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
                 new_bullet.selfTarget(player.cx,player.cy,2)
                 new_bullet.countAngle()
                 self.fireAngle=new_bullet.angle
@@ -1892,7 +1918,7 @@ class SanaeStageFinal(sanaeMidpath):
             if self.lastFrame>=self.startFrame:
                 if inSpellFrame%self.fireInterval==0:
                     new_bullet=Bullet.small_Bullet()
-                    new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[0],0)
+                    new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
                     new_bullet.selfTarget(player.cx,player.cy,2)
                     new_bullet.countAngle()
                     self.fireAngle=new_bullet.angle
@@ -2052,7 +2078,7 @@ class SanaeStageFinal(sanaeMidpath):
             if self.lastFrame>=self.startFrame:
                 if inSpellFrame%self.fireInterval==0:
                     new_bullet=Bullet.small_Bullet()
-                    new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[0],0)
+                    new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
                     new_bullet.selfTarget(player.cx,player.cy,2)
                     new_bullet.countAngle()
                     self.fireAngle=new_bullet.angle
@@ -2229,7 +2255,7 @@ class SanaeStageFinal(sanaeMidpath):
                         sendFireSound(2)
                         for i in range(9):
                             if self.fireCount%4<=1:
-                                if i==0:
+                                if i%2==1:
                                     new_bullet=sanae_noneSpell_4_bounce_scale_bullet()
                                 else:
                                     new_bullet=sanae_noneSpell_4_bounce_rice_bullet()
@@ -2275,15 +2301,17 @@ class SanaeStageFinal(sanaeMidpath):
             self.frameLimit=7200
             self.frameLimitMax=self.frameLimit
             self.startFrame=120
-            self.fireInterval=4
-            self.attackAnimeSign=False
-            self.attackLightEffectSign=False
+            self.fireInterval=25
+            self.attackAnimeSign=True
+            self.attackLightEffectSign=True
+            self.fireCount=0
+            self.fireCount2=0
             global_var.set_value('endStageSpell3Signal',0)
 
             # spell zone
             self.cardBonus=10000000
-            self.spellName='Elf Sign[Leaves of the Void]'
-            self.chSpellName=u'精灵「虚空之森的落叶」'
+            self.spellName='Miracle[Spinning Sun]'
+            self.chSpellName=u'奇迹「Spinning Sun」'
             global_var.get_value('spell_sound').play()
             player.spellBonus=True
             # send spell effect
@@ -2294,9 +2322,90 @@ class SanaeStageFinal(sanaeMidpath):
         self.cardBonus-=self.framePunishment
         inSpellFrame=self.lastFrame-self.startFrame
 
+        laserAttackInterval=750
+        laserAttackNode=110
+        laserAttackNode2=300
+        fireNode2=10
+
         if self.lastFrame>=self.startFrame:
-            if inSpellFrame%self.fireInterval==0:
-                pass
+
+            if inSpellFrame%laserAttackInterval==0 or inSpellFrame%laserAttackInterval==laserAttackNode:
+                for i in range(6):
+                    new_laser=Bullet.laser_line()
+                    new_laser.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
+                    new_laser.setFeature(self.randomAngle+i*360/6,7,125,30,64,20,5,60)
+                    new_laser.furryCollide=5
+                    if self.fireCount%2==0:
+                        new_laser.dDegree=-0.33
+                    else:
+                        new_laser.dDegree=0.33
+                    new_laser.ifSimplifiedMode=True
+                    new_laser.widenProperty=True
+                    new_laser.doColorCode(13)
+                    bullets.add(new_laser)
+                self.randomAngle=random.random()*360
+                self.fireCount+=1
+            
+            elif inSpellFrame%laserAttackInterval==laserAttackNode2 or inSpellFrame%laserAttackInterval==laserAttackNode2+150:
+                global_var.get_value('ch00_sound').stop()
+                global_var.get_value('ch00_sound').play()
+                new_effect=Effect.powerUp()
+                new_effect.initial((self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1]),400,96,(254,184,80),20,1,0)
+                effects.add(new_effect)
+                new_bullet=Bullet.small_Bullet()
+                new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
+                new_bullet.selfTarget(player.cx,player.cy,2)
+                new_bullet.countAngle()
+                angle=new_bullet.angle
+                angleInterval=40
+                for i in (-2,-1,0,1,2):
+                    new_laser=Bullet.laser_line()
+                    new_laser.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
+                    new_laser.setFeature(angle+i*angleInterval,7,150,96,64,20,20,-1)
+                    new_laser.furryCollide=8
+                    new_laser.stopSign=True
+                    new_laser.stopDFrame=96
+                    new_laser.dDegree=i*-1*angleInterval/100
+                    new_laser.ifSimplifiedMode=True
+                    new_laser.widenProperty=True
+                    new_laser.doColorCode(14)
+                    bullets.add(new_laser)
+
+            if inSpellFrame%self.fireInterval==0 or inSpellFrame%self.fireInterval==fireNode2:
+                sendFireSound(2)
+                cgA1=-75-10*random.random()
+                cgA2=75+10*random.random()
+                spd=3.9+0.20*(self.fireCount2%2)+0.3*random.random()
+                for i in range(20):
+                    new_bullet=sanae_spell_4_changeDirect_orb_bullet()
+                    new_bullet.initial(self.tx,self.ty,0)
+                    new_bullet.setSpeed(self.randomAngle2+i*360/20,5)
+                    new_bullet.angle=self.randomAngle2+i*360/20
+                    if self.fireCount2%2==0:
+                        new_bullet.changeAngle=cgA1
+                        new_bullet.loadColor('yellow')                       
+                    else:
+                        new_bullet.changeAngle=cgA2
+                        new_bullet.loadColor('orange')
+                    new_bullet.speed=spd
+                    
+                    bullets.add(new_bullet)
+                self.fireCount2+=1
+                
+                self.randomAngle2=random.random()*360
+
+            #motion control
+            if inSpellFrame%laserAttackInterval==laserAttackNode2+150+20:
+                self.attackLightEffectSign=False
+                self.attackAnimeSign=False
+            
+            if inSpellFrame%laserAttackInterval==(laserAttackInterval-60):
+                self.attackLightEffectSign=True
+                self.attackAnimeSign=True
+
+            if inSpellFrame%laserAttackInterval==laserAttackNode2+150+100:
+                self.gotoPosition(340-100+random.random()*200,random.random()*40+180,90)
+            
         
         if self.health<=0 or self.frameLimit<=0:
             self.cancalAllBullet(bullets,items,effects,True)
@@ -2315,6 +2424,56 @@ class SanaeStageFinal(sanaeMidpath):
                 player.score+=self.cardBonus
                 global_var.get_value('bonus_sound').play()
             global_var.get_value('spell_end').play()
+            self.attackLightEffectSign=False
+            self.attackAnimeSign=False
+    
+    def noneSpell_5(self, frame, items, effects, bullets, backgrounds, enemys, slaves, player):
+        if self.reset: #start reset, individualized
+            self.lastFrame=0
+            self.reset=False
+            self.maxHealth=30000
+            self.health=self.maxHealth
+            self.gotoPosition(340-self.bulletAdj[0],200-self.bulletAdj[1],40)
+            self.randomAngle=random.random()*360
+            self.frameLimit=3600
+            self.frameLimitMax=self.frameLimit
+            self.startFrame=120
+            self.attackAnimeSign=True
+            self.attackLightEffectSign=True
+
+            #spell zone
+            self.fireInterval=120
+
+        inSpellFrame=self.lastFrame-self.startFrame
+
+        if self.lastFrame>=self.startFrame:
+            if inSpellFrame%self.fireInterval==0:
+                new_bullet=Bullet.small_Bullet()
+                new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
+                new_bullet.selfTarget(player.cx,player.cy,2)
+                new_bullet.countAngle()
+                self.fireAngle=new_bullet.angle
+                stdSpeed_main=4+random.random()*2
+                self.stdSpeed_sub=random.random()*1.3+1.5
+                for i in range(6):
+                    sendFireSound(1)
+                    new_bullet=sanae_noneSpell_1_orb_bullet()
+                    new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
+                    new_bullet.cancalable=False
+                    new_bullet.setSpeed(self.fireAngle+i*(360/6),stdSpeed_main)
+                    new_bullet.setAccSpeed(self.fireAngle+i*(360/6),stdSpeed_main,0,15,20)
+                    new_bullet.loadColor('red')
+                    new_bullet.color='lightRed'
+                    new_bullet.stdSpeed=self.stdSpeed_sub
+                    new_bullet.length=8
+                    new_bullet.stdAngle=self.fireAngle+i*(360/6)
+                    bullets.add(new_bullet)
+        
+        if self.health<=0 or self.frameLimit<=0: #end check, non_spell
+            self.cancalAllBullet(bullets,items,effects,True)
+            self.reset=True
+            self.ifSpell=True
+            self.health=20000
             self.attackLightEffectSign=False
             self.attackAnimeSign=False
 

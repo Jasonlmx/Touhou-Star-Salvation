@@ -1781,6 +1781,8 @@ class laser_line(Bullet):
         self.widenUnit=6
         self.widenSign=0
         self.widenProperty=False
+        self.stopSign=False
+        self.stopDFrame=0
     def getDecoImage(self):
         self.decoImage=pygame.Surface((32,32)).convert_alpha()
         self.decoImage.fill((0,0,0,0))
@@ -1832,7 +1834,10 @@ class laser_line(Bullet):
             global_var.get_value('laser_sound').play()
         self.bx=self.tx
         self.by=self.ty
-        self.degree+=self.dDegree
+        if self.stopSign and self.lastFrame>=self.stopDFrame:
+            pass
+        else:
+            self.degree+=self.dDegree
         self.forwardNow=0
         if self.lastFrame>self.warnFrame:
             self.goForward()
