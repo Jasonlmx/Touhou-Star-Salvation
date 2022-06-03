@@ -636,6 +636,136 @@ class sanae_spell_4_changeDirect_orb_bullet(Bullet.orb_Bullet):
     '''def checkValid(self):
         if self.lastFrame>=self.maxFrame:
             self.kill()'''
+
+class sanae_spell_5_ringed_orb_bullet(Bullet.orb_Bullet):
+    def __init__(self):
+        super(sanae_spell_5_ringed_orb_bullet,self).__init__()
+        self.maxFrame=600
+        self.centerTx=0
+        self.centerTy=0
+        self.centerSpeedx=0
+        self.centerSpeedy=0
+
+        self.angleNow=0
+        self.radius=100
+        self.angleSpeed=0.7
+        self.rSpeed=0.3
+        self.ifDrawCircle=False
+        self.maxRadius=210
+
+        self.fireInterval=2
+    
+    def initial(self, posx, posy, occupy):
+        self.centerTx=posx
+        self.centerTy=posy
+    
+    def setSpeed(self, angle, speed):
+        s=math.sin(math.radians(angle))
+        c=math.cos(math.radians(angle))
+        self.centerSpeedy=s*speed
+        self.centerSpeedx=c*speed
+    
+    def selfTarget(self,playercx,playercy,speed):
+        mycx=self.centerTx
+        mycy=self.centerTy
+        dif=math.sqrt(math.pow(playercx-mycx,2)+math.pow(playercy-mycy,2))
+        times=dif/speed
+        speedx=(playercx-mycx)/times
+        speedy=(playercy-mycy)/times
+        self.centerSpeedx=speedx
+        self.centerSpeedy=speedy
+        #self.speedAlter(speedx,speedy)
+    
+    def centerMovement(self):
+        self.centerTx+=self.centerSpeedx
+        self.centerTy+=self.centerSpeedy
+
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.centerMovement()
+        self.motionStrate()
+        self.movement()
+        self.drawCircle(screen)
+        if self.rect.top<=690 and self.rect.bottom>=30 and self.rect.left<=620 and self.rect.right>=60:
+            self.fire(effects)
+        if self.lastFrame<=self.createMax and self.ifDrawCreate:
+            self.drawCreateImg(screen)
+        else:
+            if self.rect.top<=690 and self.rect.bottom>=30 and self.rect.left<=620 and self.rect.right>=60:
+                self.drawBullet(screen)
+        self.checkValid()
+    
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
+
+    def fire(self,effects):
+        if self.lastFrame%self.fireInterval==0:
+            new_effect=Effect.sanae_spell5_flame()
+            new_effect.initial(self.tx,self.ty)
+            effects.add(new_effect)
+            '''new_bullet=sanae_spell_5_ringed_orb_sub()
+            new_bullet.initial(self.tx,self.ty,0)
+            new_bullet.setSpeed(0,0)
+            new_bullet.loadColor('red')
+            bullets.add(new_bullet)'''
+
+    def motionStrate(self):
+        angle=self.angleNow
+        sx=self.radius*math.cos(angle/180*math.pi)
+        sy=self.radius*math.sin(angle/180*math.pi)
+        self.tx=self.centerTx+sx
+        self.ty=self.centerTy+sy
+        self.angleNow+=self.angleSpeed
+        if self.maxRadius>abs(self.radius):
+            self.radius+=self.rSpeed
+    
+    def drawCircle(self,screen):
+        if self.ifDrawCircle:
+            pygame.draw.circle(screen,(255,255,255),(round(self.centerTx),round(self.centerTy)),round(abs(self.radius)),1)
+
+class sanae_spell_5_ringed_orb_sub(Bullet.orb_Bullet):
+    def __init__(self):
+        super(sanae_spell_5_ringed_orb_sub,self).__init__()
+        self.maxFrame=10
+        self.ifDrawCreate=False
+
+        self.size=24
+        self.surfSize=12
+        self.tempImg=0
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.changeSize()
+        self.movement()
+        
+        if self.lastFrame<=self.createMax and self.ifDrawCreate:
+            self.drawCreateImg(screen)
+        else:
+            if self.rect.top<=690 and self.rect.bottom>=30 and self.rect.left<=620 and self.rect.right>=60:
+                self.drawBullet(screen)
+        self.checkValid()
+    
+    def drawBullet(self,screen):
+        
+        screen.blit(self.tempImg,(round(self.tx-self.size/2),round(self.ty-self.size/2)))
+        #screen.blit(self.surf,self.rect)
+
+    def changeSize(self):
+        self.size-=24/self.maxFrame
+        self.surfSize-=12/self.maxFrame
+
+        self.surf = pygame.Surface((round(self.surfSize),round(self.surfSize)))
+        self.rect = self.surf.get_rect()
+        self.surf.fill((255,0,0))
+        self.tempImg=pygame.Surface((24,24)).convert_alpha()
+        self.tempImg.fill((0,0,0,0))
+        self.tempImg.blit(self.image,(0,0))
+        self.tempImg=pygame.transform.smoothscale(self.tempImg,(round(self.size),round(self.size)))
+
+
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
 #  enemy zone
 
 
@@ -2476,6 +2606,101 @@ class SanaeStageFinal(sanaeMidpath):
             self.health=20000
             self.attackLightEffectSign=False
             self.attackAnimeSign=False
+
+    def spell_1(self, frame, items, effects, bullets, backgrounds, enemys, slaves, player):
+
+        if self.reset:
+            self.lastFrame=0
+            self.reset=False
+            self.maxHealth=50000
+            self.health=self.maxHealth
+            self.gotoPosition(340,220,30)
+            self.randomAngle=random.random()*90+45
+            self.randomAngle2=random.random()*360
+            self.frameLimit=7200
+            self.frameLimitMax=self.frameLimit
+            self.startFrame=120
+            self.fireInterval=120
+            self.fireInterval2=60
+            self.attackAnimeSign=False
+            self.attackLightEffectSign=False
+            self.fireCount=0
+            self.fireCount2=0
+            global_var.set_value('endStageSpell3Signal',0)
+
+            # spell zone
+            self.cardBonus=10000000
+            self.spellName='Satan [Fire Rings of Hell]'
+            self.chSpellName=u'撒旦「地狱火轮」'
+            global_var.get_value('spell_sound').play()
+            player.spellBonus=True
+            # send spell effect
+            new_effect=Effect.sanaeFaceSpell()
+            effects.add(new_effect)
+            self.doSpellCardAttack(effects)
+
+        self.cardBonus-=self.framePunishment
+        inSpellFrame=self.lastFrame-self.startFrame
+
+        if self.lastFrame>=self.startFrame:
+            if inSpellFrame%self.fireInterval==0:
+                sendFireSound(1)
+                #print(self.randomAngle)
+                signList=[-1,1]
+                agspd=(random.random()*0.5+0.6)*signList[random.randint(0,1)]
+                initX=140+random.random()*400
+                for i in range(10):
+                    new_bullet=sanae_spell_5_ringed_orb_bullet()
+                    new_bullet.initial(initX,25,0)
+                    #new_bullet.setSpeed(self.randomAngle,2)
+                    new_bullet.selfTarget(player.cx,player.cy,2)
+                    new_bullet.angleNow=self.randomAngle2+360/10*i
+                    new_bullet.angleSpeed=agspd
+                    new_bullet.radius=0
+                    new_bullet.rSpeed=-0.9
+                    new_bullet.loadColor('red')
+                    if i==0:
+                        new_bullet.ifDrawCircle=False
+                    bullets.add(new_bullet)
+                self.randomAngle=random.random()*90+45
+                self.randomAngle2=random.random()*360
+            
+            if inSpellFrame%self.fireInterval2==0:
+                angle=random.random()*360
+                frame=random.randint(25,35)
+                sendFireSound(2)
+                for i in range(20):
+                    for j in range(2):
+                        new_bullet=part2_acc_bullet()
+                        new_bullet.initial(self.tx,self.ty,0)
+                        new_bullet.setSpeed(angle+i*360/20,6-1.5*j)
+                        new_bullet.setAccSpeed(angle+i*360/20,6-1.5*j,3-0.75*j,50,frame)
+                        new_bullet.loadColor('white')
+                        bullets.add(new_bullet)
+            
+            if inSpellFrame%150==0:
+                self.gotoPosition(340-100+random.random()*200,random.random()*40+180,80)
+
+
+        if self.health<=0 or self.frameLimit<=0:
+            self.cancalAllBullet(bullets,items,effects,True)
+            self.reset=True
+            self.ifSpell=False
+            self.cardNum+=1
+            self.health=20000
+            if self.frameLimit>0:
+                self.createItem(items,0,5)
+                self.createItem(items,1,20)
+                ifBonus=player.spellBonus
+            else:
+                ifBonus=False
+            self.drawResult(effects,self.cardBonus,ifBonus)
+            if ifBonus:
+                player.score+=self.cardBonus
+                global_var.get_value('bonus_sound').play()
+            global_var.get_value('spell_end').play()
+            self.attackLightEffectSign=False
+            self.attackAnimeSign=False    
 
 def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player):
 

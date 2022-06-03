@@ -987,3 +987,34 @@ class sanae_spell_3_side_line(pygame.sprite.Sprite):
         colorNow=(r,g,b)
         pygame.draw.line(screen,colorNow,(63,30),(63,690),6)
         pygame.draw.line(screen,colorNow,(617,30),(617,690),6)
+
+class sanae_spell5_flame(pygame.sprite.Sprite):
+    def __init__(self):
+        super(sanae_spell5_flame,self).__init__()
+        self.lastFrame=0
+        self.size=20
+        self.maxFrame=10
+        self.upper=False
+        self.lower=True
+        self.tx=0
+        self.ty=0
+        self.color=(254,168,174)
+    def initial(self,tx,ty):
+        self.tx=tx
+        self.ty=ty
+
+    def update(self, screen):
+        self.lastFrame+=1
+        self.changeSize()
+        self.draw(screen)
+        self.checkValid()
+    
+    def checkValid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
+
+    def draw(self,screen):
+        pygame.draw.circle(screen,self.color,(round(self.tx),round(self.ty)),round(self.size/2))
+
+    def changeSize(self):
+        self.size-=20/self.maxFrame

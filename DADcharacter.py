@@ -187,14 +187,14 @@ class butterfly(enemy):
         self.down=[]
         for i in range(1,6):
             down1=pygame.image.load('resource/enemy/butterfly_down_'+str(i)+'.png').convert_alpha()
-            down1=pygame.transform.scale(down1,(98,98))
+            down1=pygame.transform.smoothscale(down1,(98,98))
             self.down.append(down1)
         self.right=[]
         for i in range(1,4):
             right1=pygame.image.load('resource/enemy/butterfly_right_'+str(i)+'_1.png').convert_alpha()
             right2=pygame.image.load('resource/enemy/butterfly_right_'+str(i)+'_2.png').convert_alpha()
-            right1=pygame.transform.scale(right1,(98,98))
-            right2=pygame.transform.scale(right2,(98,98))
+            right1=pygame.transform.smoothscale(right1,(98,98))
+            right2=pygame.transform.smoothscale(right2,(98,98))
             self.right.append(right1)
             self.right.append(right2)
         self.left=[]
@@ -203,8 +203,8 @@ class butterfly(enemy):
             left2=pygame.image.load('resource/enemy/butterfly_right_'+str(i)+'_2.png').convert_alpha()
             left1=pygame.transform.flip(left1,True,False)
             left2=pygame.transform.flip(left2,True,False)
-            left1=pygame.transform.scale(left1,(98,98))
-            left2=pygame.transform.scale(left2,(98,98))
+            left1=pygame.transform.smoothscale(left1,(98,98))
+            left2=pygame.transform.smoothscale(left2,(98,98))
             self.left.append(left1)
             self.left.append(left2)
         self.action=0
@@ -1887,7 +1887,7 @@ class Marisa(Player):
             index_x=24
         image.blit(self.floatImage,(0,0),(index_x,0,24,24))
         size=round(math.sin(self.gunCycle*math.pi/180*4)*4+24)
-        image=pygame.transform.scale(image,(size,size))
+        image=pygame.transform.smoothscale(image,(size,size))
         screen.blit(image,(round(self.cx-size/2+self.gunAdj[0]),round(self.cy-size/2)+self.gunAdj[1]))
 
 class Reimu(Player):
@@ -2072,7 +2072,7 @@ class Boss(pygame.sprite.Sprite):
         self.cardBonus=10000000
         self.framePunishment=3700
         self.maxSpell=0
-        self.magicImage=pygame.transform.scale(pygame.image.load('resource/bossMagic.png'),(252,252)).convert_alpha()
+        self.magicImage=pygame.transform.smoothscale(pygame.image.load('resource/bossMagic.png'),(252,252)).convert_alpha()
         self.magicImage.set_alpha(230)
         self.tracker=global_var.get_value('bossTracker')
         self.bossSpell=pygame.transform.smoothscale(pygame.image.load('resource/text/bossSpell.png'),(16,16)).convert_alpha()
