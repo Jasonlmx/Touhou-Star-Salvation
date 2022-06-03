@@ -1918,7 +1918,7 @@ class laser_line(Bullet):
                     whiteWidth=round(width/length*i/2.5)
                     if whiteWidth>=1:
                         pygame.draw.line(screen,(255,255,255),self.posList[i],self.posList[i+1],whiteWidth)
-                pygame.draw.line(screen,(255,255,255),self.posList[length-1],self.endPoint,round(1+round((-1/self.widenUnit**2)*width*i**2+(2/self.widenUnit*width*i))/2.5))
+                pygame.draw.line(screen,(255,255,255),self.posList[length-1],self.endPoint,round(width/2.5))
             else:
                 pygame.draw.line(screen,self.colorRGB[self.colorNum],(self.tx,self.ty),self.endPoint,width)
                 if width>3:

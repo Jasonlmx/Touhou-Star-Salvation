@@ -992,13 +992,14 @@ class sanae_spell5_flame(pygame.sprite.Sprite):
     def __init__(self):
         super(sanae_spell5_flame,self).__init__()
         self.lastFrame=0
+        self.actionNum=0
         self.size=20
         self.maxFrame=10
         self.upper=False
         self.lower=True
         self.tx=0
         self.ty=0
-        self.color=(254,168,174)
+        self.color=((254,168,174),(250,218,132))
     def initial(self,tx,ty):
         self.tx=tx
         self.ty=ty
@@ -1014,7 +1015,7 @@ class sanae_spell5_flame(pygame.sprite.Sprite):
             self.kill()
 
     def draw(self,screen):
-        pygame.draw.circle(screen,self.color,(round(self.tx),round(self.ty)),round(self.size/2))
+        pygame.draw.circle(screen,self.color[self.actionNum],(round(self.tx),round(self.ty)),round(self.size/2))
 
     def changeSize(self):
         self.size-=20/self.maxFrame

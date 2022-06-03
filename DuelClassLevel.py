@@ -1,3 +1,4 @@
+from hashlib import new
 import pygame,sys
 import random
 import math
@@ -641,6 +642,7 @@ class sanae_spell_5_ringed_orb_bullet(Bullet.orb_Bullet):
     def __init__(self):
         super(sanae_spell_5_ringed_orb_bullet,self).__init__()
         self.maxFrame=600
+        self.actionNum=0
         self.centerTx=0
         self.centerTy=0
         self.centerSpeedx=0
@@ -652,6 +654,7 @@ class sanae_spell_5_ringed_orb_bullet(Bullet.orb_Bullet):
         self.rSpeed=0.3
         self.ifDrawCircle=False
         self.maxRadius=210
+        self.cancalable=False
 
         self.fireInterval=2
     
@@ -703,6 +706,7 @@ class sanae_spell_5_ringed_orb_bullet(Bullet.orb_Bullet):
         if self.lastFrame%self.fireInterval==0:
             new_effect=Effect.sanae_spell5_flame()
             new_effect.initial(self.tx,self.ty)
+            new_effect.actionNum=self.actionNum
             effects.add(new_effect)
             '''new_bullet=sanae_spell_5_ringed_orb_sub()
             new_bullet.initial(self.tx,self.ty,0)
@@ -2622,11 +2626,12 @@ class SanaeStageFinal(sanaeMidpath):
             self.startFrame=120
             self.fireInterval=120
             self.fireInterval2=90
-            self.attackAnimeSign=False
-            self.attackLightEffectSign=False
+            self.attackAnimeSign=True
+            self.attackLightEffectSign=True
+            self.crazySign=False
             self.fireCount=0
             self.fireCount2=0
-            global_var.set_value('endStageSpell3Signal',0)
+            global_var.set_value('sanae_spell5_laser_signal',False)
 
             # spell zone
             self.cardBonus=10000000
@@ -2642,23 +2647,47 @@ class SanaeStageFinal(sanaeMidpath):
         self.cardBonus-=self.framePunishment
         inSpellFrame=self.lastFrame-self.startFrame
 
+        #self.crazySign=False
+        ringIntense=7
+        if self.health/self.maxHealth<=0.4 or self.frameLimit<=3*600:
+            if not self.crazySign:
+                new_effect=Effect.powerUp()
+                new_effect.initial((self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1]),500,30,(255,255,255),8,1,1)
+                effects.add(new_effect)
+                global_var.get_value('ch00_sound').stop()
+                global_var.get_value('ch00_sound').play()
+            self.crazySign=True
+            ringIntense=10
+
         if self.lastFrame>=self.startFrame:
             if inSpellFrame%self.fireInterval==0:
                 sendFireSound(1)
                 #print(self.randomAngle)
                 signList=[-1,1]
+                
                 agspd=(random.random()*0.5+0.6)*signList[random.randint(0,1)]
+                if self.crazySign:
+                    agspd=agspd*1.5
                 initX=140+random.random()*400
-                for i in range(10):
+                new_slave=Slave.sanae_spell5_laserSlave()
+                new_slave.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
+                new_slave.selfTarget(player.cx,player.cy,2)
+                new_slave.speed=2
+                #slaves.add(new_slave)
+                for i in range(ringIntense):
                     new_bullet=sanae_spell_5_ringed_orb_bullet()
-                    new_bullet.initial(initX,25,0)
+                    new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
                     #new_bullet.setSpeed(self.randomAngle,2)
                     new_bullet.selfTarget(player.cx,player.cy,2)
-                    new_bullet.angleNow=self.randomAngle2+360/10*i
+                    new_bullet.angleNow=self.randomAngle2+360/ringIntense*i
                     new_bullet.angleSpeed=agspd
                     new_bullet.radius=0
                     new_bullet.rSpeed=-0.9
-                    new_bullet.loadColor('red')
+                    if self.crazySign:
+                        new_bullet.loadColor('orange')
+                        new_bullet.actionNum=1
+                    else:
+                        new_bullet.loadColor('red')
                     if i==0:
                         new_bullet.ifDrawCircle=False
                     bullets.add(new_bullet)
@@ -2675,12 +2704,32 @@ class SanaeStageFinal(sanaeMidpath):
                         new_bullet.initial(self.tx,self.ty,0)
                         new_bullet.setSpeed(angle+i*360/20,6-1.5*j)
                         new_bullet.setAccSpeed(angle+i*360/20,6-1.5*j,3-0.75*j,50,frame)
-                        new_bullet.loadColor('white')
+                        new_bullet.loadColor('lightRed')
                         bullets.add(new_bullet)
             
-            if inSpellFrame%150==0:
-                self.gotoPosition(340-100+random.random()*200,random.random()*40+180,80)
+            if inSpellFrame%(self.fireInterval*2)==self.fireInterval:
+                new_bullet=Bullet.small_Bullet()
+                new_bullet.initial(self.tx,self.ty,0)
+                px=global_var.get_value('player1x')
+                py=global_var.get_value('player1y')
+                new_bullet.selfTarget(px,py,2)
+                new_bullet.countAngle()
+                angle=new_bullet.angle
+                for i in range(6):
+                    for j in (-1,0,1):
+                        new_bullet=Bullet.kunai_Bullet()
+                        new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
+                        new_bullet.setSpeed(angle+j*40,7-0.8*i)
+                        new_bullet.doColorCode(14)
+                        bullets.add(new_bullet)
 
+            if inSpellFrame%240==30:
+                self.gotoPosition(340-100+random.random()*200,random.random()*40+180,60)
+
+            if inSpellFrame%self.fireInterval==60:
+                global_var.set_value('sanae_spell5_laser_signal',True)
+            else:
+                global_var.set_value('sanae_spell5_laser_signal',False)
 
         if self.health<=0 or self.frameLimit<=0:
             self.cancalAllBullet(bullets,items,effects,True)

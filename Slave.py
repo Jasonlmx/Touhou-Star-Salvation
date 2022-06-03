@@ -376,4 +376,43 @@ class lgtSpell6_bulletSlave(Bullet.Bullet):
                 self.movement()
                 self.fire(bullets)
                 self.checkValid()
-        
+
+class sanae_spell5_laserSlave(lgtSpell6_bulletSlave):
+    def __init__ (self):
+        super(sanae_spell5_laserSlave,self).__init__()
+        self.stayFrame=0
+        self.signalStr='sanae_spell5_laser_signal'
+        self.signalReciever=False
+        self.speed=0
+
+    def update(self,screen,frame,bullets,effects,items):
+        self.lastFrame+=1
+        self.countAngle()
+        if self.lastFrame>=self.stayFrame:
+            self.signalRecieve()
+            self.movement()
+            self.fire(bullets)
+            self.checkValid()
+    
+    def signalRecieve(self):
+        self.signalReciever=global_var.get_value(self.signalStr)
+    
+    def fire(self,bullets):
+        if self.signalReciever:
+            new_bullet=Bullet.small_Bullet()
+            new_bullet.initial(self.tx,self.ty,0)
+            px=global_var.get_value('player1x')
+            py=global_var.get_value('player1y')
+            new_bullet.selfTarget(px,py,2)
+            new_bullet.countAngle()
+            angle=new_bullet.angle
+
+            new_laser=Bullet.laser_line()
+            new_laser.initial(self.tx,self.ty,0)
+            new_laser.setSpeed(self.angle,self.speed)
+            new_laser.setFeature(angle,3,80,40,64,10,10)
+            new_laser.furryCollide=6
+            new_laser.ifSimplifiedMode=True
+            new_laser.widenProperty=True
+            new_laser.doColorCode(2)
+            bullets.add(new_laser)
