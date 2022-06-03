@@ -2607,7 +2607,7 @@ class SanaeStageFinal(sanaeMidpath):
             self.attackLightEffectSign=False
             self.attackAnimeSign=False
 
-    def spell_1(self, frame, items, effects, bullets, backgrounds, enemys, slaves, player):
+    def spell_5(self, frame, items, effects, bullets, backgrounds, enemys, slaves, player):
 
         if self.reset:
             self.lastFrame=0
@@ -2621,7 +2621,7 @@ class SanaeStageFinal(sanaeMidpath):
             self.frameLimitMax=self.frameLimit
             self.startFrame=120
             self.fireInterval=120
-            self.fireInterval2=60
+            self.fireInterval2=90
             self.attackAnimeSign=False
             self.attackLightEffectSign=False
             self.fireCount=0
