@@ -793,6 +793,7 @@ class star_Bullet(Bullet):
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
+        self.motionStrate()
         #screen.blit(self.image,(self.rect.centerx-3,self.rect.centery-3))
         if self.lastFrame<=self.createMax and self.ifDrawCreate:
             #self.drawBullet(screen)
@@ -801,6 +802,9 @@ class star_Bullet(Bullet):
             self.drawBullet(screen)
         #screen.blit(self.surf,self.rect)
         self.checkValid()
+    def motionStrate(self):
+        pass
+
     def doColorCode(self,code):
         self.colorNum=code
         self.image=pygame.Surface((24,24))
@@ -1823,6 +1827,7 @@ class laser_line(Bullet):
     def update(self,screen,bullets,effects):
         self.lastFrame+=1
         self.movement()
+        self.motionStrate()
         if self.lastFrame-self.warnFrame<=self.changeFrame:
             self.widthNow=round((self.lastFrame-self.warnFrame)/self.changeFrame*(self.width-1)+1)
         elif self.lastFrame>=self.maxFrame-self.endFrame:
@@ -1853,6 +1858,9 @@ class laser_line(Bullet):
         self.drawCenter(screen)
         self.checkValid()
     
+    def motionStrate(self):
+        pass
+
     def checkValid(self):
         if self.lastFrame>=self.maxFrame:
             self.kill()
@@ -3154,3 +3162,84 @@ class small_bullet_lgtnsp6_stay_accelerate(small_Bullet):
             acc=(self.endSpeed-self.initialSpeed)/self.accFrame
             self.speedNow+=acc
             self.setSpeed(self.angle,self.speedNow)
+
+class big_star_bullet_stay_acc(big_star_Bullet):
+    def __init__(self):
+        super(big_star_bullet_stay_acc,self).__init__()
+        self.initialSpeed=0
+        self.speedNow=0
+        self.endSpeed=0
+        self.accFrame=20
+        self.accStart=40
+
+    def update(self,screen,bullets,effects):
+        self.lastFrame+=1
+        self.movement()
+        self.motionStrate()
+        if self.lastFrame<=self.createMax and self.ifDrawCreate:
+            self.drawCreateImg(screen)
+        else:
+            self.drawBullet(screen)
+        self.checkValid()
+    
+    def setAccSpeed(self,angle,initialSpeed,endSpeed,accFrame=20,accStart=40):
+        self.angle=angle
+        self.initialSpeed=initialSpeed
+        self.speedNow=initialSpeed
+        self.endSpeed=endSpeed
+        self.accFrame=accFrame
+        self.accStart=accStart
+
+    def motionStrate(self):
+        if self.lastFrame>=self.accStart and self.lastFrame<self.accStart+self.accFrame:
+            acc=(self.endSpeed-self.initialSpeed)/self.accFrame
+            self.speedNow+=acc
+            self.setSpeed(self.angle,self.speedNow)
+
+class laser_line_stay_acc(laser_line):
+    def __init__(self):
+        super(laser_line_stay_acc,self).__init__()
+        self.initialSpeed=0
+        self.speedNow=0
+        self.endSpeed=0
+        self.accFrame=20
+        self.accStart=40
+    
+    def setAccSpeed(self,angle,initialSpeed,endSpeed,accFrame=20,accStart=40):
+        self.angle=angle
+        self.initialSpeed=initialSpeed
+        self.speedNow=initialSpeed
+        self.endSpeed=endSpeed
+        self.accFrame=accFrame
+        self.accStart=accStart
+
+    def motionStrate(self):
+        if self.lastFrame>=self.accStart and self.lastFrame<self.accStart+self.accFrame:
+            acc=(self.endSpeed-self.initialSpeed)/self.accFrame
+            self.speedNow+=acc
+            self.setSpeed(self.angle,self.speedNow)
+        
+
+class star_bullet_stay_acc(star_Bullet):
+    def __init__(self):
+        super(star_bullet_stay_acc,self).__init__()
+        self.initialSpeed=0
+        self.speedNow=0
+        self.endSpeed=0
+        self.accFrame=20
+        self.accStart=40
+    
+    def setAccSpeed(self,angle,initialSpeed,endSpeed,accFrame=20,accStart=40):
+        self.angle=angle
+        self.initialSpeed=initialSpeed
+        self.speedNow=initialSpeed
+        self.endSpeed=endSpeed
+        self.accFrame=accFrame
+        self.accStart=accStart
+
+    def motionStrate(self):
+        if self.lastFrame>=self.accStart and self.lastFrame<self.accStart+self.accFrame:
+            acc=(self.endSpeed-self.initialSpeed)/self.accFrame
+            self.speedNow+=acc
+            self.setSpeed(self.angle,self.speedNow)
+    
