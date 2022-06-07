@@ -3756,7 +3756,7 @@ class Dumbledore(Boss):
                 self.randomAngle+=5+self.randomAngle2
         '''
         if self.lastFrame>=60:
-            if (self.lastFrame-60)%1==0:
+            if (self.lastFrame-60)%2==0:
                 if not global_var.get_value('kiraing'):
                     global_var.get_value('kira_sound').stop()
                     global_var.get_value('kira_sound').play()
@@ -3769,7 +3769,7 @@ class Dumbledore(Boss):
                 new_effect.initial(self.tx,self.ty,100,24,4)
                 effects.add(new_effect)
                 '''
-                lines=4
+                lines=2
                 for i in range(0,lines):
                     new_bullet=Bullet.rice_Bullet()
                     new_bullet.initial(self.tx,self.ty,1)
