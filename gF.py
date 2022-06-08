@@ -507,6 +507,11 @@ def loadImage():
     lightEffect.set_alpha(150)
     global_var.set_value('orinLightEffect',lightEffect)
 
+    duelLevelBack=pygame.image.load('resource/background/duelClassLevelBack.jpg')
+    duelLevelBack=duelLevelBack.convert()
+    duelLevelBack=pygame.transform.smoothscale(duelLevelBack,(280,280))
+    global_var.set_value('duelLevelBack',duelLevelBack)
+
 class star_effect(pygame.sprite.Sprite):
     def __init__(self):
         super(star_effect,self).__init__()
@@ -555,6 +560,13 @@ def doBackground(screen,backgrounds):
         for j in range(0,4):
             new_background=background.lake_bg()
             new_background.initial(128+i*256,128+j*256)
+            backgrounds.add(new_background)
+
+def doBackground2(screen,backgrounds):
+    for i in range(0,2):
+        for j in range(0,4):
+            new_background=background.duelLevelBackObj()
+            new_background.initial(60+140+i*280,140+j*280)
             backgrounds.add(new_background)
 
 def doBossCardBackground(screen,backgrounds):
@@ -683,6 +695,7 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
         if not pressed_keys[K_z]:
             ifStopPressing=True
             global_var.set_value('ifStopPressing',True)
+    
 
 
 def restart(frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,screen,booms,playerGuns):

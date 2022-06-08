@@ -91,4 +91,22 @@ class bossCardPattern(background):
         if self.inStage():
             screen.blit(self.surf,(int(self.tx)-192,int(self.ty)-192))
         self.checkValid()
-        
+    
+class duelLevelBackObj(background):
+    def __init__(self):
+        super(duelLevelBackObj,self).__init__()
+        self.surf = global_var.get_value('duelLevelBack')
+    
+    def checkValid(self):
+        if self.ty>=690+140:
+            self.ty-=280*4
+
+    def update(self,screen):
+        self.frame+=1
+        self.movement()
+        if self.ty<30-140 or self.ty>690+140:
+            pass
+        else:
+            screen.blit(self.surf,(round(self.tx-140),round(self.ty-140)))
+        self.checkValid()
+    

@@ -3159,6 +3159,7 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         #pygame.mixer.music.load('resource/bgm/上海アリス幻樂団 - 死体旅行~ Be of good cheer!.mp3')
         pygame.mixer.music.set_volume(0.7)                  # 设定背景音乐音量
         pygame.mixer.music.play(loops=-1)
+        gF.doBackground2(screen,backgrounds)
         global_var.set_value('DuelClassLevel_ifMidpath',False)
         global_var.set_value('DeulClassLevel_midpathFrame',0)
 
