@@ -734,7 +734,7 @@ def restart(frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,
     for playerGun in playerGuns:
         playerGun.kill()
     player.__init__()
-    player.tx=357.0
+    player.tx=337.0
     player.ty=600.0
     player.power=100    
     if global_var.get_value('ifTest'):

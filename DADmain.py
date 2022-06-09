@@ -592,7 +592,7 @@ while running:
             elif global_var.get_value('playerNum')==1:
                 player=DADcharacter.Marisa()
             mainMenu.playerReset=False
-            player.tx=357.0
+            player.tx=337.0
             player.ty=600.0
             ###
             player.power=100

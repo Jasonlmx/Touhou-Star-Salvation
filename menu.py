@@ -166,7 +166,7 @@ class Menu():
         self.selectImg=global_var.get_value('menuSelectImg')
         self.levelImg=global_var.get_value('levelImg')
         self.font=pygame.font.SysFont('arial', 20)
-        self.selectNum=[0,0,0,0]
+        self.selectNum=[0,1,0,0]
         self.stairMax=[7,1,1,1]
         self.menuStair=0 #0:main menu, 1 stage selection, 2 player selection, 3 practice menu
         self.playerReset=False
