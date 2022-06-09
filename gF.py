@@ -676,6 +676,22 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
                     start1=global_var.get_value('bgmContinuePos')[1]
                     pygame.mixer.music.play(loops=-1,start=start1/1000)
                 global_var.set_value('pauseSelectNum',0)
+
+                if global_var.get_value('levelSign')==0:
+                    highScore=global_var.get_value('highScore_0')
+                elif global_var.get_value('levelSign')==1:
+                    highScore=global_var.get_value('highScore_1')
+                
+                if highScore<=player.score:
+                    if global_var.get_value('levelSign')==0:
+                        global_var.set_value('highScore_0',player.score)
+                        with open('resource/data/highScore_0.dat','w') as file:
+                            file.write(str(player.score))
+                    elif global_var.get_value('levelSign')==1:
+                        global_var.set_value('highScore_1',player.score)
+                        with open('resource/data/highScore_1.dat','w') as file:
+                            file.write(str(player.score))
+                        
                 px=player.tx
                 py=player.ty
                 midPath=player.midPath
@@ -688,10 +704,29 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
                 global_var.set_value('ifGameOver',False)
                 player.score=0
                 player.unhitSetter(120)
+
+                
+
         elif (pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z] and ifStopPressing and selectNum==1):
             global_var.set_value('restarting',True)
             global_var.get_value('ok_sound').play()
             global_var.set_value('pause',False)
+
+            if global_var.get_value('levelSign')==0:
+                highScore=global_var.get_value('highScore_0')
+            elif global_var.get_value('levelSign')==1:
+                highScore=global_var.get_value('highScore_1')
+                
+            if highScore<=player.score:
+                if global_var.get_value('levelSign')==0:
+                    global_var.set_value('highScore_0',player.score)
+                    with open('resource/data/highScore_0.dat','w') as file:
+                        file.write(str(player.score))
+                elif global_var.get_value('levelSign')==1:
+                    global_var.set_value('highScore_1',player.score)
+                    with open('resource/data/highScore_1.dat','w') as file:
+                        file.write(str(player.score))
+
             restart(frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,screen,booms,playerGuns)
             pygame.mixer.music.stop()
             global_var.set_value('pauseSelectNum',0)
@@ -699,14 +734,32 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
             pygame.mixer.music.stop()
             pygame.mixer.music.load('resource/bgm/mainTitle.mp3')
             pygame.mixer.music.play(loops=-1)
+            
+
         elif (pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z] and ifStopPressing and selectNum==2) or (pressed_keys[K_r]!=pressed_keys_last[K_r] and pressed_keys[K_r]):
             #print('do')
             global_var.set_value('restarting',True)
             global_var.get_value('ok_sound').play()
             global_var.set_value('pause',False)
             pygame.mixer.music.stop()
-            restart(frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,screen,booms,playerGuns)
+            
             global_var.set_value('pauseSelectNum',0)
+            if global_var.get_value('levelSign')==0:
+                highScore=global_var.get_value('highScore_0')
+            elif global_var.get_value('levelSign')==1:
+                highScore=global_var.get_value('highScore_1')
+                
+            if highScore<=player.score:
+                if global_var.get_value('levelSign')==0:
+                    global_var.set_value('highScore_0',player.score)
+                    with open('resource/data/highScore_0.dat','w') as file:
+                        file.write(str(player.score))
+                elif global_var.get_value('levelSign')==1:
+                    global_var.set_value('highScore_1',player.score)
+                    with open('resource/data/highScore_1.dat','w') as file:
+                        file.write(str(player.score))
+
+            restart(frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,screen,booms,playerGuns)
         if not pressed_keys[K_z]:
             ifStopPressing=True
             global_var.set_value('ifStopPressing',True)

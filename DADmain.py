@@ -109,6 +109,27 @@ global_var.set_value('levelSign',0)
 global_var.set_value('scoreShown',0)
 global_var.set_value('DuelClassLevel_ifMidpath',False)
 global_var.set_value('DeulClassLevel_midpathFrame',0)
+
+#read high scores
+f=open('resource/data/highScore_0.dat')
+hySc0=f.read()
+try:
+    hySc0=int(hySc0)
+except:
+    hySc0=0
+f.close()
+
+f=open('resource/data/highScore_1.dat')
+hySc1=f.read()
+try:
+    hySc1=int(hySc1)
+except:
+    hySc1=0
+f.close()
+
+
+global_var.set_value('highScore_0',hySc0)
+global_var.set_value('highScore_1',hySc1)
 log = open("./log.csv", 'w+')
 #main loop controller 
 running = True

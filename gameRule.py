@@ -367,6 +367,26 @@ def displayUi(screen,player,myfont,frame):
 
     scoreText=myfont.render('         '+scoreFinal, True, (255, 255, 255))
     shadowText=myfont.render('         '+scoreFinal, True, (23, 23, 23))
+
+    if global_var.get_value('levelSign')==0:
+        highScore=global_var.get_value('highScore_0')
+    elif global_var.get_value('levelSign')==1:
+        highScore=global_var.get_value('highScore_1')
+    
+    '''if highScore<=player.score:
+        if global_var.get_value('levelSign')==0:
+            global_var.set_value('highScore_0',player.score)
+        elif global_var.get_value('levelSign')==1:
+            global_var.set_value('highScore_1',player.score)'''
+    if player.score>highScore:
+        highScoreText=myfont.render('         '+scoreFinal, True, (255, 255, 255))
+        highShadowText=myfont.render('         '+scoreFinal, True, (23, 23, 23))
+    else:
+        highScoreText=myfont.render('         '+returnScoreFormat(str(highScore)), True, (255, 255, 255))
+        highShadowText=myfont.render('         '+returnScoreFormat(str(highScore)), True, (23, 23, 23))
+
+    screen.blit(highShadowText,(673+3+20,130+2-30))
+    screen.blit(highScoreText,(673+20,130-30))
     screen.blit(shadowText,(673+3+20,130+2))
     screen.blit(scoreText,(673+20,130))
 
