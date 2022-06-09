@@ -517,6 +517,9 @@ def loadImage():
     duelSpellBack=pygame.transform.smoothscale(duelSpellBack,(280,280))
     global_var.set_value('duelSpellBack',duelSpellBack)
 
+    level2Title=pygame.image.load('resource/title/level2_title.png').convert_alpha()
+    global_var.set_value('level2Title',level2Title)
+
 class star_effect(pygame.sprite.Sprite):
     def __init__(self):
         super(star_effect,self).__init__()

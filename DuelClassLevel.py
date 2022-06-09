@@ -1895,6 +1895,7 @@ class SanaeStageFinal(sanaeMidpath):
             super(SanaeStageFinal,self).__init__()
             self.maxSpell=9
             self.boomImmune=True
+            self.deadFrame=0
     
     def attack(self, frame, items, effects, bullets, backgrounds, enemys, slaves, player):
         if self.cardNum>0:
@@ -1944,6 +1945,18 @@ class SanaeStageFinal(sanaeMidpath):
             else:
                 self.spell_7(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
         if self.cardNum==8:
+            self.deadFrame+=1
+            if self.deadFrame==1:
+                global_var.get_value('spell_end').play()
+                self.gotoPosition(self.tx+random.random()*100-50,self.ty+random.random()*100-50,119)
+            if self.deadFrame>=120:
+                global_var.get_value('bossDead_sound').play()
+                self.doShaking(60)
+                Effect.bossBruster(self.tx,self.ty,effects,Effect.bossBrustMomiji,50)
+                self.kill()
+
+
+        '''if self.cardNum==8:
             if not self.ifSpell:
                 self.noneSpell_8(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
             else:
@@ -1952,7 +1965,7 @@ class SanaeStageFinal(sanaeMidpath):
             if not self.ifSpell:
                 self.noneSpell_9(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
             else:
-                self.spell_9(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
+                self.spell_9(frame,items,effects,bullets,backgrounds,enemys,slaves,player)'''
     
 
     def noneSpell_0(self,frame,items,effects,bullets,backgrounds,enemys,slaves,player):
@@ -3248,6 +3261,10 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
             new_enemy.staySec=1.5
             enemys.add(new_enemy)
     
+    if frame==540:
+        new_effect=Effect.level2Title()
+        effects.add(new_effect)
+    
     if frame>=680 and frame<=1080:
         if frame%30==0:
             new_enemy=part2_enemy()
@@ -3418,5 +3435,5 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
             pygame.mixer.music.set_volume(0.6) 
             pygame.mixer.music.play(loops=-1)  
             for boss in bosses:
-                boss.cardNum=1
+                boss.cardNum=7
                 boss.ifSpell=False

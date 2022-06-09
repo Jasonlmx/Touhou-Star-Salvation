@@ -1019,3 +1019,32 @@ class sanae_spell5_flame(pygame.sprite.Sprite):
 
     def changeSize(self):
         self.size-=20/self.maxFrame
+
+class level2Title(pygame.sprite.Sprite):
+    def __init__(self):
+        super(level2Title,self).__init__()
+        self.img=global_var.get_value('level2Title')
+        self.upper=True
+        self.lower=False
+        self.lastFrame=0
+        self.maxFrame=150
+        self.changeFrame=10
+    def doFade(self):
+        if self.lastFrame<=self.changeFrame:
+            alpha=round(256/self.changeFrame*self.lastFrame)
+            self.img.set_alpha(alpha)
+        elif self.lastFrame>self.maxFrame-self.changeFrame:
+            alpha=round(256/self.changeFrame*(self.maxFrame-self.lastFrame))
+            self.img.set_alpha(alpha)
+    def update(self, screen):
+        self.lastFrame+=1
+        self.doFade()
+        self.draw(screen)
+        self.checkvalid()
+
+    def draw(self,screen):
+        screen.blit(self.img,(60,30))
+
+    def checkvalid(self):
+        if self.lastFrame>=self.maxFrame:
+            self.kill()
