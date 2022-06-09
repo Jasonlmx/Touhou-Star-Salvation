@@ -3435,5 +3435,5 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
             pygame.mixer.music.set_volume(0.6) 
             pygame.mixer.music.play(loops=-1)  
             for boss in bosses:
-                boss.cardNum=7
+                boss.cardNum=1
                 boss.ifSpell=False
