@@ -1,6 +1,7 @@
 from email.mime import application
 from hashlib import new
 from sys import api_version
+from tkinter import font
 import pygame
 import math
 from pygame.locals import *
@@ -613,7 +614,7 @@ def doPause(pressed_keys,screen):
             global_var.set_value('pauseScreen',new_image)
             #print(global_var.get_value('pauseScreen').get_size())
 
-def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,booms,playerGuns):
+def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,booms,playerGuns,myfont):
     pause=global_var.get_value('pause')
     if pause:
         ifStopPressing=global_var.get_value('ifStopPressing')
@@ -631,10 +632,17 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
                 selectNum+=1
                 global_var.get_value('select_sound').stop()
                 global_var.get_value('select_sound').play()
-        if selectNum>2:
-            selectNum=0
-        elif selectNum<0:
-            selectNum=2
+        if not global_var.get_value('levelPassSign'):
+            if selectNum>2:
+                selectNum=0
+            elif selectNum<0:
+                selectNum=2
+        else:
+            if selectNum>2:
+                selectNum=0
+            elif selectNum<1:
+                selectNum=2
+
         global_var.set_value('pauseSelectNum',selectNum)
         screen.blit(global_var.get_value('selectSurf'),(72,398+48*selectNum))
         for i in range(0,4):
@@ -645,10 +653,24 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
                     screen.blit(global_var.get_value('pauseCate')[1],(60,300+48*i))
             else:
                 if i==1:
-                    if not global_var.get_value('ifGameOver'):
-                        screen.blit(global_var.get_value('pauseSign')[i],(100,398-48+48*i))
+                    if not global_var.get_value('levelPassSign'):
+                        if not global_var.get_value('ifGameOver'):
+                            screen.blit(global_var.get_value('pauseSign')[i],(100,398-48+48*i))
+                        else:
+                            screen.blit(global_var.get_value('pauseSign')[6],(100,398-48+48*i))
                     else:
-                        screen.blit(global_var.get_value('pauseSign')[6],(100,398-48+48*i))
+                        passText=myfont.render("Congratulations! You Pass the level!",True,(255,255,255))
+                        scoreStr="Your overall Score is "+str(player.score)
+                        if global_var.get_value('levelSign')==0:
+                            highScore=global_var.get_value('highScore_0')
+                        elif global_var.get_value('levelSign')==1:
+                            highScore=global_var.get_value('highScore_1')
+                        if highScore<=player.score:
+                            scoreStr=scoreStr+"  ! You beat the record! New HighScore!"
+                        scoreText=myfont.render(scoreStr,True,(255,255,255))
+                        
+                        screen.blit(passText,(100,378))
+                        screen.blit(scoreText,(100,408))
                 else:
                     screen.blit(global_var.get_value('pauseSign')[i],(100,398-48+48*i))
         if pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z] and ifStopPressing and selectNum==0:
@@ -711,6 +733,7 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
             global_var.set_value('restarting',True)
             global_var.get_value('ok_sound').play()
             global_var.set_value('pause',False)
+            global_var.set_value('levelPassSign',False)
 
             if global_var.get_value('levelSign')==0:
                 highScore=global_var.get_value('highScore_0')
@@ -736,11 +759,12 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
             pygame.mixer.music.play(loops=-1)
             
 
-        elif (pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z] and ifStopPressing and selectNum==2) or (pressed_keys[K_r]!=pressed_keys_last[K_r] and pressed_keys[K_r]):
+        elif (pressed_keys[K_z]!=pressed_keys_last[K_z] and pressed_keys[K_z] and ifStopPressing and selectNum==2) or (pressed_keys[K_r]!=pressed_keys_last[K_r] and pressed_keys[K_r] and not global_var.get_value('levelPassSign')):
             #print('do')
             global_var.set_value('restarting',True)
             global_var.get_value('ok_sound').play()
             global_var.set_value('pause',False)
+            global_var.set_value('levelPassSign',False)
             pygame.mixer.music.stop()
             
             global_var.set_value('pauseSelectNum',0)

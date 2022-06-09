@@ -1048,3 +1048,17 @@ class level2Title(pygame.sprite.Sprite):
     def checkvalid(self):
         if self.lastFrame>=self.maxFrame:
             self.kill()
+
+class levelEndTimer(pygame.sprite.Sprite):
+    def __init__(self):
+        super(levelEndTimer,self).__init__()
+        self.upper=False
+        self.lower=False
+        self.timer=240
+        self.lastFrame=0
+    
+    def update(self, screen):
+        self.lastFrame+=1
+        if self.lastFrame>=self.timer:
+            global_var.set_value('levelPassSign',True)
+            self.kill()

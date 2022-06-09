@@ -1953,6 +1953,9 @@ class SanaeStageFinal(sanaeMidpath):
                 global_var.get_value('bossDead_sound').play()
                 self.doShaking(60)
                 Effect.bossBruster(self.tx,self.ty,effects,Effect.bossBrustMomiji,50)
+                #global_var.set_value('levelPassSign',True)
+                new_effect=Effect.levelEndTimer()
+                effects.add(new_effect)
                 self.kill()
 
 
@@ -3435,5 +3438,5 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
             pygame.mixer.music.set_volume(0.6) 
             pygame.mixer.music.play(loops=-1)  
             for boss in bosses:
-                boss.cardNum=1
+                boss.cardNum=7
                 boss.ifSpell=False

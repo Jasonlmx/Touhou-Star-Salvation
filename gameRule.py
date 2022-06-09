@@ -446,3 +446,20 @@ def checkLife(player,screen):
         new_image=pygame.transform.smoothscale(new_image,(480,360))
         new_image=pygame.transform.smoothscale(new_image,(960,720))
         global_var.set_value('pauseScreen',new_image)
+
+def checkPass(player,screen):
+    if global_var.get_value('levelPassSign'):
+        global_var.set_value('pause',True)
+        global_var.get_value('pause_sound').stop()
+        global_var.get_value('pause_sound').play()
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load('resource/bgm/playerScore.mp3')
+        pygame.mixer.music.play(loops=-1)
+        global_var.get_value('nep_sound').stop()
+        new_image=pygame.Surface((960,720)).convert_alpha()
+        new_image.fill((0,0,0))
+        new_image.blit(screen,(0,0))
+        new_image=pygame.transform.smoothscale(new_image,(480,360))
+        new_image=pygame.transform.smoothscale(new_image,(960,720))
+        global_var.set_value('pauseScreen',new_image)
+        global_var.set_value('pauseSelectNum',1)

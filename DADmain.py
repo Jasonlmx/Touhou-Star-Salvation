@@ -109,6 +109,7 @@ global_var.set_value('levelSign',0)
 global_var.set_value('scoreShown',0)
 global_var.set_value('DuelClassLevel_ifMidpath',False)
 global_var.set_value('DeulClassLevel_midpathFrame',0)
+global_var.set_value('levelPassSign',False)
 
 #read high scores
 f=open('resource/data/highScore_0.dat')
@@ -298,6 +299,7 @@ while running:
         gF.doPause(pressed_keys,stage)
         if not global_var.get_value('pause'):
             gameRule.checkLife(player,stage)
+            gameRule.checkPass(player,stage)
 
     stage.fill((0,0,0))
     screen.fill((0,0,0))
@@ -579,7 +581,7 @@ while running:
 
 
         #drawCover
-        gF.pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,booms,playerGuns)
+        gF.pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slaves,items,effects,backgrounds,bosses,player,booms,playerGuns,midfont)
         gF.drawBackground(screen)
         pygame.draw.rect(screen,(255,255,255),(58,28,563,663),2)
         missFrame=myfont.render('miss: '+str(player.deadFrame), True, (255, 255, 255))
