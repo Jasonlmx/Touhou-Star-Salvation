@@ -1876,8 +1876,9 @@ class sanaeMidpath(DADcharacter.Boss):
             self.cardNum+=1
             self.health=20000
             if self.frameLimit>0:
-                self.createItem(items,0,5)
+                self.createItem(items,0,10)
                 self.createItem(items,1,20)
+                self.createItem(items,6,1)
                 ifBonus=player.spellBonus
             else:
                 ifBonus=False
@@ -1948,10 +1949,10 @@ class SanaeStageFinal(sanaeMidpath):
             self.deadFrame+=1
             if self.deadFrame==1:
                 global_var.get_value('spell_end').play()
+                self.doShaking(200)
                 self.gotoPosition(self.tx+random.random()*100-50,self.ty+random.random()*100-50,119)
             if self.deadFrame>=120:
                 global_var.get_value('bossDead_sound').play()
-                self.doShaking(60)
                 Effect.bossBruster(self.tx,self.ty,effects,Effect.bossBrustMomiji,50)
                 #global_var.set_value('levelPassSign',True)
                 new_effect=Effect.levelEndTimer()
@@ -2065,10 +2066,11 @@ class SanaeStageFinal(sanaeMidpath):
             effects.add(new_effect)
             self.doSpellCardAttack(effects)
         
-        self.cardBonus-=self.framePunishment
+        
         inSpellFrame=self.lastFrame-self.startFrame
 
         if self.lastFrame>=self.startFrame:
+            self.cardBonus-=self.framePunishment
             if inSpellFrame%self.fireInterval>=(self.fireInterval-20):
                 if inSpellFrame%self.fireInterval==(self.fireInterval-20):
                     new_bullet=Bullet.small_Bullet()
@@ -2097,8 +2099,9 @@ class SanaeStageFinal(sanaeMidpath):
             self.cardNum+=1
             self.health=20000
             if self.frameLimit>0:
-                self.createItem(items,0,5)
+                self.createItem(items,0,10)
                 self.createItem(items,1,20)
+                self.createItem(items,6,1)
                 ifBonus=player.spellBonus
             else:
                 ifBonus=False
@@ -2191,10 +2194,11 @@ class SanaeStageFinal(sanaeMidpath):
             effects.add(new_effect)
             self.doSpellCardAttack(effects)
         
-        self.cardBonus-=self.framePunishment
+        #self.cardBonus-=self.framePunishment
         inSpellFrame=self.lastFrame-self.startFrame
 
         if self.lastFrame>=self.startFrame:
+            self.cardBonus-=self.framePunishment
             if inSpellFrame%180<=120:
                 if inSpellFrame%(self.fireInterval+2)==0:
                     sendFireSound(2)
@@ -2258,7 +2262,7 @@ class SanaeStageFinal(sanaeMidpath):
             self.cardNum+=1
             self.health=20000
             if self.frameLimit>0:
-                self.createItem(items,0,5)
+                self.createItem(items,0,15)
                 self.createItem(items,1,20)
                 ifBonus=player.spellBonus
             else:
@@ -2351,7 +2355,7 @@ class SanaeStageFinal(sanaeMidpath):
             effects.add(new_effect)
             self.doSpellCardAttack(effects)
 
-        self.cardBonus-=self.framePunishment
+        #self.cardBonus-=self.framePunishment
         inSpellFrame=self.lastFrame-self.startFrame
 
         if self.lastFrame==self.startFrame:
@@ -2359,6 +2363,7 @@ class SanaeStageFinal(sanaeMidpath):
             self.attackLightEffectSign=True
 
         if self.lastFrame>=self.startFrame:
+            self.cardBonus-=self.framePunishment
             if inSpellFrame%self.fireInterval==0:
                 sendFireSound(2)
                 for i in range(3):
@@ -2412,7 +2417,7 @@ class SanaeStageFinal(sanaeMidpath):
             self.cardNum+=1
             self.health=20000
             if self.frameLimit>0:
-                self.createItem(items,0,5)
+                self.createItem(items,0,10)
                 self.createItem(items,1,20)
                 ifBonus=player.spellBonus
             else:
@@ -2534,7 +2539,7 @@ class SanaeStageFinal(sanaeMidpath):
             effects.add(new_effect)
             self.doSpellCardAttack(effects)
 
-        self.cardBonus-=self.framePunishment
+        #self.cardBonus-=self.framePunishment
         inSpellFrame=self.lastFrame-self.startFrame
 
         laserAttackInterval=750
@@ -2543,7 +2548,7 @@ class SanaeStageFinal(sanaeMidpath):
         fireNode2=10
 
         if self.lastFrame>=self.startFrame:
-
+            self.cardBonus-=self.framePunishment
             if inSpellFrame%laserAttackInterval==0 or inSpellFrame%laserAttackInterval==laserAttackNode:
                 for i in range(6):
                     new_laser=Bullet.laser_line()
@@ -2629,8 +2634,9 @@ class SanaeStageFinal(sanaeMidpath):
             self.cardNum+=1
             self.health=20000
             if self.frameLimit>0:
-                self.createItem(items,0,5)
+                self.createItem(items,0,15)
                 self.createItem(items,1,20)
+                self.createItem(items,6,1)
                 ifBonus=player.spellBonus
             else:
                 ifBonus=False
@@ -2725,7 +2731,7 @@ class SanaeStageFinal(sanaeMidpath):
             effects.add(new_effect)
             self.doSpellCardAttack(effects)
 
-        self.cardBonus-=self.framePunishment
+        #self.cardBonus-=self.framePunishment
         inSpellFrame=self.lastFrame-self.startFrame
 
         #self.crazySign=False
@@ -2741,6 +2747,7 @@ class SanaeStageFinal(sanaeMidpath):
             ringIntense=10
 
         if self.lastFrame>=self.startFrame:
+            self.cardBonus-=self.framePunishment
             if inSpellFrame%self.fireInterval==0:
                 sendFireSound(1)
                 #print(self.randomAngle)
@@ -2819,7 +2826,7 @@ class SanaeStageFinal(sanaeMidpath):
             self.cardNum+=1
             self.health=20000
             if self.frameLimit>0:
-                self.createItem(items,0,5)
+                self.createItem(items,0,15)
                 self.createItem(items,1,20)
                 ifBonus=player.spellBonus
             else:
@@ -2916,10 +2923,11 @@ class SanaeStageFinal(sanaeMidpath):
             effects.add(new_effect)
             self.doSpellCardAttack(effects)
         
-        self.cardBonus-=self.framePunishment
+        #self.cardBonus-=self.framePunishment
         inSpellFrame=self.lastFrame-self.startFrame
 
         if self.lastFrame>=self.startFrame:
+            self.cardBonus-=self.framePunishment
             if inSpellFrame%4==0:
                 new_bullet=Bullet.star_Bullet()
                 new_bullet.initial(random.random()*560+60,30,0)
@@ -3012,7 +3020,7 @@ class SanaeStageFinal(sanaeMidpath):
             self.cardNum+=1
             self.health=20000
             if self.frameLimit>0:
-                self.createItem(items,0,5)
+                self.createItem(items,0,15)
                 self.createItem(items,1,20)
                 ifBonus=player.spellBonus
             else:
@@ -3095,7 +3103,7 @@ class SanaeStageFinal(sanaeMidpath):
             self.attackAnimeSign=True
             self.attackLightEffectSign=True
             self.fireCount=0
-            self.ifSoundReleased=[False,False,False,False]
+            self.ifSoundReleased=[False,False,False,False,False]
 
             # spell zone
             self.cardBonus=10000000
@@ -3108,12 +3116,16 @@ class SanaeStageFinal(sanaeMidpath):
             effects.add(new_effect)
             self.doSpellCardAttack(effects)
         
-        self.cardBonus-=self.framePunishment
+        #self.cardBonus-=self.framePunishment
         inSpellFrame=self.lastFrame-self.startFrame
 
         #fireLine=5
         if self.percentHealth<=25 or self.frameLimit<=2400:
             fireLine=5
+            if not self.ifSoundReleased[4]:
+                self.ifSoundReleased[4]=True
+                global_var.get_value('ch00_sound').stop()
+                global_var.get_value('ch00_sound').play()
         elif self.percentHealth<=40:
             if not self.ifSoundReleased[3]:
                 self.ifSoundReleased[3]=True
@@ -3141,6 +3153,7 @@ class SanaeStageFinal(sanaeMidpath):
          
 
         if self.lastFrame>=self.startFrame:
+            self.cardBonus-=self.framePunishment
             if inSpellFrame%1==0:
                 sendFireSound(2)
                 self.randomAngle2+=0.07
@@ -3165,7 +3178,7 @@ class SanaeStageFinal(sanaeMidpath):
             self.cardNum+=1
             self.health=20000
             if self.frameLimit>0:
-                self.createItem(items,0,5)
+                #self.createItem(items,0,5)
                 self.createItem(items,1,20)
                 ifBonus=player.spellBonus
             else:
@@ -3438,5 +3451,5 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
             pygame.mixer.music.set_volume(0.6) 
             pygame.mixer.music.play(loops=-1)  
             for boss in bosses:
-                boss.cardNum=7
+                boss.cardNum=1
                 boss.ifSpell=False

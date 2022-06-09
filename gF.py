@@ -84,7 +84,7 @@ def displayScene(frame,screen):
     screen.blit(sceneImage,(430,20))
 
 def displayMenu(screen,stars):
-    screen.blit(global_var.get_value('levelText01'),(736,30))
+    screen.blit(global_var.get_value('levelText01'),(716,30))
     screen.blit(global_var.get_value('mainText'),(670,500))
     for star in stars:
         star.draw(screen)
@@ -660,15 +660,18 @@ def pauseScreen(pressed_keys,pressed_keys_last,screen,frame,enemys,bullets,slave
                             screen.blit(global_var.get_value('pauseSign')[6],(100,398-48+48*i))
                     else:
                         passText=myfont.render("Congratulations! You Pass the level!",True,(255,255,255))
-                        scoreStr="Your overall Score is "+str(player.score)
+                        scoreStr="Your overall Score is "+str(player.score)+" !"
                         if global_var.get_value('levelSign')==0:
                             highScore=global_var.get_value('highScore_0')
                         elif global_var.get_value('levelSign')==1:
                             highScore=global_var.get_value('highScore_1')
                         if highScore<=player.score:
-                            scoreStr=scoreStr+"  ! You beat the record! New HighScore!"
+                            recordStr="You beat the record! New HighScore!"
+                        else:
+                            recordStr=" "
                         scoreText=myfont.render(scoreStr,True,(255,255,255))
-                        
+                        recordText=myfont.render(recordStr,True,(255,255,255))
+                        screen.blit(recordText,(100,348))
                         screen.blit(passText,(100,378))
                         screen.blit(scoreText,(100,408))
                 else:

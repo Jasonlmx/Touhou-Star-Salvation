@@ -585,7 +585,7 @@ while running:
         gF.drawBackground(screen)
         pygame.draw.rect(screen,(255,255,255),(58,28,563,663),2)
         missFrame=myfont.render('miss: '+str(player.deadFrame), True, (255, 255, 255))
-        screen.blit(missFrame,(250,0))
+        #screen.blit(missFrame,(250,0))
         gF.displayMenu(screen,stars)
         for boss in bosses:
             boss.drawHealthBar(screen)
