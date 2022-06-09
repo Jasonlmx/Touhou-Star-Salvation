@@ -96,17 +96,75 @@ class duelLevelBackObj(background):
     def __init__(self):
         super(duelLevelBackObj,self).__init__()
         self.surf = global_var.get_value('duelLevelBack')
-    
+        self.fadeFrame=40
+        self.fadeFrameNow=0
+        self.fadeSign=False
     def checkValid(self):
         if self.ty>=690+140:
             self.ty-=280*4
 
+    def doFade(self):
+        if self.fadeSign:
+            self.fadeFrameNow+=1
+            alpha=round(256/self.fadeFrame*(self.fadeFrame-self.fadeFrameNow))
+            self.surf.set_alpha(alpha)
+            if self.fadeFrame==self.fadeFrameNow:
+                self.kill()
+        elif self.frame<=self.fadeFrame:
+                alpha=round(256/self.fadeFrame*self.frame)
+                self.surf.set_alpha(alpha)
     def update(self,screen):
         self.frame+=1
         self.movement()
-        if self.ty<30-140 or self.ty>690+140:
+        self.doFade()
+        if self.ty<30-140 or self.ty>690+140 or self.tx>=60+560+140 or self.tx<=60-140:
             pass
         else:
             screen.blit(self.surf,(round(self.tx-140),round(self.ty-140)))
         self.checkValid()
+
+class duelSpellBackObj(background):
+    def __init__(self):
+        super(duelSpellBackObj,self).__init__()
+        self.surf = global_var.get_value('duelSpellBack')
+        self.speedx=-1
+        self.speedy=-1
+        self.fadeSign=False
+        self.fadeFrame=40
+        self.fadeFrameNow=0
+    def checkValid(self):
+        if self.speedy>=0:
+            if self.ty>=690+140:
+                self.ty-=280*4
+        else:
+            if self.ty<=30-140:
+                self.ty+=280*4
+        if self.speedx>=0:
+            if self.tx>=60+560+140:
+                self.tx-=840
+        else:
+            if self.tx<=60-140:
+                self.tx+=840
+    
+    def doFade(self):
+        if self.fadeSign:
+            self.fadeFrameNow+=1
+            alpha=round(256/self.fadeFrame*(self.fadeFrame-self.fadeFrameNow))
+            self.surf.set_alpha(alpha)
+            if self.fadeFrame==self.fadeFrameNow:
+                self.kill()
+        elif self.frame<=self.fadeFrame:
+                alpha=round(256/self.fadeFrame*self.frame)
+                self.surf.set_alpha(alpha)
+
+    def update(self,screen):
+        self.frame+=1
+        self.movement()
+        self.doFade()
+        if self.ty<30-140 or self.ty>690+140 or self.tx>=60+560+140 or self.tx<=60-140:
+            pass
+        else:
+            screen.blit(self.surf,(round(self.tx-140),round(self.ty-140)))
+        self.checkValid()
+
     

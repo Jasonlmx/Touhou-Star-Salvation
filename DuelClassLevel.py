@@ -14,6 +14,10 @@ import Effect
 import gameRule
 import danmaku
 
+def backgroundFade(backgrounds):
+    for item in backgrounds:
+        item.fadeSign=True
+
 def sendFireSound(num):
     index=str(num)
     boolSign='enemyFiring'+index
@@ -1893,6 +1897,15 @@ class SanaeStageFinal(sanaeMidpath):
             self.boomImmune=True
     
     def attack(self, frame, items, effects, bullets, backgrounds, enemys, slaves, player):
+        if self.cardNum>0:
+            if self.ifSpell and self.lastFrame==1:
+                for background in backgrounds:
+                    background.fadeSign=True
+                gF.doSpellBackground(None,backgrounds)
+            elif self.ifSpell==False and self.lastFrame==1:
+                for background in backgrounds:
+                    background.fadeSign=True
+                gF.doBackground2(None,backgrounds)
         if self.cardNum==0: 
             self.noneSpell_0(frame,items,effects,bullets,backgrounds,enemys,slaves,player)
         if self.cardNum==1:
@@ -3291,7 +3304,9 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         #new_boss=DADcharacter.Boss()
         new_boss.initial(340,-200)
         bosses.add(new_boss)
-    
+        '''backgroundFade(backgrounds)
+        gF.doSpellBackground(screen,backgrounds)'''
+
     if frame==3590:
         for boss in bosses:
             boss.gotoPosition(340,200,90)

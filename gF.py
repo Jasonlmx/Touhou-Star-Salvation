@@ -512,6 +512,11 @@ def loadImage():
     duelLevelBack=pygame.transform.smoothscale(duelLevelBack,(280,280))
     global_var.set_value('duelLevelBack',duelLevelBack)
 
+    duelSpellBack=pygame.image.load('resource/background/duelClassSpellBack.jpg')
+    duelSpellBack=duelSpellBack.convert()
+    duelSpellBack=pygame.transform.smoothscale(duelSpellBack,(280,280))
+    global_var.set_value('duelSpellBack',duelSpellBack)
+
 class star_effect(pygame.sprite.Sprite):
     def __init__(self):
         super(star_effect,self).__init__()
@@ -566,6 +571,13 @@ def doBackground2(screen,backgrounds):
     for i in range(0,2):
         for j in range(0,4):
             new_background=background.duelLevelBackObj()
+            new_background.initial(60+140+i*280,140+j*280)
+            backgrounds.add(new_background)
+
+def doSpellBackground(screen,backgrounds):
+    for i in range(0,3):
+        for j in range(0,4):
+            new_background=background.duelSpellBackObj()
             new_background.initial(60+140+i*280,140+j*280)
             backgrounds.add(new_background)
 
