@@ -346,7 +346,7 @@ class ghost(enemy):
         image=pygame.Surface((48,48))
         image.set_alpha(256)
         image=image.convert_alpha()
-        image.set_colorkey((0, 0, 0))
+        image.fill((0,0,0,0))
         self.frame+=1
         self.nimbusAngle+=4
         self.countAngle()
