@@ -1,5 +1,3 @@
-from curses.panel import new_panel
-from hashlib import new
 import pygame,sys
 import random
 import math

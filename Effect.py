@@ -1,4 +1,3 @@
-from re import U
 import pygame,sys
 import random
 import math

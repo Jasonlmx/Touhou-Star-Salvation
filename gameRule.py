@@ -1,4 +1,3 @@
-from tkinter import Frame
 import pygame,sys
 import random
 import math

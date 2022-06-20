@@ -1,5 +1,3 @@
-from imp import new_module
-from typing import ForwardRef
 import pygame,sys
 import random
 import math

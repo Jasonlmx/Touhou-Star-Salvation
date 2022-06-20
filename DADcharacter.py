@@ -1,4 +1,3 @@
-from hashlib import new
 import pygame,sys
 import random
 import math

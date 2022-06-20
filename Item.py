@@ -1,4 +1,3 @@
-from venv import create
 import pygame,sys
 import random
 import math

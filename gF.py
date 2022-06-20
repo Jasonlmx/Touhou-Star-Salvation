@@ -1,7 +1,3 @@
-from email.mime import application
-from hashlib import new
-from sys import api_version
-from tkinter import font
 import pygame
 import math
 from pygame.locals import *
