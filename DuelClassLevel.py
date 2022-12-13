@@ -1834,6 +1834,14 @@ class sanaeMidpath(DADcharacter.Boss):
                 new_effect=Effect.wave()
                 new_effect.initial((self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1]),900,20,(255,255,255),8)
                 effects.add(new_effect)
+                angle=360*random.random()
+                for i in range(30):
+                    for j in range(4):
+                        new_bullet=Bullet.satsu_Bullet()
+                        new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
+                        new_bullet.setSpeed(angle+i*(360/30),13-1.7*j)
+                        new_bullet.loadColor('white')
+                        bullets.add(new_bullet)
 
             if inSpellFrame%freeze_interval==1:
                 global_var.set_value('midPathSpell3Signal',False)
@@ -1868,7 +1876,7 @@ class sanaeMidpath(DADcharacter.Boss):
                 self.gotoPosition(player.cx+random.random()*60-30,random.random()*40+180,60)
 
         if self.health<=0 or self.frameLimit<=0:
-            self.cancalAllBullet(bullets,items,effects,True)
+            self.addLastingCancel(self.tx,self.ty,slaves,15,True,cancelType=1)
             self.reset=True
             self.ifSpell=False
             self.cardNum+=1
