@@ -273,7 +273,7 @@ class bulletCancelLasting(pygame.sprite.Sprite):
         self.maxRadius=maxRadius
         self.doBonus=doBonus
         self.harsh=harsh
-        self.cancelType=cancelType#0:central,1:vertical(down->up),2:vertical(up->down)
+        self.cancelType=cancelType #0:central,1:vertical(down->up),2:vertical(up->down)
         if self.cancelType==1:
             self.ySign=690
         elif self.cancelType==2:

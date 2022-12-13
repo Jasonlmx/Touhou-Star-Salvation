@@ -459,7 +459,7 @@ class sanae_spell_1_gravity_bullet(part4_gravity_bullet):
         super(sanae_spell_1_gravity_bullet,self).__init__()          
         self.validAccuracy=(10,10,10,10)
 
-class sanae_spell_2_lightning_bullet(Bullet.sharp_Bullet):
+class sanae_spell_2_lightning_bullet(Bullet.satsu_Bullet):
     def __init__(self):
         super(sanae_spell_2_lightning_bullet,self).__init__()
         self.speedMax=7.2
@@ -898,7 +898,7 @@ class part2_enemy(DADcharacter.yinyangyu):
         self.InitAngle=90
         self.speed=3
         self.amplifyAngle=random.random()*20+10
-        self.health=1000
+        self.health=300
         self.fireFrame=random.randint(0,120)
         self.randomAngle=random.random()*360
     def ai_move(self):
@@ -2200,16 +2200,17 @@ class SanaeStageFinal(sanaeMidpath):
             if inSpellFrame%180<=120:
                 if inSpellFrame%(self.fireInterval+2)==0:
                     sendFireSound(2)
-                    for i in range(12):
+                    numberOfLines=12
+                    for i in range(numberOfLines):
                         new_bullet=sanae_spell_2_lightning_bullet()
                         new_bullet.initial(self.tx,self.ty,0)
-                        new_bullet.angleNow=self.randomAngle+i*(360/12)
+                        new_bullet.angleNow=self.randomAngle+i*(360/numberOfLines)
                         new_bullet.speedNow=4
                         new_bullet.changeFrame=5
                         new_bullet.movingFrame=10
                         new_bullet.stayFrame=5
                         #new_bullet.changeFrame=8
-                        new_bullet.setSpeed(self.randomAngle+i*(360/12),new_bullet.speedNow)
+                        new_bullet.setSpeed(self.randomAngle+i*(360/numberOfLines),new_bullet.speedNow)
                         new_bullet.speedMax=new_bullet.speedNow-0.1
                         new_bullet.doColorCode(13)
                         new_bullet.ifAddHitPoint=False
@@ -2240,10 +2241,11 @@ class SanaeStageFinal(sanaeMidpath):
                 angle=random.random()*360
                 sendFireSound(1)
                 for i in range(12):
-                    new_bullet=Bullet.orb_Bullet()
+                    new_bullet=Bullet.butterfly_Bullet()
                     new_bullet.initial(self.tx,self.ty,0)
                     new_bullet.setSpeed(angle+i*360/12,4.0)
-                    new_bullet.loadColor('yellow')
+                    #new_bullet.loadColor('yellow')
+                    new_bullet.doColorCode(6)
                     bullets.add(new_bullet)
                 
             if inSpellFrame%180==50:
@@ -3280,7 +3282,7 @@ def stageController(screen,frame,enemys,bullets,slaves,items,effects,backgrounds
         effects.add(new_effect)
     
     if frame>=680 and frame<=1080:
-        if frame%30==0:
+        if frame%15==0:
             new_enemy=part2_enemy()
             new_enemy.initialize(random.random()*500+90,20,0,-1)
             new_enemy.colorNum=1
