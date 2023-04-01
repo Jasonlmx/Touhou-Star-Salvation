@@ -12,6 +12,10 @@ import Effect
 import Item
 import gameRule
 
+# returnScoreFormat(string) takes a string and returns it in the 
+# format of: a comma between every other 3 digits
+# e.g.: 1003756 -> 1,003,756
+# efficiency: O(n) with n is the string length
 def returnScoreFormat(string):
     zeroNum=9-len(string)
     zeroString=''
@@ -25,11 +29,21 @@ def returnScoreFormat(string):
             scoreFinal+=','
     return scoreFinal
 
+# addLastingCancel(tx,ty,slaves,maxFrame,doBonus) takes the position tx, and ty
+# creating a slave at the given position which cancels all the bullet gruadually
+# from the centre in maxFrame. doBonus controls if the cancelled bullet will drop
+# points
+# effect: create a slave in the slave group
+# efficency: O(1)
+# requires: maxFrame>0, maxFrame is integer
 def addLastingCancel(tx,ty,slaves,maxFrame,doBonus):
         new_slave=Slave.bulletCancelLasting()
         new_slave.initial(tx,ty,maxFrame,900,doBonus)
         slaves.add(new_slave)
 
+# cancalAllBullet(bullets,items,effects,doBonus) immediately cancels all the bullet
+# objects in bullets group.  doBonus controls if the cancelled bullet will drop points
+# Efficency: O(n), n is the length of bullets group
 def cancalAllBullet(bullets,items,effects,doBonus):
     for bullet in bullets:
         if bullet.cancalable and bullet.type!=15:
@@ -52,6 +66,8 @@ def cancalAllBullet(bullets,items,effects,doBonus):
                 Bullet.createItem(bullet.tx,bullet.ty,items)
             bullet.kill()
 
+# addStars(screen,stars) adds 3 stars in title screen
+# effects: creates star objects in group stars
 def addStars(screen,stars):
     new_star=gF.star_effect()
     new_star.initial(780,550)
@@ -65,6 +81,12 @@ def addStars(screen,stars):
     new_star.initial(820,660)
     stars.add(new_star)
 
+# missDetect(player,bullets,enemys,effects,miss_sound,items,slaves) detects if
+# the player get hit by a bullet. If so, it will complete the death settlement
+# and create a bullet cancelling object along with its effect
+# effect: delete bullet objects from bullets
+#         create slave objects in slaves
+#         create effect objects in effects
 def missDetect(player,bullets,enemys,effects,miss_sound,items,slaves):
     miss=pygame.sprite.spritecollideany(player,bullets)
     if miss!=None and player.immune!=1 and not player.unhitable:
@@ -134,13 +156,19 @@ def missDetect(player,bullets,enemys,effects,miss_sound,items,slaves):
             enemy.health-=4
         player.bulletSurpress-=1
 
-
+# playerDeathEffect(player,effects) create player death effect
+# effect: add a player death effect to effects
+# efficiency: O(1) 
 def playerDeathEffect(player,effects):
     for i in range(0,20):
         new_effect=Effect.grazeEffect()
         new_effect.initial([player.cx,player.cy],6,25,(255,255,255),6,1,20,4,2)
         effects.add(new_effect)
 
+# doBoom(player,booms,pressed_keys,slash_sound,items) justify if boom available to be
+# released, and preventing multiple release of boom
+# effect: add boom object to booms, retrive and modify global values
+# efficiency: O(n), n is the length of group items
 def doBoom(player,booms,pressed_keys,slash_sound,items):
     if pressed_keys[K_x] and player.boomStatu==0 and player.boom>0 and not global_var.get_value('pressingX'):
         player.boom-=1
@@ -167,7 +195,11 @@ def doBoom(player,booms,pressed_keys,slash_sound,items):
             if item.lastFrame>=5:
                 item.followPlayer=1
                 item.followSpeed=9 
-    
+
+# hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses,slaves)
+# deal with hit of bullets by player, substract health accordingly from enemies
+# effect: modify slaves, playerGuns, bullets, effects, items, enemies
+# efficiency: O(mn), m is the length of emeny, n is the length of single_hit
 def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses,slaves):
     enemy_hit=pygame.sprite.groupcollide(enemys,playerGuns,0,0)
     bullet_hit=pygame.sprite.groupcollide(playerGuns,enemys,0,0)
@@ -306,6 +338,10 @@ def hitEnemy(enemys,playerGuns,booms,bullets,effects,frame,player,items,bosses,s
                         playerGuns.add(new_fire)
                         boom.doKill()
 
+# drawPlayer(screen,player,frame)
+# draw player on the screen, when player is unhitable draw every other 2 frames
+# effect: modify screen
+# efficiency: O(1)
 def drawPlayer(screen,player,frame):
     if player.immune!=1 and not player.unhitable:
         player.draw(screen)
@@ -313,6 +349,11 @@ def drawPlayer(screen,player,frame):
         if frame%4<2:
             player.draw(screen)
 
+# displayUi(screen,player,myfont,frame) displays all ui shown during game process
+# including scores, player life, spell, bonus, and graze
+# will show scores in a continous increasing every frame when the score increases
+# effect: modify screen
+# efficiency: O(log n), n is the number of score
 def displayUi(screen,player,myfont,frame):
     life=player.life
     spell=player.boom
@@ -398,6 +439,9 @@ def displayUi(screen,player,myfont,frame):
     
     screen.blit(global_var.get_value('textArea'),(663,105))
     
+# itemAllGet(items,player,effects) sucks all items to player's position
+# effect: modify item objects in items group
+# efficiency: O(n), n is the length of items
 def itemAllGet(items,player,effects):
     if player.ty<=player.itemGetLine:
         for item in items:
@@ -411,6 +455,9 @@ def itemAllGet(items,player,effects):
                 #effects.add(new_effect)
                 #item.kill()
 
+# checkLife(player,screen) aborts game when life is below 0
+# effect: retrive and modify global values
+# efficiency: O(1)
 def checkLife(player,screen):
     if player.life<0:
         global_var.set_value('ifGameOver',True)
@@ -446,6 +493,9 @@ def checkLife(player,screen):
         new_image=pygame.transform.smoothscale(new_image,(960,720))
         global_var.set_value('pauseScreen',new_image)
 
+# checkLife(player,screen) aborts game when stage ends
+# effect: retrive and modify global values
+# efficiency: O(1)
 def checkPass(player,screen):
     if global_var.get_value('levelPassSign'):
         global_var.set_value('pause',True)
