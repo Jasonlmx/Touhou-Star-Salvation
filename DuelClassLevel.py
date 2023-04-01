@@ -392,7 +392,7 @@ class sanae_noneSpell_1_orb_bullet(part2_acc_bullet):
         self.stdSpeed=0
         self.sideNum=3
         self.color='green'
-        self.length=10
+        self.length=12
     def update(self, screen, bullets, effects):
         self.lastFrame+=1
         self.movement()
@@ -2026,7 +2026,8 @@ class SanaeStageFinal(sanaeMidpath):
             
             if inSpellFrame%self.fireInterval==60:
                 sendFireSound(1)
-                danmaku.polyByLength(bullets,Bullet.orb_Bullet,7,3,self.stdSpeed_sub/10*9,self.fireAngle-180,(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1]),'green')
+                danmaku.polyByLength(bullets,Bullet.satsu_Bullet,8,3,self.stdSpeed_sub/10*9,self.fireAngle,(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1]),'green')
+                danmaku.polyByLength(bullets,Bullet.satsu_Bullet,8,3,self.stdSpeed_sub/10*9,self.fireAngle-180,(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1]),'green')
                 #angle=random.random()*360
                 '''for i in range(20):
                     sendFireSound(1)
@@ -2990,7 +2991,7 @@ class SanaeStageFinal(sanaeMidpath):
             if inSpellFrame%self.periodMax<=self.periodChange:
                 if inSpellFrame%self.fireInterval2==0:
                     if self.periodCount%2==0:
-                        self.randomAngle+=6+3*random.random()
+                        self.randomAngle+=6+3*random.random()#3
                     else:
                         self.randomAngle-=6+3*random.random()
                     sendFireSound(2)
@@ -2998,7 +2999,7 @@ class SanaeStageFinal(sanaeMidpath):
                         new_bullet=Bullet.star_bullet_stay_acc()
                         new_bullet.initial(self.tx+self.bulletAdj[0],self.ty+self.bulletAdj[1],0)
                         new_bullet.setSpeed(self.randomAngle+120*i,7)
-                        new_bullet.setAccSpeed(self.randomAngle+120*i,5,4,30,20)
+                        new_bullet.setAccSpeed(self.randomAngle+120*i,7,4,30,20)#5,4 ; 30,20
                         self.fireCount+=1
                         self.fireCount=self.fireCount%16
                         new_bullet.doColorCode(self.fireCount)
