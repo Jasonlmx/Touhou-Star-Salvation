@@ -12,6 +12,7 @@ import Effect
 import Item
 import gameRule
 from screenSettings import screen_settings
+import assets
 
 
 class titleStar(pygame.sprite.Sprite):
@@ -154,7 +155,7 @@ class starShadow(pygame.sprite.Sprite):
 class Menu():
     def __init__(self):
         super(Menu,self).__init__()
-        self.image=pygame.image.load('resource/title/menu0.png').convert()
+        self.image=assets.load_image('resource/title/menu0.png', convert_alpha=False)
         self.image=pygame.transform.smoothscale(self.image,(global_var.get_value('screen_width'),global_var.get_value('screen_height')))
         self.sign=global_var.get_value('menuSign')
         self.shadow=global_var.get_value('menuShadow')
@@ -165,7 +166,7 @@ class Menu():
         self.tachie=global_var.get_value('reimuLogo')
         self.selectImg=global_var.get_value('menuSelectImg')
         self.levelImg=global_var.get_value('levelImg')
-        self.font=pygame.font.SysFont('arial', 20)
+        self.font=assets.load_sysfont('arial', 20)
         self.selectNum=[0,1,0,0]
         self.stairMax=[7,1,1,1]
         self.menuStair=0 #0:main menu, 1 stage selection, 2 player selection, 3 practice menu

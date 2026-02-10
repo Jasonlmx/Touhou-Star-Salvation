@@ -127,6 +127,9 @@ class slave_linear(pygame.sprite.Sprite):
         mycx=self.tx
         mycy=self.ty
         dif=math.sqrt(math.pow(playercx-mycx,2)+math.pow(playercy-mycy,2))
+        if speed == 0 or dif == 0:
+            self.speedAlter(0,0)
+            return
         times=dif/speed
         speedx=(playercx-mycx)/times
         speedy=(playercy-mycy)/times

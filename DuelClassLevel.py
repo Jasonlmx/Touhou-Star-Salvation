@@ -675,6 +675,10 @@ class sanae_spell_5_ringed_orb_bullet(Bullet.orb_Bullet):
         mycx=self.centerTx
         mycy=self.centerTy
         dif=math.sqrt(math.pow(playercx-mycx,2)+math.pow(playercy-mycy,2))
+        if speed == 0 or dif == 0:
+            self.centerSpeedx=0
+            self.centerSpeedy=0
+            return
         times=dif/speed
         speedx=(playercx-mycx)/times
         speedy=(playercy-mycy)/times
