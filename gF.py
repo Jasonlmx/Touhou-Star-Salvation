@@ -6,6 +6,7 @@ import global_var
 import background
 from screenSettings import screen_settings
 import pic
+import assets
 
 def shakeScreen():
     shakeFrame=global_var.get_value('shakeFrame')
@@ -75,7 +76,7 @@ def displayScene(frame,screen):
     if sceneNum!=0:
         address=address+str(sceneNum)
     address=address+".png"
-    sceneImage=pygame.image.load(address)
+    sceneImage=assets.load_image(address, convert_alpha=False)
     screen.blit(sceneImage,(30,20))
     screen.blit(sceneImage,(430,20))
 
@@ -90,69 +91,69 @@ def loadImage():
     gunAlpha=150
     amplified_times=global_var.get_value('amplified_times')
 
-    stage_background=pygame.image.load('resource/mainback.jpeg').convert_alpha()
+    stage_background=assets.load_image('resource/mainback.jpeg')
     stage_background=pygame.transform.smoothscale(stage_background,(round(640*amplified_times),round(480*amplified_times)))
     global_var.set_value('stage_background',stage_background)
 
-    green=pygame.image.load('resource/playerFire/mainFire_green.png').convert_alpha()
+    green=assets.load_image('resource/playerFire/mainFire_green.png')
     green=pygame.transform.scale(green,(48,48))
     green.set_alpha(gunAlpha)
     global_var.set_value('playerFire_green',green)
-    blue=pygame.image.load('resource/playerFire/mainFire_blue.png').convert_alpha()
+    blue=assets.load_image('resource/playerFire/mainFire_blue.png')
     blue=pygame.transform.scale(blue,(48,48))
     blue.set_alpha(gunAlpha)
     global_var.set_value('playerFire_blue',blue)
-    red=pygame.image.load('resource/playerFire/mainFire_red.png').convert_alpha()
+    red=assets.load_image('resource/playerFire/mainFire_red.png')
     red=pygame.transform.scale(red,(48,48))
     red.set_alpha(gunAlpha)
     global_var.set_value('playerFire_red',red)
-    yellow=pygame.image.load('resource/playerFire/mainFire_yellow.png').convert_alpha()
+    yellow=assets.load_image('resource/playerFire/mainFire_yellow.png')
     yellow=pygame.transform.scale(yellow,(48,48))
     yellow.set_alpha(gunAlpha)
     global_var.set_value('playerFire_yellow',yellow)
-    orange=pygame.image.load('resource/playerFire/mainFire_orange.png').convert_alpha()
+    orange=assets.load_image('resource/playerFire/mainFire_orange.png')
     orange=pygame.transform.scale(orange,(48,48))
     orange.set_alpha(gunAlpha)
     global_var.set_value('playerFire_orange',orange)
-    reimu_fire=pygame.image.load('resource/playerFire/reimu_fire.png').convert_alpha()
+    reimu_fire=assets.load_image('resource/playerFire/reimu_fire.png')
     reimu_fire=pygame.transform.smoothscale(reimu_fire,(384,168))
     global_var.set_value('reimu_fire',reimu_fire)
 
-    global_var.set_value('levelText01',pygame.image.load('resource/text/levelText01.png').convert_alpha())
-    global_var.set_value('pl00',pygame.image.load('resource/player/pl00/playerImage.png').convert_alpha())
-    global_var.set_value('pl01',pygame.image.load('resource/player/pl01/playerImage.png').convert_alpha())
-    global_var.set_value('mainText',pygame.image.load('resource/text/mainText01.png').convert_alpha())
-    global_var.set_value('cloud_bg',pygame.image.load('resource/background/cloud.png').convert_alpha())
-    global_var.set_value('lake_bg',pygame.image.load('resource/background/lake.png').convert_alpha())
-    global_var.set_value('star_bg',pygame.image.load('resource/background/star.png').convert_alpha())
+    global_var.set_value('levelText01',assets.load_image('resource/text/levelText01.png'))
+    global_var.set_value('pl00',assets.load_image('resource/player/pl00/playerImage.png'))
+    global_var.set_value('pl01',assets.load_image('resource/player/pl01/playerImage.png'))
+    global_var.set_value('mainText',assets.load_image('resource/text/mainText01.png'))
+    global_var.set_value('cloud_bg',assets.load_image('resource/background/cloud.png'))
+    global_var.set_value('lake_bg',assets.load_image('resource/background/lake.png'))
+    global_var.set_value('star_bg',assets.load_image('resource/background/star.png'))
 
-    spirit=pygame.image.load('resource/enemy/spirit.png').convert_alpha()
+    spirit=assets.load_image('resource/enemy/spirit.png')
     spirit=pygame.transform.scale(spirit,(576,384))
     global_var.set_value('spirit',spirit)
-    ghost=pygame.image.load('resource/enemy/ghost.png').convert_alpha()
+    ghost=assets.load_image('resource/enemy/ghost.png')
     ghost=pygame.transform.scale(ghost,(384,192))
     global_var.set_value('ghost',ghost)
-    nimbus=pygame.image.load('resource/enemy/nimbus1.png').convert_alpha()
+    nimbus=assets.load_image('resource/enemy/nimbus1.png')
     nimbus=pygame.transform.scale(nimbus,(192,48))
     global_var.set_value('nimbus',nimbus)
-    item=pygame.image.load('resource/item/item.png').convert_alpha()
+    item=assets.load_image('resource/item/item.png')
     item=pygame.transform.scale(item,(384,24))
     global_var.set_value('itemImage',item)
 
-    boss_1=pygame.image.load('resource/boss/satori.png').convert_alpha()
+    boss_1=assets.load_image('resource/boss/satori.png')
     boss_1=pygame.transform.smoothscale(boss_1,(288,297))
     global_var.set_value('boss_1',boss_1)
-    bossTracker=pygame.image.load('resource/text/bossTracker.png').convert_alpha()
+    bossTracker=assets.load_image('resource/text/bossTracker.png')
     global_var.set_value('bossTracker',bossTracker)
 
-    global_var.set_value('lifeSign',pygame.image.load('resource/text/lifeSign.png'))
-    global_var.set_value('spellSign',pygame.image.load('resource/text/spellSign1.png'))
-    global_var.set_value('lifeText',pygame.image.load('resource/text/lifeText.png'))
-    global_var.set_value('spellText',pygame.image.load('resource/text/spellText.png'))
-    front00=pygame.image.load('resource/text/front00.png')
+    global_var.set_value('lifeSign',assets.load_image('resource/text/lifeSign.png', convert_alpha=None))
+    global_var.set_value('spellSign',assets.load_image('resource/text/spellSign1.png', convert_alpha=None))
+    global_var.set_value('lifeText',assets.load_image('resource/text/lifeText.png', convert_alpha=None))
+    global_var.set_value('spellText',assets.load_image('resource/text/spellText.png', convert_alpha=None))
+    front00=assets.load_image('resource/text/front00.png', convert_alpha=None)
     front00=pygame.transform.smoothscale(front00,(768,768))
     global_var.set_value('front00',front00)
-    front01=pygame.image.load('resource/text/front00.png')
+    front01=assets.load_image('resource/text/front00.png', convert_alpha=None)
     textArea=pygame.Surface((80,220)).convert_alpha()
     textArea.fill((0,0,0,0))
     #Hiscore
@@ -166,42 +167,42 @@ def loadImage():
     #graze
     textArea.blit(front01,(0,176),(336,0,80,19))
     global_var.set_value('textArea',textArea)
-    powerText=pygame.image.load('resource/text/powerText.png')
+    powerText=assets.load_image('resource/text/powerText.png', convert_alpha=None)
     powerText=pygame.transform.scale(powerText,(99,24))
     global_var.set_value('powerText',powerText)
-    hogwarts_background=pygame.image.load('resource/background/hogwarts.png').convert_alpha()
+    hogwarts_background=assets.load_image('resource/background/hogwarts.png')
     global_var.set_value('hogwarts_background',hogwarts_background)
-    stars_background=pygame.image.load('resource/background/stars.jpg').convert()#_alpha()
+    stars_background=assets.load_image('resource/background/stars.jpg', convert_alpha=False)#_alpha()
     global_var.set_value('stars_background',stars_background)
-    spell_background=pygame.image.load('resource/background/spellBack.jpg').convert()
+    spell_background=assets.load_image('resource/background/spellBack.jpg', convert_alpha=False)
     #spell_background=pygame.transform.smoothscale(spell_background,(850,850)).convert()
     global_var.set_value('spell_background',spell_background)
-    moon=pygame.image.load('resource/background/moon.png').convert()
+    moon=assets.load_image('resource/background/moon.png', convert_alpha=False)
     global_var.set_value('moon',moon)
 
 
-    etama=pygame.image.load('resource/bullet/etama.png')
+    etama=assets.load_image('resource/bullet/etama.png', convert_alpha=None)
     etama=etama.convert_alpha()
     global_var.set_value('etama',etama)
     star_bullet_image=pygame.Surface((256,16))
     star_bullet_image=star_bullet_image.convert_alpha()
     star_bullet_image.fill((0,0,0,0))
     star_bullet_image.blit(etama, (0, 0), (0,160, 256, 16))
-    #pygame.image.load('resource/bullet/big_star_bullet.png')
+    #assets.load_image('resource/bullet/big_star_bullet.png', convert_alpha=None)
     star_bullet_image=pygame.transform.smoothscale(star_bullet_image,(384,24))
     global_var.set_value('star_bullet_image',star_bullet_image)
     mid_bullet_image=pygame.Surface((256,16))
     mid_bullet_image=mid_bullet_image.convert_alpha()
     mid_bullet_image.fill((0,0,0,0))
     mid_bullet_image.blit(etama, (0, 0), (0,48, 256, 16))
-    #pygame.image.load('resource/bullet/big_star_bullet.png')
+    #assets.load_image('resource/bullet/big_star_bullet.png', convert_alpha=None)
     mid_bullet_image=pygame.transform.smoothscale(mid_bullet_image,(384,24))
     global_var.set_value('mid_bullet_image',mid_bullet_image)
     orb_bullet_image=pygame.Surface((256,16))
     orb_bullet_image=orb_bullet_image.convert_alpha()
     orb_bullet_image.fill((0,0,0,0))
     orb_bullet_image.blit(etama, (0, 0), (0,32, 256, 16))
-    #pygame.image.load('resource/bullet/big_star_bullet.png')
+    #assets.load_image('resource/bullet/big_star_bullet.png', convert_alpha=None)
     orb_bullet_image=pygame.transform.scale(orb_bullet_image,(384,24))
     global_var.set_value('orb_bullet_image',orb_bullet_image)
     
@@ -209,51 +210,51 @@ def loadImage():
     laser_image=laser_image.convert_alpha()
     laser_image.fill((0,0,0,0))
     laser_image.blit(etama, (0, 0), (0,0, 256, 16))
-    #pygame.image.load('resource/bullet/big_star_bullet.png')
+    #assets.load_image('resource/bullet/big_star_bullet.png', convert_alpha=None)
     global_var.set_value('laser_image',laser_image)
 
 
 
-    big_star_bullet_image=pygame.image.load('resource/bullet/big_star_bullet.png')
+    big_star_bullet_image=assets.load_image('resource/bullet/big_star_bullet.png', convert_alpha=None)
     big_star_bullet_image=pygame.transform.smoothscale(big_star_bullet_image,(384,48))
     global_var.set_value('big_star_bullet_image',big_star_bullet_image)
-    laser_bullet_image=pygame.image.load('resource/bullet/laser_bullet.png')
+    laser_bullet_image=assets.load_image('resource/bullet/laser_bullet.png', convert_alpha=None)
     global_var.set_value('laser_bullet_image',laser_bullet_image)
-    circle_bullet_image=pygame.image.load('resource/bullet/circle_bullet.png')
+    circle_bullet_image=assets.load_image('resource/bullet/circle_bullet.png', convert_alpha=None)
     circle_bullet_image=pygame.transform.smoothscale(circle_bullet_image,(384,48))
     global_var.set_value('circle_bullet_image',circle_bullet_image)
-    bullet_create_image=pygame.image.load('resource/bullet/bullet_create.png')
+    bullet_create_image=assets.load_image('resource/bullet/bullet_create.png', convert_alpha=None)
     global_var.set_value('bullet_create_image',bullet_create_image)
-    butterfly_bullet_image=pygame.image.load('resource/bullet/butterfly_bullet.png')
+    butterfly_bullet_image=assets.load_image('resource/bullet/butterfly_bullet.png', convert_alpha=None)
     butterfly_bullet_image=pygame.transform.smoothscale(butterfly_bullet_image,(384,48))
     global_var.set_value('butterfly_bullet_image',butterfly_bullet_image)
-    rice_bullet_image=pygame.image.load('resource/bullet/rice_bullet.png')
+    rice_bullet_image=assets.load_image('resource/bullet/rice_bullet.png', convert_alpha=None)
     rice_bullet_image=pygame.transform.smoothscale(rice_bullet_image,(384,24))
     global_var.set_value('rice_bullet_image',rice_bullet_image)
-    satsu_bullet_image=pygame.image.load('resource/bullet/satsu_bullet.png')
+    satsu_bullet_image=assets.load_image('resource/bullet/satsu_bullet.png', convert_alpha=None)
     satsu_bullet_image=pygame.transform.smoothscale(satsu_bullet_image,(384,24))
     global_var.set_value('satsu_bullet_image',satsu_bullet_image)
-    bact_bullet_image=pygame.image.load('resource/bullet/bact_bullet.png')
+    bact_bullet_image=assets.load_image('resource/bullet/bact_bullet.png', convert_alpha=None)
     bact_bullet_image=pygame.transform.smoothscale(bact_bullet_image,(384,24))
     global_var.set_value('bact_bullet_image',bact_bullet_image)
-    effect_temp1=pygame.image.load('resource/boss/eff01.png')
+    effect_temp1=assets.load_image('resource/boss/eff01.png', convert_alpha=None)
     effect_temp1=pygame.transform.smoothscale(effect_temp1,(192,96))
     global_var.set_value('effect_temp1',effect_temp1)
-    satoriImg=pygame.image.load('resource/boss/face04ct.png')
+    satoriImg=assets.load_image('resource/boss/face04ct.png', convert_alpha=None)
     satoriImg=pygame.transform.smoothscale(satoriImg,(384,768)).convert_alpha()
     global_var.set_value('satoriImg',satoriImg)
-    sanaeImg=pygame.image.load('resource/boss/sanaeFace.png')
+    sanaeImg=assets.load_image('resource/boss/sanaeFace.png', convert_alpha=None)
     sanaeImg=pygame.transform.smoothscale(sanaeImg,(384,650)).convert_alpha()
     global_var.set_value('sanaeImg',sanaeImg)
 
-    pauseImg=pygame.image.load('resource/text/pause.png')
+    pauseImg=assets.load_image('resource/text/pause.png', convert_alpha=None)
     pauseImg=pygame.transform.smoothscale(pauseImg,(384,384)).convert_alpha()
     global_var.set_value('pauseImg',pauseImg)
     pauseRound=pygame.Surface((72,312)).convert_alpha()
     pauseRound.fill((0,0,0,0))
     pauseRound.blit(pauseImg,(0,0),(0,0,72,312))
     global_var.set_value('pauseRound',pauseRound)
-    titleLogo=pygame.image.load('resource/title/title_logo.png')
+    titleLogo=assets.load_image('resource/title/title_logo.png', convert_alpha=None)
     kanjiLogo=pygame.Surface((610,144)).convert_alpha()
     kanjiLogo.fill((0,0,0,0))
     kanjiLogo.blit(titleLogo,(0,0),(0,0,610,144))
@@ -269,7 +270,7 @@ def loadImage():
     lightLogo.blit(titleLogo,(0,0),(0+5,160,500,96))
     lightLogo=pygame.transform.smoothscale(lightLogo,(round(333*amplified_times),round(64*amplified_times)))
     global_var.set_value('lightLogo',lightLogo)
-    reimuLogo=pygame.image.load('resource/title/tachie.png').convert_alpha()
+    reimuLogo=assets.load_image('resource/title/tachie.png')
     reimuLogo=pygame.transform.smoothscale(reimuLogo,(round(240*amplified_times),round(426*amplified_times)))
     global_var.set_value('reimuLogo',reimuLogo)
     pauseSign=[]
@@ -297,11 +298,11 @@ def loadImage():
     global_var.set_value('pauseSelectNum',0)
     levelImg=[]
     for i in range(1,2):
-        new_image=pygame.image.load('resource/title/level0'+str(i)+'.png')
+        new_image=assets.load_image('resource/title/level0'+str(i)+'.png', convert_alpha=None)
         new_image=pygame.transform.smoothscale(new_image,(round(256*amplified_times),round(128*amplified_times)))
         levelImg.append(new_image)
     global_var.set_value('levelImg',levelImg)
-    menuImg=pygame.image.load('resource/title/title01.png')
+    menuImg=assets.load_image('resource/title/title01.png', convert_alpha=None)
     menuImg=pygame.transform.smoothscale(menuImg,(round(512*amplified_times),round(512*amplified_times)))
     menuSign=[]
     menuShadow=[]
@@ -315,7 +316,7 @@ def loadImage():
             else:
                 menuShadow.append(new_image)
     menuSelectImg=[]
-    selectImg=pygame.image.load('resource/title/select01.png')
+    selectImg=assets.load_image('resource/title/select01.png', convert_alpha=None)
     for i in range(0,8):
         new_image=pygame.Surface((256,49)).convert_alpha()
         new_image.fill((0,0,0,0))
@@ -325,7 +326,7 @@ def loadImage():
     global_var.set_value('menuSelectImg',menuSelectImg)
     global_var.set_value('menuSign',menuSign)
     global_var.set_value('menuShadow',menuShadow)
-    playerTitle=pygame.image.load('resource/title/sl_pl00.png')
+    playerTitle=assets.load_image('resource/title/sl_pl00.png', convert_alpha=None)
     playerTitle=pygame.transform.smoothscale(playerTitle,(round(512*amplified_times),round(512*amplified_times)))
     playerTitleImg=[]
     new_image=pygame.Surface((round(300*amplified_times),round(512*amplified_times))).convert_alpha()
@@ -363,25 +364,25 @@ def loadImage():
     orb_bullet_img=[]
     c_list=['blue','darkBlue','green','grey','jade','lakeBlue','lightGreen','lightRed','lightYellow','orange','pink','purple','red','skyBlue','white','yellow']
     for i in range(0,16):
-        new_image=pygame.image.load('resource/bullet/orb_bullet_'+c_list[i]+'.png').convert_alpha()
+        new_image=assets.load_image('resource/bullet/orb_bullet_'+c_list[i]+'.png')
         orb_bullet_img.append(new_image)
     global_var.set_value('orb_bullet_img',orb_bullet_img)
     mid_bullet_img=[]
     c_list2=['blue','darkBlue','darkGreen','darkYellow','green','grey','lightGreen','lightRed','orange','pink','purple','red','seaBlue','skyBlue','white','yellow']
     for i in range(0,16):
-        new_image=pygame.image.load('resource/bullet/mid_bullet_'+c_list2[i]+'.png').convert_alpha()
+        new_image=assets.load_image('resource/bullet/mid_bullet_'+c_list2[i]+'.png')
         mid_bullet_img.append(new_image)
     global_var.set_value('mid_bullet_img',mid_bullet_img)
     scale_bullet_img=[]
     c_list3=['blue','green','grey','lemonYellow','lightBlue','lightGreen','lightRed','lightYellow','orange','pink','purple','red','skyBlue','white','yellow']
     for i in range(0,15):
-        new_image=pygame.image.load('resource/bullet/scale_bullet_'+c_list3[i]+'.png').convert_alpha()
+        new_image=assets.load_image('resource/bullet/scale_bullet_'+c_list3[i]+'.png')
         scale_bullet_img.append(new_image)
     global_var.set_value('scale_bullet_img',scale_bullet_img)
     small_bullet_img=[]
     c_list4=['blue','darkBlue','green','greenish','grey','lightBlue','lightGreen','lightYellow','orange','pink','purple','red','skyBlue','violet','white','yellow']
     for i in range(0,16):
-        new_image=pygame.image.load('resource/bullet/small_bullet_'+c_list4[i]+'.png').convert_alpha()
+        new_image=assets.load_image('resource/bullet/small_bullet_'+c_list4[i]+'.png')
         small_bullet_img.append(new_image)
     global_var.set_value('small_bullet_img',small_bullet_img)
 
@@ -403,28 +404,28 @@ def loadImage():
         kunaiBulletImageList.append(new_surf)
     global_var.set_value('kunaiBulletImageList',kunaiBulletImageList)
 
-    titleStar=pygame.image.load('resource/title/titleStar.png')
+    titleStar=assets.load_image('resource/title/titleStar.png', convert_alpha=None)
     titleStar=pygame.transform.smoothscale(titleStar,(round(42*amplified_times),round(42*amplified_times))).convert_alpha()
     global_var.set_value('titleStar',titleStar)
     
-    effectBar=pygame.image.load('resource/boss/etama3.png')
+    effectBar=assets.load_image('resource/boss/etama3.png', convert_alpha=None)
     effectBar=pygame.transform.smoothscale(effectBar,(192,192)).convert_alpha()
     global_var.set_value('effectBar',effectBar)
 
-    watcher=pygame.image.load('resource/bullet/small_bullet_grey.png').convert_alpha()
+    watcher=assets.load_image('resource/bullet/small_bullet_grey.png')
     global_var.set_value('watcher',watcher)
 
-    lightnessBossBack=pygame.image.load('resource/background/lightnessBossBack.png').convert()
+    lightnessBossBack=assets.load_image('resource/background/lightnessBossBack.png', convert_alpha=False)
     global_var.set_value('lightnessBossBack',lightnessBossBack)
 
-    originBossCardPattern=pygame.image.load('resource/background/bossCardBackPattern.png').convert_alpha()
+    originBossCardPattern=assets.load_image('resource/background/bossCardBackPattern.png')
     bossCardPatternPic=pic.doPic(originBossCardPattern)
     global_var.set_value('bossCardPatternPic',bossCardPatternPic)
 
-    etama2=pygame.image.load('resource/bullet/etama2.png').convert_alpha()
+    etama2=assets.load_image('resource/bullet/etama2.png')
     global_var.set_value('etama2',etama2)
 
-    crowImage=pygame.image.load('resource/enemy/crow.png').convert_alpha()
+    crowImage=assets.load_image('resource/enemy/crow.png')
     crowSpriteMap=[]
     movingMap=[]
     idleMap=[]
@@ -444,7 +445,7 @@ def loadImage():
     crowSpriteMap.append(idleMap)
     global_var.set_value('crowSpriteMap',crowSpriteMap)
 
-    enemyImage=pygame.image.load('resource/enemy/enemy.png').convert_alpha()
+    enemyImage=assets.load_image('resource/enemy/enemy.png')
     yinyangyuSpriteMap=[]
     for i in range(0,4):
         new_surf=pygame.Surface((32,32)).convert_alpha()
@@ -468,7 +469,7 @@ def loadImage():
             kedamaSpriteMap.append(new_surf)
     global_var.set_value('kedamaSpriteMap',kedamaSpriteMap)
 
-    sanaeImage=pygame.image.load('resource/boss/sanae.png').convert_alpha()
+    sanaeImage=assets.load_image('resource/boss/sanae.png')
     sanaeSpriteMap=[]
     sanaeIdle=[]
     sanaeMove=[]
@@ -497,30 +498,30 @@ def loadImage():
     global_var.set_value('sanaeSpriteMap',sanaeSpriteMap)
 
     orinSpriteMap=[]
-    orinImage=pygame.image.load('resource/boss/stg5enm.png')
+    orinImage=assets.load_image('resource/boss/stg5enm.png', convert_alpha=None)
     lightEffect=pygame.Surface((64,64)).convert_alpha()
     lightEffect.fill((0,0,0,0))
     lightEffect.blit(orinImage,(0,0),(192,128,64,64))
     lightEffect.set_alpha(150)
     global_var.set_value('orinLightEffect',lightEffect)
 
-    duelLevelBack=pygame.image.load('resource/background/duelClassLevelBack.jpg')
+    duelLevelBack=assets.load_image('resource/background/duelClassLevelBack.jpg', convert_alpha=None)
     duelLevelBack=duelLevelBack.convert()
     duelLevelBack=pygame.transform.smoothscale(duelLevelBack,(280,280))
     global_var.set_value('duelLevelBack',duelLevelBack)
 
-    duelSpellBack=pygame.image.load('resource/background/duelClassSpellBack.jpg')
+    duelSpellBack=assets.load_image('resource/background/duelClassSpellBack.jpg', convert_alpha=None)
     duelSpellBack=duelSpellBack.convert()
     duelSpellBack=pygame.transform.smoothscale(duelSpellBack,(280,280))
     global_var.set_value('duelSpellBack',duelSpellBack)
 
-    level2Title=pygame.image.load('resource/title/level2_title.png').convert_alpha()
+    level2Title=assets.load_image('resource/title/level2_title.png')
     global_var.set_value('level2Title',level2Title)
 
 class star_effect(pygame.sprite.Sprite):
     def __init__(self):
         super(star_effect,self).__init__()
-        self.surf=pygame.image.load('resource/text/stars.png')
+        self.surf=assets.load_image('resource/text/stars.png', convert_alpha=None)
         self.surf.set_alpha(200)
         self.rect = self.surf.get_rect()
         self.frame=0

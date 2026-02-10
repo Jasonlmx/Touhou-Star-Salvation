@@ -4,6 +4,7 @@ import math
 import gF
 from pygame.sprite import Sprite
 import global_var
+import assets
 
 
 pygame.font.init()
@@ -65,6 +66,9 @@ class flyingObj(pygame.sprite.Sprite):
         mycx=self.tx
         mycy=self.ty
         dif=math.sqrt(math.pow(playercx-mycx,2)+math.pow(playercy-mycy,2))
+        if speed == 0 or dif == 0:
+            self.speedAlter(0,0)
+            return
         times=dif/speed
         speedx=(playercx-mycx)/times
         speedy=(playercy-mycy)/times
@@ -131,7 +135,7 @@ class fire_effect_player(pygame.sprite.Sprite):
     def loadColor(self,color):
         self.image=[]
         for i in range(1,4):
-            effect=pygame.image.load('resource/playerFire/'+color+'_effect'+str(i)+'.png').convert_alpha()
+            effect=assets.load_image('resource/playerFire/'+color+'_effect'+str(i)+'.png')
             effect=pygame.transform.scale(effect,(24,48))
             self.image.append(effect)
     
@@ -264,7 +268,7 @@ class enemyDead(pygame.sprite.Sprite):
     def __init__(self):
         super(enemyDead,self).__init__()
         self.frame=0
-        self.image=pygame.image.load('resource/sprite/sprite_dead.png')
+        self.image=assets.load_image('resource/sprite/sprite_dead.png', convert_alpha=None)
         self.decorate=pygame.transform.scale(self.image,(84,16))
         self.deco_rotation=random.random()*180-90
         self.cx=0
@@ -306,7 +310,7 @@ class itemFade(pygame.sprite.Sprite):
     def __init__(self):
         super(itemFade,self).__init__()
         self.frame=0
-        self.image=pygame.image.load('resource/sprite/sprite_dead.png')
+        self.image=assets.load_image('resource/sprite/sprite_dead.png', convert_alpha=None)
         self.cx=0
         self.cy=0
         self.interval=4
@@ -349,7 +353,7 @@ class bonusText(screenText):
         self.image.fill((0,0,0,0))
         self.image.blit(global_var.get_value('front00'), (0, 0), (386,144,382,48))
         self.bonus=100000
-        self.font=pygame.font.SysFont('arial', 28)
+        self.font=assets.load_sysfont('arial', 28)
         self.transFrame=30
         self.lower=False
     def getBonus(self,bonus):
@@ -789,7 +793,7 @@ class spellAttackImage(pygame.sprite.Sprite):
         #screen.blit(self.Image,(self.x,self.y))
 
 class scoreImage(pygame.sprite.Sprite):
-    font=pygame.font.Font('./resource/font/AaBanRuoKaiShu-2.ttf', 12)
+    font=assets.load_font('./resource/font/AaBanRuoKaiShu-2.ttf', 12)
     def __init__(self,size=12):
         super(scoreImage,self).__init__()
         self.speed=1.7

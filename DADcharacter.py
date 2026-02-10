@@ -10,6 +10,7 @@ import global_var
 import Effect
 import Item
 import danmaku
+import assets
 
 class enemy(pygame.sprite.Sprite):
     def __init__(self):
@@ -30,7 +31,7 @@ class enemy(pygame.sprite.Sprite):
         self.dx=0
         self.dy=0
         self.lastFrame=0
-        self.deadImage=pygame.image.load('resource/sprite/sprite_dead.png').convert_alpha()
+        self.deadImage=assets.load_image('resource/sprite/sprite_dead.png')
         self.fireFrame=0
     def checkValid(self,effects,items,bullets):
         if self.rect.bottom<=30 or self.rect.top>=700:
@@ -48,6 +49,9 @@ class enemy(pygame.sprite.Sprite):
         mycx=self.tx
         mycy=self.ty
         dif=math.sqrt(math.pow(playercx-mycx,2)+math.pow(playercy-mycy,2))
+        if speed == 0 or dif == 0:
+            self.speedAlter(0,0)
+            return
         times=dif/speed
         speedx=(playercx-mycx)/times
         speedy=(playercy-mycy)/times
@@ -181,29 +185,44 @@ class butterfly(enemy):
     def __init__(self):
         super(butterfly,self).__init__()
         self.health=1000
-        self.deadImage=pygame.image.load('resource/sprite/sprite_dead.png').convert_alpha()
+        self.deadImage=assets.load_image('resource/sprite/sprite_dead.png')
         
         self.down=[]
         for i in range(1,6):
-            down1=pygame.image.load('resource/enemy/butterfly_down_'+str(i)+'.png').convert_alpha()
-            down1=pygame.transform.smoothscale(down1,(98,98))
+            down1=assets.load_image(
+                'resource/enemy/butterfly_down_'+str(i)+'.png',
+                scale=(98,98),
+                smooth=True,
+            )
             self.down.append(down1)
         self.right=[]
         for i in range(1,4):
-            right1=pygame.image.load('resource/enemy/butterfly_right_'+str(i)+'_1.png').convert_alpha()
-            right2=pygame.image.load('resource/enemy/butterfly_right_'+str(i)+'_2.png').convert_alpha()
-            right1=pygame.transform.smoothscale(right1,(98,98))
-            right2=pygame.transform.smoothscale(right2,(98,98))
+            right1=assets.load_image(
+                'resource/enemy/butterfly_right_'+str(i)+'_1.png',
+                scale=(98,98),
+                smooth=True,
+            )
+            right2=assets.load_image(
+                'resource/enemy/butterfly_right_'+str(i)+'_2.png',
+                scale=(98,98),
+                smooth=True,
+            )
             self.right.append(right1)
             self.right.append(right2)
         self.left=[]
         for i in range(1,4):
-            left1=pygame.image.load('resource/enemy/butterfly_right_'+str(i)+'_1.png').convert_alpha()
-            left2=pygame.image.load('resource/enemy/butterfly_right_'+str(i)+'_2.png').convert_alpha()
-            left1=pygame.transform.flip(left1,True,False)
-            left2=pygame.transform.flip(left2,True,False)
-            left1=pygame.transform.smoothscale(left1,(98,98))
-            left2=pygame.transform.smoothscale(left2,(98,98))
+            left1=assets.load_image(
+                'resource/enemy/butterfly_right_'+str(i)+'_1.png',
+                scale=(98,98),
+                smooth=True,
+                flip_x=True,
+            )
+            left2=assets.load_image(
+                'resource/enemy/butterfly_right_'+str(i)+'_2.png',
+                scale=(98,98),
+                smooth=True,
+                flip_x=True,
+            )
             self.left.append(left1)
             self.left.append(left2)
         self.action=0
@@ -1720,7 +1739,11 @@ class Marisa(Player):
         self.inclineAngle1=10
         self.inclineAngle2=25
         self.inclineSpeed=40
-        self.floatImage=pygame.transform.smoothscale(pygame.image.load('./resource/player/pl00/floatGun.png'),(120,24))
+        self.floatImage=assets.load_image(
+            './resource/player/pl00/floatGun.png',
+            scale=(120,24),
+            smooth=True,
+        )
         self.gunCycle=0
         self.gunAdj=[0,-60]
         self.highSpeed=7.5
@@ -2071,15 +2094,23 @@ class Boss(pygame.sprite.Sprite):
         self.cardBonus=10000000
         self.framePunishment=3700
         self.maxSpell=0
-        self.magicImage=pygame.transform.smoothscale(pygame.image.load('resource/bossMagic.png'),(252,252)).convert_alpha()
+        self.magicImage=assets.load_image(
+            'resource/bossMagic.png',
+            scale=(252,252),
+            smooth=True,
+        )
         self.magicImage.set_alpha(230)
         self.tracker=global_var.get_value('bossTracker')
-        self.bossSpell=pygame.transform.smoothscale(pygame.image.load('resource/text/bossSpell.png'),(16,16)).convert_alpha()
+        self.bossSpell=assets.load_image(
+            'resource/text/bossSpell.png',
+            scale=(16,16),
+            smooth=True,
+        )
         self.ifBlock=False
         self.maxMovingFrame=0
         self.tempx=0
         self.tempy=0
-        self.deadImage=pygame.image.load('resource/sprite/sprite_dead.png').convert_alpha()
+        self.deadImage=assets.load_image('resource/sprite/sprite_dead.png')
         self.percentHealth=0
         self.if_chSpellName=False
         self.boomImmune=False
@@ -2805,7 +2836,7 @@ class Dumbledore(Boss):
         self.maxSpell=10
         self.chSpellName=''
         self.powerUp=False
-        self.bossName=pygame.image.load('resource/boss/dumbledoreName.png')
+        self.bossName=assets.load_image('resource/boss/dumbledoreName.png')
         self.spell10_color=['red','blue','yellow','green']
         self.spell10_time=0
         self.powerRank=0
